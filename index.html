@@ -1047,17 +1047,14 @@ function cariSiswa() {
 
 }
 
-  const formSiswa =
-    document.getElementById("formSiswa");
+  const searchInput = document.getElementById("cariSiswa");
+  if (searchInput) {
+    searchInput.addEventListener("input", cariSiswa);
+  }
 
-
+  const formSiswa = document.getElementById("formSiswa");
   if (formSiswa) {
-
-    formSiswa.addEventListener(
-      "submit",
-      simpanSiswa
-    );
-
+    formSiswa.addEventListener("submit", simpanSiswa);
   }
 }
 }
@@ -1599,6 +1596,54 @@ function tutupFormSiswa() {
 
   }
 
+}
+      function renderDaftarSiswa(dataSiswa) {
+  const tbody = document.getElementById("daftarSiswa");
+  if (!tbody) return;
+
+  if (!dataSiswa || dataSiswa.length === 0) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="5" style="text-align:center;">
+          Data siswa tidak ditemukan.
+        </td>
+      </tr>
+    `;
+    return;
+  }
+
+  tbody.innerHTML = dataSiswa.map(siswa => `
+    <tr>
+      <td>${siswa.nama || "-"}</td>
+      <td>${siswa.nis || "-"}</td>
+      <td>${siswa.kelas || "-"}</td>
+      <td>${siswa.tahun_ajaran || "-"}</td>
+      <td>${siswa.nomor_hp_ortu || "-"}</td>
+    </tr>
+  `).join("");
+}
+
+function cariSiswa() {
+  const input = document.getElementById("cariSiswa");
+  if (!input) return;
+
+  const keyword = input.value.toLowerCase().trim();
+
+  const hasil = semuaSiswa.filter(siswa => {
+    const nama = (siswa.nama || "").toLowerCase();
+    const nis = (siswa.nis || "").toLowerCase();
+    const kelas = (siswa.kelas || "").toLowerCase();
+    const tahunAjaran = (siswa.tahun_ajaran || "").toLowerCase();
+
+    return (
+      nama.includes(keyword) ||
+      nis.includes(keyword) ||
+      kelas.includes(keyword) ||
+      tahunAjaran.includes(keyword)
+    );
+  });
+
+  renderDaftarSiswa(hasil);
 }
      let semuaSiswa = [];
      async function loadSiswa() {
