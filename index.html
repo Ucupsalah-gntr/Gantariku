@@ -921,6 +921,17 @@
         if (currentNav === "riwayat-absen") {
           loadKelasOptions("riwayatKelas");
         }
+        if (currentNav === "ringkasan") {
+  loadRingkasanAnak();
+}
+
+if (currentNav === "absen-anak") {
+  loadAbsenAnak();
+}
+
+if (currentNav === "spp-anak") {
+  loadSppAnak();
+}
       }
 
       // ============================================================
@@ -1796,21 +1807,623 @@
         loadAbsensiRange("riwayatKelas", "riwayatDari", "riwayatSampai", "daftarRiwayatAbsensi");
       }
 
-      // ============================================================
-      // VIEW: HALAMAN ORANG TUA (belum diimplementasikan)
-      // ============================================================
-      function renderRingkasanAnak() {
-        return `<div class="empty">Fitur Ringkasan Anak - Segera hadir</div>`;
-      }
+      /* =========================================================
+HALAMAN ORANG TUA
+========================================================= */
 
-      function renderAbsenAnak() {
-        return `<div class="empty">Fitur Kehadiran Anak - Segera hadir</div>`;
-      }
+async function loadAnakOrangTua() {
 
-      function renderSppAnak() {
-        return `<div class="empty">Fitur Status SPP - Segera hadir</div>`;
-      }
+  if (!supabase || !currentUser) {
+    return [];
+  }
 
+  try {
+
+    const {
+      data,
+      error
+    } =
+      await supabase
+        .from("orang_tua_siswa")
+        .select(`
+          siswa:siswa_id (
+            id,
+            nama,
+            nis,
+            kelas,
+            tahun_ajaran
+          )
+        `)
+        .eq(
+          "orang_tua_id",
+          currentUser.id
+        );
+
+    if (error) {
+      throw error;
+    }
+
+    return (data || [])
+      .map(
+        item => item.siswa
+      )
+      .filter(Boolean);
+
+  } catch (error) {
+
+    console.error(
+      "Error load anak:",
+      error
+    );
+
+    return [];
+
+  }
+
+}
+
+
+/* =========================================================
+RINGKASAN ANAK
+========================================================= */
+
+function renderRingkasanAnak() {
+
+  return `
+    <div class="section">
+
+      <div class="section-head">
+
+        <h2>
+          Ringkasan Anak
+        </h2>
+
+      </div>
+
+
+      <div
+        class="section-body"
+        id="ringkasanAnakContainer"
+      >
+
+        <div class="empty">
+          Memuat data anak...
+        </div>
+
+      </div>
+
+    </div>
+  `;
+
+}
+
+
+async function loadRingkasanAnak() {
+
+  const container =
+    document.getElementById(
+      "ringkasanAnakContainer"
+    );
+
+  if (!container) {
+    return;
+  }
+
+
+  const daftarAnak =
+    await loadAnakOrangTua();
+
+
+  if (!daftarAnak.length) {
+
+    container.innerHTML = `
+      <div class="empty">
+        Belum ada siswa yang terhubung
+        dengan akun Anda.
+      </div>
+    `;
+
+    return;
+  }
+
+
+  container.innerHTML =
+    daftarAnak
+      .map(
+        anak => `
+          <div
+            class="stat"
+            style="
+              margin-bottom:15px;
+              padding:20px;
+            "
+          >
+
+            <div
+              style="
+                font-size:18px;
+                font-weight:700;
+                margin-bottom:10px;
+              "
+            >
+              ${anak.nama || "-"}
+            </div>
+
+
+            <div>
+              NIS:
+              ${anak.nis || "-"}
+            </div>
+
+
+            <div>
+              Kelas:
+              ${anak.kelas || "-"}
+            </div>
+
+
+            <div>
+              Tahun Ajaran:
+              ${anak.tahun_ajaran || "-"}
+            </div>
+
+          </div>
+        `
+      )
+      .join("");
+
+}
+
+
+/* =========================================================
+KEHADIRAN ANAK
+========================================================= */
+
+function renderAbsenAnak() {
+
+  return `
+    <div class="section">
+
+      <div class="section-head">
+
+        <h2>
+          Kehadiran Anak
+        </h2>
+
+      </div>
+
+
+      <div class="section-body">
+
+        <div class="table-wrap">
+
+          <table>
+
+            <thead>
+
+              <tr>
+
+                <th>Tanggal</th>
+                <th>Nama</th>
+                <th>Kelas</th>
+                <th>Status</th>
+                <th>Keterangan</th>
+
+              </tr>
+
+            </thead>
+
+
+            <tbody
+              id="daftarAbsenAnak"
+            >
+
+              <tr>
+
+                <td
+                  colspan="5"
+                  class="table-message"
+                >
+                  Memuat data...
+                </td>
+
+              </tr>
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+      </div>
+
+    </div>
+  `;
+
+}
+
+
+async function loadAbsenAnak() {
+
+  const daftarAnak =
+    await loadAnakOrangTua();
+
+
+  if (!daftarAnak.length) {
+
+    setTableMessage(
+      "daftarAbsenAnak",
+      "Belum ada anak yang terhubung dengan akun ini.",
+      5
+    );
+
+    return;
+  }
+
+
+  const siswaIds =
+    daftarAnak.map(
+      anak => anak.id
+    );
+
+
+  try {
+
+    const {
+      data,
+      error
+    } =
+      await supabase
+        .from("absensi")
+        .select(`
+          tanggal,
+          status,
+          keterangan,
+
+          siswa:siswa_id (
+            nama,
+            kelas
+          )
+        `)
+        .in(
+          "siswa_id",
+          siswaIds
+        )
+        .order(
+          "tanggal",
+          {
+            ascending: false
+          }
+        );
+
+
+    if (error) {
+      throw error;
+    }
+
+
+    if (!data?.length) {
+
+      setTableMessage(
+        "daftarAbsenAnak",
+        "Belum ada data absensi.",
+        5
+      );
+
+      return;
+    }
+
+
+    const tbody =
+      document.getElementById(
+        "daftarAbsenAnak"
+      );
+
+
+    if (!tbody) {
+      return;
+    }
+
+
+    tbody.innerHTML =
+      data
+        .map(
+          item => `
+            <tr>
+
+              <td>
+                ${item.tanggal || "-"}
+              </td>
+
+
+              <td>
+                ${item.siswa?.nama || "-"}
+              </td>
+
+
+              <td>
+                ${item.siswa?.kelas || "-"}
+              </td>
+
+
+              <td>
+
+                <span
+                  class="
+                    badge
+                    ${statusBadgeAbsensi(
+                      item.status
+                    )}
+                  "
+                >
+                  ${item.status || "-"}
+                </span>
+
+              </td>
+
+
+              <td>
+                ${item.keterangan || "-"}
+              </td>
+
+            </tr>
+          `
+        )
+        .join("");
+
+  } catch (error) {
+
+    console.error(
+      "Error load absensi anak:",
+      error
+    );
+
+
+    setTableMessage(
+      "daftarAbsenAnak",
+      "Gagal memuat data absensi.",
+      5,
+      true
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+STATUS SPP ANAK
+========================================================= */
+
+function renderSppAnak() {
+
+  return `
+    <div class="section">
+
+      <div class="section-head">
+
+        <h2>
+          Status SPP Anak
+        </h2>
+
+      </div>
+
+
+      <div class="section-body">
+
+        <div class="table-wrap">
+
+          <table>
+
+            <thead>
+
+              <tr>
+
+                <th>Nama</th>
+                <th>Kelas</th>
+                <th>Bulan</th>
+                <th>Tahun</th>
+                <th>Nominal</th>
+                <th>Status</th>
+
+              </tr>
+
+            </thead>
+
+
+            <tbody
+              id="daftarSppAnak"
+            >
+
+              <tr>
+
+                <td
+                  colspan="6"
+                  class="table-message"
+                >
+                  Memuat data...
+                </td>
+
+              </tr>
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+      </div>
+
+    </div>
+  `;
+
+}
+
+
+async function loadSppAnak() {
+
+  const daftarAnak =
+    await loadAnakOrangTua();
+
+
+  if (!daftarAnak.length) {
+
+    setTableMessage(
+      "daftarSppAnak",
+      "Belum ada anak yang terhubung dengan akun ini.",
+      6
+    );
+
+    return;
+  }
+
+
+  const siswaIds =
+    daftarAnak.map(
+      anak => anak.id
+    );
+
+
+  try {
+
+    const {
+      data,
+      error
+    } =
+      await supabase
+        .from("spp")
+        .select(`
+          bulan,
+          tahun,
+          nominal,
+          status,
+
+          siswa:siswa_id (
+            nama,
+            kelas
+          )
+        `)
+        .in(
+          "siswa_id",
+          siswaIds
+        )
+        .order(
+          "tahun",
+          {
+            ascending: false
+          }
+        )
+        .order(
+          "bulan",
+          {
+            ascending: false
+          }
+        );
+
+
+    if (error) {
+      throw error;
+    }
+
+
+    if (!data?.length) {
+
+      setTableMessage(
+        "daftarSppAnak",
+        "Belum ada data SPP.",
+        6
+      );
+
+      return;
+    }
+
+
+    const tbody =
+      document.getElementById(
+        "daftarSppAnak"
+      );
+
+
+    if (!tbody) {
+      return;
+    }
+
+
+    tbody.innerHTML =
+      data
+        .map(
+          item => `
+            <tr>
+
+              <td>
+                ${item.siswa?.nama || "-"}
+              </td>
+
+
+              <td>
+                ${item.siswa?.kelas || "-"}
+              </td>
+
+
+              <td>
+                ${namaBulan(
+                  item.bulan
+                )}
+              </td>
+
+
+              <td>
+                ${item.tahun || "-"}
+              </td>
+
+
+              <td>
+                ${formatRupiah(
+                  item.nominal
+                )}
+              </td>
+
+
+              <td>
+
+                <span
+                  class="
+                    badge
+                    ${
+                      item.status === "Lunas"
+                        ? "badge-good"
+                        : "badge-bad"
+                    }
+                  "
+                >
+                  ${item.status || "-"}
+                </span>
+
+              </td>
+
+            </tr>
+          `
+        )
+        .join("");
+
+  } catch (error) {
+
+    console.error(
+      "Error load SPP anak:",
+      error
+    );
+
+
+    setTableMessage(
+      "daftarSppAnak",
+      "Gagal memuat data SPP.",
+      6,
+      true
+    );
+
+  }
+
+}
       // ============================================================
       // UTILITIES
       // ============================================================
