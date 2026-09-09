@@ -255,48 +255,6 @@
         margin-top: 2px;
       }
 
-      .role-card {
-        background: rgba(255, 255, 255, .12);
-        border-radius: 10px;
-        padding: 10px;
-        margin-bottom: 22px;
-      }
-
-      .role-label {
-        font-size: 10.5px;
-        text-transform: uppercase;
-        letter-spacing: .04em;
-        color: rgba(255, 255, 255, .6);
-        padding: 4px 6px 8px;
-      }
-
-      .role-options {
-        display: flex;
-        flex-direction: column;
-        gap: 4px;
-      }
-
-      .role-btn {
-        all: unset;
-        cursor: pointer;
-        padding: 8px 10px;
-        border-radius: 7px;
-        font-size: 13px;
-        color: rgba(255, 255, 255, .85);
-        font-weight: 500;
-        transition: background .15s;
-      }
-
-      .role-btn:hover {
-        background: rgba(255, 255, 255, .12);
-      }
-
-      .role-btn.active {
-        background: #fff;
-        color: var(--primary-dark);
-        font-weight: 700;
-      }
-
       .nav {
         display: flex;
         flex-direction: column;
@@ -315,11 +273,6 @@
         color: rgba(255, 255, 255, .8);
       }
 
-      .nav-item svg {
-        flex-shrink: 0;
-        opacity: .85;
-      }
-
       .nav-item:hover {
         background: rgba(255, 255, 255, .1);
       }
@@ -330,10 +283,6 @@
         font-weight: 600;
       }
 
-      .nav-item.active svg {
-        opacity: 1;
-      }
-
       .sidebar-foot {
         margin-top: auto;
         display: flex;
@@ -342,13 +291,6 @@
         padding-top: 14px;
         font-size: 11px;
         color: rgba(255, 255, 255, .7);
-        line-height: 1.6;
-      }
-
-      .conn-status {
-        display: flex;
-        align-items: center;
-        gap: 6px;
       }
 
       .conn-dot {
@@ -356,15 +298,7 @@
         width: 7px;
         height: 7px;
         border-radius: 50%;
-        background: #FBBF24;
-      }
-
-      .conn-dot.ok {
         background: #34D399;
-      }
-
-      .conn-dot.err {
-        background: #F87171;
       }
 
       .logout-btn {
@@ -516,10 +450,6 @@
         background: #fff;
       }
 
-      input[type=text] {
-        min-width: 190px;
-      }
-
       .btn {
         all: unset;
         cursor: pointer;
@@ -540,28 +470,15 @@
         transform: scale(.97);
       }
 
-      .btn:disabled {
-        opacity: .5;
-        cursor: not-allowed;
-      }
-
       .btn.secondary {
         background: var(--primary-soft);
         color: var(--primary-dark);
-      }
-
-      .btn.secondary:hover {
-        background: #DED3FB;
       }
 
       .btn.ghost {
         background: transparent;
         color: var(--ink-soft);
         border: 1px solid var(--line);
-      }
-
-      .btn.ghost:hover {
-        background: var(--muted);
       }
 
       .btn.small {
@@ -646,7 +563,6 @@
           padding: 14px 16px;
         }
 
-        .role-card,
         .nav,
         .sidebar-foot {
           display: none;
@@ -845,10 +761,7 @@
               <div class="nav" id="nav"></div>
 
               <div class="sidebar-foot">
-                <div class="conn-status">
-                  <span class="conn-dot ok"></span>
-                  <span>Terhubung</span>
-                </div>
+                <div><span class="conn-dot"></span> Terhubung</div>
                 <button class="logout-btn" onclick="window.__app.logout()">Logout</button>
               </div>
             </aside>
