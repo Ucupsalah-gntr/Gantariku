@@ -90,7 +90,7 @@ INSERT INTO pengguna (user_id, nama, email, role, nomor_hp, alamat)
 VALUES 
   -- You'll need to create auth users first via Supabase dashboard or API
   -- Then use their user_id here
-  ('00000000-0000-0000-0000-000000000001'::UUID, 'Admin Sekolah', 'admin@sekolah.id', 'admin', '081234567890', 'Sekolah SMP Negeri 1');
+  ('62237812-4277-4022-8454-55103c5609cf'::UUID, 'Admin Sekolah', 'admin@sekolah.id', 'admin', '081234567890', 'Sekolah SMP Negeri 1');
 
 -- Example student data
 INSERT INTO siswa (nama, nis, kelas, tahun_ajaran, tanggal_lahir, jenis_kelamin, alamat)
