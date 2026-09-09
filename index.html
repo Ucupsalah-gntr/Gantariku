@@ -984,7 +984,7 @@
             .eq("tanggal", todayStr);
           if (absensiError) throw absensiError;
 
-          const hadirCount = (absensiHariIni || []).filter((a) => a.status === "Hadir").length;
+          const hadirCount = (absensiHariIni || []).filter((a) => a.status === "H").length;
           const statHadirEl = document.getElementById("statHadir");
           if (statHadirEl) statHadirEl.textContent = `${hadirCount}/${totalSiswa || 0}`;
 
@@ -999,7 +999,7 @@
                 <tr>
                   <td>${a.siswa?.nama || "-"}</td>
                   <td>${a.siswa?.kelas || "-"}</td>
-                  <td><span class="badge ${statusBadgeAbsensi(a.status)}">${a.status || "-"}</span></td>
+                  <td><span class="badge ${statusBadgeAbsensi(a.status)}">${labelStatusAbsensi(a.status)}</span></td>
                 </tr>
               `
                 )
@@ -1595,10 +1595,10 @@
           tbody.innerHTML = daftarSiswa
             .map((s) => {
               const existing = absensiMap[s.id];
-              const statusTerpilih = existing ? existing.status : "Hadir";
+              const statusTerpilih = existing ? existing.status : "H";
               const keteranganNilai = existing ? existing.keterangan || "" : "";
-              const opsiStatus = ["Hadir", "Izin", "Sakit", "Alpa"]
-                .map((st) => `<option value="${st}" ${st === statusTerpilih ? "selected" : ""}>${st}</option>`)
+              const opsiStatus = Object.entries(ABSEN_STATUS_LABELS)
+                .map(([kode, label]) => `<option value="${kode}" ${kode === statusTerpilih ? "selected" : ""}>${label}</option>`)
                 .join("");
 
               return `
@@ -1776,7 +1776,7 @@
               <td>${a.tanggal || "-"}</td>
               <td>${a.siswa?.nama || "-"}</td>
               <td>${a.siswa?.kelas || "-"}</td>
-              <td><span class="badge ${statusBadgeAbsensi(a.status)}">${a.status || "-"}</span></td>
+              <td><span class="badge ${statusBadgeAbsensi(a.status)}">${labelStatusAbsensi(a.status)}</span></td>
               <td>${a.keterangan || "-"}</td>
             </tr>
           `
@@ -1814,8 +1814,17 @@
       // ============================================================
       // UTILITIES
       // ============================================================
+      // Kolom absensi.status di database hanya menerima kode huruf
+      // (H/I/S/A), jadi semua penyimpanan/pembacaan pakai kode ini.
+      // Untuk tampilan, kode dipetakan ke label Bahasa Indonesia di sini.
+      const ABSEN_STATUS_LABELS = { H: "Hadir", I: "Izin", S: "Sakit", A: "Alpa" };
+
+      function labelStatusAbsensi(kode) {
+        return ABSEN_STATUS_LABELS[kode] || kode || "-";
+      }
+
       function statusBadgeAbsensi(status) {
-        const map = { Hadir: "badge-good", Izin: "badge-warn", Sakit: "badge-sick", Alpa: "badge-bad" };
+        const map = { H: "badge-good", I: "badge-warn", S: "badge-sick", A: "badge-bad" };
         return map[status] || "badge-muted";
       }
 
