@@ -2,7 +2,7 @@
 <html lang="id">
   <head>
     <meta charset="UTF-8">
-    <title>Gantariku</title>
+    <title>Gantariku — Absensi &amp; SPP</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
       @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap');
@@ -42,11 +42,155 @@
         -webkit-font-smoothing: antialiased;
       }
 
-      h1,
-      h2 {
+      h1, h2 {
         font-family: 'Space Grotesk', sans-serif;
       }
 
+      /* ========== LOGIN PAGE ========== */
+      .login-container {
+        display: flex;
+        min-height: 100vh;
+        background: linear-gradient(135deg, #4E31D6 0%, #6C4CF1 50%, #8B5CF6 100%);
+      }
+
+      .login-box {
+        margin: auto;
+        background: var(--surface);
+        border-radius: 16px;
+        padding: 40px;
+        width: 100%;
+        max-width: 400px;
+        box-shadow: 0 20px 60px rgba(33, 27, 59, .3);
+      }
+
+      .login-header {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        margin-bottom: 30px;
+      }
+
+      .login-logo {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        background: linear-gradient(135deg, #4E31D6, #6C4CF1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px;
+        color: white;
+      }
+
+      .login-brand {
+        text-align: left;
+      }
+
+      .login-brand h1 {
+        font-size: 24px;
+        font-weight: 700;
+        margin: 0;
+        color: var(--ink);
+      }
+
+      .login-brand p {
+        font-size: 12px;
+        color: var(--ink-soft);
+        margin: 4px 0 0;
+      }
+
+      .login-form {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .form-group label {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--ink);
+      }
+
+      .form-group input,
+      .form-group select {
+        padding: 10px 12px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        font-family: 'Inter', sans-serif;
+        font-size: 14px;
+        color: var(--ink);
+        background: #fff;
+        transition: border-color .2s, box-shadow .2s;
+      }
+
+      .form-group input:focus,
+      .form-group select:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(108, 76, 241, .1);
+      }
+
+      .login-btn {
+        padding: 10px 16px;
+        background: linear-gradient(135deg, #4E31D6, #6C4CF1);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 14px;
+        cursor: pointer;
+        transition: transform .1s, box-shadow .2s;
+      }
+
+      .login-btn:hover {
+        box-shadow: 0 10px 30px rgba(108, 76, 241, .3);
+      }
+
+      .login-btn:active {
+        transform: scale(.95);
+      }
+
+      .login-btn:disabled {
+        opacity: .6;
+        cursor: not-allowed;
+      }
+
+      .error-msg {
+        padding: 10px 12px;
+        background: var(--bad-soft);
+        color: var(--bad);
+        border-radius: 8px;
+        font-size: 13px;
+        display: none;
+      }
+
+      .error-msg.show {
+        display: block;
+      }
+
+      .loading-spinner {
+        display: inline-block;
+        width: 14px;
+        height: 14px;
+        border: 2px solid rgba(255, 255, 255, .3);
+        border-top-color: white;
+        border-radius: 50%;
+        animation: spin .8s linear infinite;
+        margin-right: 6px;
+      }
+
+      @keyframes spin {
+        to { transform: rotate(360deg); }
+      }
+
+      /* ========== APP PAGE ========== */
       .app {
         display: flex;
         min-height: 100vh;
@@ -90,6 +234,25 @@
       .brand-sub {
         font-size: 11px;
         color: rgba(255, 255, 255, .7);
+      }
+
+      .user-info {
+        background: rgba(255, 255, 255, .12);
+        border-radius: 10px;
+        padding: 10px;
+        margin-bottom: 22px;
+        font-size: 12px;
+      }
+
+      .user-name {
+        font-weight: 600;
+        color: #fff;
+      }
+
+      .user-role {
+        font-size: 11px;
+        color: rgba(255, 255, 255, .7);
+        margin-top: 2px;
       }
 
       .role-card {
@@ -173,10 +336,19 @@
 
       .sidebar-foot {
         margin-top: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
         padding-top: 14px;
         font-size: 11px;
         color: rgba(255, 255, 255, .7);
         line-height: 1.6;
+      }
+
+      .conn-status {
+        display: flex;
+        align-items: center;
+        gap: 6px;
       }
 
       .conn-dot {
@@ -184,7 +356,6 @@
         width: 7px;
         height: 7px;
         border-radius: 50%;
-        margin-right: 6px;
         background: #FBBF24;
       }
 
@@ -194,6 +365,23 @@
 
       .conn-dot.err {
         background: #F87171;
+      }
+
+      .logout-btn {
+        all: unset;
+        cursor: pointer;
+        padding: 6px 10px;
+        border-radius: 6px;
+        border: 1px solid rgba(255, 255, 255, .3);
+        color: rgba(255, 255, 255, .8);
+        font-size: 12px;
+        font-weight: 600;
+        transition: background .15s;
+        text-align: center;
+      }
+
+      .logout-btn:hover {
+        background: rgba(255, 255, 255, .1);
       }
 
       .content {
@@ -253,21 +441,10 @@
         box-shadow: 0 1px 2px rgba(33, 27, 59, .05);
       }
 
-      .stat.c-teal {
-        border-left-color: var(--teal);
-      }
-
-      .stat.c-good {
-        border-left-color: var(--good);
-      }
-
-      .stat.c-bad {
-        border-left-color: var(--bad);
-      }
-
-      .stat.c-pink {
-        border-left-color: var(--pink);
-      }
+      .stat.c-teal { border-left-color: var(--teal); }
+      .stat.c-good { border-left-color: var(--good); }
+      .stat.c-bad { border-left-color: var(--bad); }
+      .stat.c-pink { border-left-color: var(--pink); }
 
       .stat .num {
         font-family: 'Space Grotesk', sans-serif;
@@ -318,6 +495,8 @@
       }
 
       input[type=text],
+      input[type=email],
+      input[type=password],
       select {
         font-family: 'Inter', sans-serif;
         font-size: 13px;
@@ -329,6 +508,8 @@
       }
 
       input[type=text]:focus,
+      input[type=email]:focus,
+      input[type=password]:focus,
       select:focus {
         outline: 2px solid var(--primary);
         outline-offset: 1px;
@@ -432,170 +613,17 @@
         font-weight: 600;
       }
 
-      .badge-good {
-        background: var(--good-soft);
-        color: var(--good);
-      }
-
-      .badge-warn {
-        background: var(--warn-soft);
-        color: var(--warn);
-      }
-
-      .badge-sick {
-        background: var(--sick-soft);
-        color: var(--sick);
-      }
-
-      .badge-bad {
-        background: var(--bad-soft);
-        color: var(--bad);
-      }
-
-      .badge-muted {
-        background: var(--muted);
-        color: var(--ink-soft);
-      }
+      .badge-good { background: var(--good-soft); color: var(--good); }
+      .badge-warn { background: var(--warn-soft); color: var(--warn); }
+      .badge-sick { background: var(--sick-soft); color: var(--sick); }
+      .badge-bad { background: var(--bad-soft); color: var(--bad); }
+      .badge-muted { background: var(--muted); color: var(--ink-soft); }
 
       .empty {
         padding: 34px;
         text-align: center;
         color: var(--ink-soft);
         font-size: 13px;
-      }
-
-      .att-grid {
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: 8px;
-      }
-
-      .att-row {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 10px 14px;
-        border: 1px solid var(--line);
-        border-radius: 10px;
-        background: var(--bg);
-      }
-
-      .att-name {
-        font-weight: 600;
-      }
-
-      .att-choices {
-        display: flex;
-        gap: 6px;
-      }
-
-      .chip {
-        all: unset;
-        cursor: pointer;
-        padding: 6px 13px;
-        border-radius: 20px;
-        font-size: 12px;
-        font-weight: 600;
-        border: 1px solid var(--line);
-        color: var(--ink-soft);
-        background: #fff;
-        transition: transform .1s;
-      }
-
-      .chip:active {
-        transform: scale(.95);
-      }
-
-      .chip.sel-H {
-        background: var(--good);
-        color: #fff;
-        border-color: var(--good);
-      }
-
-      .chip.sel-I {
-        background: var(--warn);
-        color: #fff;
-        border-color: var(--warn);
-      }
-
-      .chip.sel-S {
-        background: var(--sick);
-        color: #fff;
-        border-color: var(--sick);
-      }
-
-      .chip.sel-A {
-        background: var(--bad);
-        color: #fff;
-        border-color: var(--bad);
-      }
-
-      .hint {
-        font-size: 12px;
-        color: var(--ink-soft);
-        margin-top: 8px;
-      }
-
-      .inline-form {
-        display: flex;
-        gap: 8px;
-        flex-wrap: wrap;
-        align-items: center;
-        margin-bottom: 14px;
-        padding: 12px;
-        background: var(--bg);
-        border-radius: 10px;
-      }
-
-      .icon-btn {
-        all: unset;
-        cursor: pointer;
-        width: 28px;
-        height: 28px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 7px;
-        color: var(--ink-soft);
-      }
-
-      .icon-btn:hover {
-        background: var(--bad-soft);
-        color: var(--bad);
-      }
-
-      .setup-wrap {
-        max-width: 640px;
-        margin: 40px auto;
-        padding: 28px;
-        background: var(--surface);
-        border-radius: 16px;
-        box-shadow: 0 1px 2px rgba(33, 27, 59, .05);
-      }
-
-      .setup-wrap h2 {
-        margin-top: 0;
-      }
-
-      .setup-wrap ol {
-        padding-left: 20px;
-        line-height: 1.9;
-      }
-
-      .setup-wrap code {
-        background: var(--muted);
-        padding: 2px 6px;
-        border-radius: 5px;
-        font-size: 12.5px;
-      }
-
-      .setup-wrap pre {
-        background: #211B3B;
-        color: #E7E2F7;
-        padding: 14px 16px;
-        border-radius: 10px;
-        font-size: 12px;
-        overflow-x: auto;
       }
 
       @media (max-width: 900px) {
@@ -634,360 +662,20 @@
           grid-template-columns: 1fr 1fr;
         }
 
-        .setup-wrap {
-          margin: 20px 16px;
-          padding: 20px;
+        .login-box {
+          padding: 30px 20px;
+          max-width: calc(100% - 40px);
         }
       }
     </style>
   </head>
   <body>
-    <div class="app">
-      <aside class="sidebar">
-        <div class="brand">
-          <div class="brand-mark">🎒</div>
-          <div>
-            <div class="brand-text">Gantariku</div>
-            <div class="brand-sub">Absensi &amp; SPP</div>
-          </div>
-        </div>
-        <div class="role-card">
-          <div class="role-label">Masuk sebagai</div>
-          <div class="role-options" id="roleOptions"></div>
-        </div>
-        <div class="nav" id="nav"></div>
-        <div class="sidebar-foot">
-          <span class="conn-dot" id="connDot"></span>
-          <span id="connText">Menghubungkan...</span>
-        </div>
-      </aside>
-      <main class="content">
-        <header class="topbar">
-          <div>
-            <h1 id="pageTitle">Dasbor</h1>
-            <p id="pageSub">Ringkasan hari ini</p>
-          </div>
-          <div class="today-chip" id="todayChip"></div>
-        </header>
-        <section class="view" id="view"></section>
-      </main>
-    </div>
-        <script type="module">
-const ICON = {
-  grid: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>`,
-  users: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>`,
-  wallet: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg>`,
-  bar: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg>`,
-  edit: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4Z"/></svg>`,
-  clock: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`,
-  home: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>`,
-  calendar: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>`,
-  trash: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>`
-};
+    <div id="app"></div>
 
-/* ---------- Constants ---------- */
-const TODAY = new Date();
-const BULAN_NAMA = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
-const SPP_NOMINAL = 150000;
-const KELAS_LIST = ['7A','8A'];
-const BULAN_INI_INDEX = TODAY.getMonth();
-
-function seededRand(seed){
-  const x = Math.sin(seed) * 10000;
-  return x - Math.floor(x);
-}
-
-function dateKey(d){
-  const year = d.getFullYear();
-  const month = String(d.getMonth()+1).padStart(2,'0');
-  const day = String(d.getDate()).padStart(2,'0');
-  return `${year}-${month}-${day}`;
-}
-
-function fmtTgl(d){
-  return d.toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric'});
-}
-
-function fmtRp(n){
-  return 'Rp' + Number(n).toLocaleString('id-ID');
-}
-
-const TANGGAL_LIST = [];
-for(let i=13;i>=0;i--){
-  const d = new Date(TODAY);
-  d.setDate(TODAY.getDate()-i);
-  if(d.getDay()===0 || d.getDay()===6) continue;
-  TANGGAL_LIST.push(dateKey(d));
-}
-
-/* ---------- Live data ---------- */
-let SISWA = [];
-let ABSEN = {};
-let SPP = {};
-
-function getAbsen(id,dk){
-  return ABSEN[`${id}_${dk}`] || null;
-}
-
-function getSpp(id,m){
-  return SPP[`${id}_${m}`] || {status:m>BULAN_INI_INDEX?'belum_tempo':'belum'};
-}
-
-function absenLabel(code){
-  return {H:'Hadir',I:'Izin',S:'Sakit',A:'Alpa'}[code] || 'Belum diinput';
-}
-
-function siswaById(id){
-  return SISWA.find(s=>String(s.id)===String(id));
-}
-
-function statusBadge(kind,text){
-  const map={H:'badge-good',I:'badge-warn',S:'badge-sick',A:'badge-bad',lunas:'badge-good',belum:'badge-bad',belum_tempo:'badge-muted'};
-  return `<span class="badge ${map[kind]||'badge-muted'}">${text}</span>`;
-}
-
-/* ---------- App state ---------- */ let state = { role:'admin', nav:'dasbor', guruKelas:KELAS_LIST[0], guruTanggal:TANGGAL_LIST[TANGGAL_LIST.length-1], sppBulan:BULAN_INI_INDEX, sppCari:'', sppFilter:'semua', rekapKelas:KELAS_LIST[0], rekapBulan:BULAN_INI_INDEX, siswaCari:'', showAddSiswa:false, ortuSiswaId:null, }; const NAV_BY_ROLE = { admin:[{id:'dasbor',label:'Dasbor',icon:'grid'},{id:'siswa',label:'Data Siswa',icon:'users'},{id:'spp',label:'Monitoring SPP',icon:'wallet'},{id:'rekap',label:'Rekap Absensi',icon:'bar'}], guru:[{id:'input-absen',label:'Input Absensi',icon:'edit'},{id:'riwayat-absen',label:'Riwayat Absensi',icon:'clock'}], ortu:[{id:'ringkasan-anak',label:'Ringkasan',icon:'home'},{id:'absen-anak',label:'Kehadiran',icon:'calendar'},{id:'spp-anak',label:'Status SPP',icon:'wallet'}], }; const ROLE_LABEL = {admin:'Admin / TU', guru:'Guru', ortu:'Orang Tua / Siswa'}; const PAGE_TITLE = { 'dasbor':['Dasbor','Ringkasan kehadiran dan pembayaran hari ini'], 'siswa':['Data Siswa','Kelola daftar siswa terdaftar'], 'spp':['Monitoring SPP','Status pembayaran SPP per bulan'], 'rekap':['Rekap Absensi','Rekapitulasi kehadiran per kelas'], 'input-absen':['Input Absensi','Catat kehadiran siswa dengan sekali klik'], 'riwayat-absen':['Riwayat Absensi','Riwayat absensi yang sudah diinput'], 'ringkasan-anak':['Ringkasan','Kondisi kehadiran & pembayaran anak'], 'absen-anak':['Kehadiran','Riwayat kehadiran anak'], 'spp-anak':['Status SPP','Status pembayaran SPP anak per bulan'], }; function setRole(role){ state.role=role; state.nav=NAV_BY_ROLE[role][0].id; render(); } function setNav(nav){ state.nav=nav; render(); } /* ---------- Views: Admin ---------- */ function viewDasbor(){ const todayKey = TANGGAL_LIST[TANGGAL_LIST.length-1]; const hadirHariIni = SISWA.filter(s=>getAbsen(s.id,todayKey)==='H').length; let lunasBulanIni=0, belumBulanIni=0, tunggakan=0; SISWA.forEach(s=>{ const rec = getSpp(s.id,BULAN_INI_INDEX); if(rec.status==='lunas') lunasBulanIni++; if(rec.status==='belum') belumBulanIni++; for(let m=0;m<=BULAN_INI_INDEX;m++) if(getSpp(s.id,m).status==='belum' ) tunggakan +=SPP_NOMINAL; }); return ` <div class="stat-row">
-      <div class="stat c-teal">
-        <div class="num">${hadirHariIni}/${SISWA.length}</div>
-        <div class="lbl">Hadir hari ini</div>
-      </div>
-      <div class="stat c-good">
-        <div class="num">${lunasBulanIni}</div>
-        <div class="lbl">Lunas SPP — ${BULAN_NAMA[BULAN_INI_INDEX]}</div>
-      </div>
-      <div class="stat c-bad">
-        <div class="num">${belumBulanIni}</div>
-        <div class="lbl">Belum bayar — ${BULAN_NAMA[BULAN_INI_INDEX]}</div>
-      </div>
-      <div class="stat c-pink">
-        <div class="num">${fmtRp(tunggakan)}</div>
-        <div class="lbl">Total tunggakan SPP</div>
-      </div>
-      </div>
-      <div class="section">
-        <div class="section-head">
-          <h2>Kehadiran hari ini — ${fmtTgl(new Date(todayKey))}</h2>
-        </div>
-        <div class="section-body"> ${SISWA.length? ` <table>
-            <thead>
-              <tr>
-                <th>Nama</th>
-                <th>Kelas</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody>${SISWA.map(s=>{ const c=getAbsen(s.id,todayKey); return ` <tr>
-                <td>${s.nama}</td>
-                <td>${s.kelas}</td>
-                <td>${statusBadge(c, absenLabel(c))}</td>
-              </tr>`; }).join('')} </tbody>
-          </table>` : ` <div class="empty">Belum ada data siswa.</div>`} </div>
-      </div>`; } function filteredSiswa(){ const q = state.siswaCari.trim().toLowerCase(); if(!q) return SISWA; return SISWA.filter(s=> s.nama.toLowerCase().includes(q) || s.kelas.toLowerCase().includes(q) || s.ortu.toLowerCase().includes(q)); } function viewSiswa(){ const list = filteredSiswa(); return ` <div class="section">
-        <div class="section-head">
-          <h2>Daftar Siswa <span style="color:var(--ink-soft);font-weight:500;font-size:12.5px;">(${SISWA.length} total)</span>
-          </h2>
-          <div class="controls">
-            <input type="text" placeholder="Cari nama, kelas, atau wali..." value="${state.siswaCari}" oninput="window.__app.setSiswaCari(this.value)">
-            <button class="btn" onclick="window.__app.toggleAddSiswa()">${state.showAddSiswa?'Tutup':'+ Tambah Siswa'}</button>
-          </div>
-        </div>
-        <div class="section-body"> ${state.showAddSiswa? ` <div class="inline-form">
-            <input type="text" id="fNama" placeholder="Nama siswa">
-            <select id="fKelas">${KELAS_LIST.map(k=>` <option value="${k}">${k}</option>`).join('')} </select>
-            <input type="text" id="fOrtu" placeholder="Nama orang tua/wali">
-            <button class="btn" onclick="window.__app.addSiswa()">Simpan</button>
-          </div>` : ''} ${list.length? ` <table>
-            <thead>
-              <tr>
-                <th>Nama</th>
-                <th>Kelas</th>
-                <th>Orang Tua / Wali</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>${list.map(s=>` <tr>
-                <td>${s.nama}</td>
-                <td>${s.kelas}</td>
-                <td>${s.ortu}</td>
-                <td>
-                  <button class="icon-btn" title="Hapus" onclick="window.__app.deleteSiswa('${s.id}')">${ICON.trash}</button>
-                </td>
-              </tr>`).join('')} </tbody>
-          </table>` : ` <div class="empty">Tidak ada siswa yang cocok.</div>`} </div>
-      </div>`; } function viewSpp(){ const m = state.sppBulan; const q = state.sppCari.trim().toLowerCase(); let list = SISWA.filter(s=> !q || s.nama.toLowerCase().includes(q) || s.kelas.toLowerCase().includes(q)); if(state.sppFilter!=='semua') list = list.filter(s=> getSpp(s.id,m).status===state.sppFilter); const rows = list.map(s=>{ const rec = getSpp(s.id,m); let statusCell, aksi=''; if(rec.status==='lunas'){ statusCell = statusBadge('lunas','Lunas') + ` <div class="hint" style="margin-top:3px;">Dibayar ${rec.tanggal}</div>`; aksi = ` <button class="btn ghost small" onclick="window.__app.toggleSpp('${s.id}',${m},'belum')">Batalkan</button>`; } else if(rec.status==='belum'){ statusCell = statusBadge('belum','Belum Bayar'); aksi = ` <button class="btn small" onclick="window.__app.toggleSpp('${s.id}',${m},'lunas')">Tandai Lunas</button>`; } else { statusCell = statusBadge('belum_tempo','Belum Jatuh Tempo'); } return ` <tr>
-        <td>${s.nama}</td>
-        <td>${s.kelas}</td>
-        <td class="num">${fmtRp(SPP_NOMINAL)}</td>
-        <td>${statusCell}</td>
-        <td>${aksi}</td>
-      </tr>`; }).join(''); const belumIds = list.filter(s=>getSpp(s.id,m).status==='belum').map(s=>s.id); return ` <div class="section">
-        <div class="section-head">
-          <h2>Monitoring SPP</h2>
-          <div class="controls">
-            <input type="text" placeholder="Cari siswa..." value="${state.sppCari}" oninput="window.__app.setSppCari(this.value)">
-            <select onchange="window.__app.setSppFilter(this.value)">
-              <option value="semua" ${state.sppFilter==='semua' ?'selected':''}>Semua status</option>
-              <option value="lunas" ${state.sppFilter==='lunas' ?'selected':''}>Lunas</option>
-              <option value="belum" ${state.sppFilter==='belum' ?'selected':''}>Belum Bayar</option>
-              <option value="belum_tempo" ${state.sppFilter==='belum_tempo' ?'selected':''}>Belum Jatuh Tempo</option>
-            </select>
-            <select onchange="window.__app.setSppBulan(this.value)"> ${BULAN_NAMA.map((b,i)=>` <option value="${i}" ${i===m?'selected':''}>${b} 2026</option>`).join('')} </select> ${belumIds.length? ` <button class="btn secondary small" onclick='window.__app.tandaiSemuaLunas(${JSON.stringify(belumIds)},${m})'>Tandai semua lunas (${belumIds.length})</button>` : ''}
-          </div>
-        </div>
-        <div class="section-body"> ${rows? ` <table>
-            <thead>
-              <tr>
-                <th>Nama</th>
-                <th>Kelas</th>
-                <th class="num">Nominal</th>
-                <th>Status</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>${rows}</tbody>
-          </table>` : ` <div class="empty">Tidak ada data yang cocok.</div>`} </div>
-      </div>`; } function viewRekap(){ const kelas = state.rekapKelas, m = state.rekapBulan; const year = TODAY.getFullYear();
-const monthDates = [];
-const daysInMonth = new Date(year, m + 1, 0).getDate();
-for(let day=1; day<=daysInMonth; day++){
-  const d = new Date(year, m, day);
-  if(d.getDay()!==0 && d.getDay()!==6) monthDates.push(dateKey(d));
-} const siswaKelas = SISWA.filter(s=>s.kelas===kelas); const rows = siswaKelas.map(s=>{ let H=0,I=0,S=0,A=0; monthDates.forEach(dk=>{ const c=getAbsen(s.id,dk); if(c==='H')H++; else if(c==='I')I++; else if(c==='S')S++; else if(c==='A')A++; }); return ` <tr>
-        <td>${s.nama}</td>
-        <td class="num">${H}</td>
-        <td class="num">${I}</td>
-        <td class="num">${S}</td>
-        <td class="num">${A}</td>
-      </tr>`; }).join(''); return ` <div class="section">
-        <div class="section-head">
-          <h2>Rekap Absensi</h2>
-          <div class="controls">
-            <select onchange="window.__app.setRekapKelas(this.value)">${KELAS_LIST.map(k=>` <option value="${k}" ${k===kelas?'selected':''}>Kelas ${k}</option>`).join('')} </select>
-            <select onchange="window.__app.setRekapBulan(this.value)">${BULAN_NAMA.map((b,i)=>` <option value="${i}" ${i===m?'selected':''}>${b} 2026</option>`).join('')} </select>
-          </div>
-        </div>
-        <div class="section-body"> ${monthDates.length? ` <table>
-            <thead>
-              <tr>
-                <th>Nama</th>
-                <th class="num">Hadir</th>
-                <th class="num">Izin</th>
-                <th class="num">Sakit</th>
-                <th class="num">Alpa</th>
-              </tr>
-            </thead>
-            <tbody>${rows}</tbody>
-          </table>` : ` <div class="empty">Belum ada data absensi bulan ini.</div>`} </div>
-      </div>`; } /* ---------- Views: Guru ---------- */ function viewInputAbsen(){ const kelas = state.guruKelas, tgl = state.guruTanggal; const siswaKelas = SISWA.filter(s=>s.kelas===kelas); const rows = siswaKelas.map(s=>{ const cur = getAbsen(s.id,tgl); const chips = ['H','I','S','A'].map(c=>` <button class="chip ${cur===c?'sel-'+c:''}" onclick="window.__app.setAbsen('${s.id}','${tgl}','${c}')">${absenLabel(c)}</button>`).join(''); return ` <div class="att-row">
-        <span class="att-name">${s.nama}</span>
-        <span class="att-choices">${chips}</span>
-      </div>`; }).join(''); return ` <div class="section">
-        <div class="section-head">
-          <h2>Input Absensi</h2>
-          <div class="controls">
-            <select onchange="window.__app.setGuruKelas(this.value)">${KELAS_LIST.map(k=>` <option value="${k}" ${k===kelas?'selected':''}>Kelas ${k}</option>`).join('')} </select>
-            <select onchange="window.__app.setGuruTanggal(this.value)">${TANGGAL_LIST.map(dk=>` <option value="${dk}" ${dk===tgl?'selected':''}>${fmtTgl(new Date(dk))}</option>`).join('')} </select>
-            <button class="btn secondary small" onclick="window.__app.tandaiSemuaHadir('${kelas}','${tgl}')">Tandai semua Hadir</button>
-          </div>
-        </div>
-        <div class="section-body"> ${siswaKelas.length? ` <div class="att-grid">${rows}</div>` : ` <div class="empty">Belum ada siswa di kelas ini.</div>`} <p class="hint">Klik salah satu pilihan — tersimpan otomatis ke database, langsung terlihat di semua perangkat.</p>
-        </div>
-      </div>`; } function viewRiwayatAbsen(){ const kelas = state.guruKelas; const siswaKelas = SISWA.filter(s=>s.kelas===kelas); const rows = TANGGAL_LIST.slice().reverse().map(dk=>{ const cells = siswaKelas.map(s=>{ const c=getAbsen(s.id,dk); return ` <td>${statusBadge(c, c||'-')}</td>`; }).join(''); return ` <tr>
-        <td>${fmtTgl(new Date(dk))}</td>${cells}
-      </tr>`; }).join(''); return ` <div class="section">
-        <div class="section-head">
-          <h2>Riwayat Absensi</h2>
-          <div class="controls">
-            <select onchange="window.__app.setGuruKelas(this.value)">${KELAS_LIST.map(k=>` <option value="${k}" ${k===kelas?'selected':''}>Kelas ${k}</option>`).join('')} </select>
-          </div>
-        </div>
-        <div class="section-body" style="overflow-x:auto;"> ${siswaKelas.length? ` <table>
-            <thead>
-              <tr>
-                <th>Tanggal</th>${siswaKelas.map(s=>` <th>${s.nama.split(' ')[0]}</th>`).join('')}
-              </tr>
-            </thead>
-            <tbody>${rows}</tbody>
-          </table>
-          <p class="hint">H = Hadir · I = Izin · S = Sakit · A = Alpa</p>` : ` <div class="empty">Belum ada siswa di kelas ini.</div>`}
-        </div>
-      </div>`; } /* ---------- Views: Orang tua ---------- */ function siswaPicker(){ return ` <select onchange="window.__app.setOrtuSiswa(this.value)">${SISWA.map(s=>` <option value="${s.id}" ${String(s.id)===String(state.ortuSiswaId)?'selected':''}>${s.nama} — ${s.kelas}</option>`).join('')} </select>`; } function viewRingkasanAnak(){ if(!SISWA.length) return ` <div class="empty">Belum ada data siswa.</div>`; const s = siswaById(state.ortuSiswaId) || SISWA[0]; const last5 = TANGGAL_LIST.slice(-5); const hadirCount = last5.filter(dk=>getAbsen(s.id,dk)==='H').length; const rec = getSpp(s.id,BULAN_INI_INDEX); let tunggakanBulan=0; for(let m=0;m<=BULAN_INI_INDEX;m++) if(getSpp(s.id,m).status==='belum' ) tunggakanBulan++; return ` <div class="section">
-        <div class="section-head">
-          <h2>Pilih Anak</h2>
-          <div class="controls">${siswaPicker()}</div>
-        </div>
-        <div class="section-body">
-          <p style="margin:0 0 4px;">Nama: <strong>${s.nama}</strong> — Kelas ${s.kelas} </p>
-          <p style="margin:0;color:var(--ink-soft);">Wali: ${s.ortu}</p>
-        </div>
-        </div>
-        <div class="stat-row">
-          <div class="stat c-teal">
-            <div class="num">${hadirCount}/${last5.length}</div>
-            <div class="lbl">Hadir, 5 hari terakhir</div>
-          </div>
-          <div class="stat ${rec.status==='lunas'?'c-good':'c-bad'}">
-            <div class="num">${rec.status==='lunas'?'Lunas':(rec.status==='belum'?'Belum':'—')}</div>
-            <div class="lbl">SPP ${BULAN_NAMA[BULAN_INI_INDEX]}</div>
-          </div>
-          <div class="stat c-pink">
-            <div class="num">${tunggakanBulan} bulan</div>
-            <div class="lbl">Tunggakan berjalan</div>
-          </div>
-        </div>`; } function viewAbsenAnak(){ if(!SISWA.length) return ` <div class="empty">Belum ada data siswa.</div>`; const s = siswaById(state.ortuSiswaId) || SISWA[0]; const rows = TANGGAL_LIST.slice().reverse().map(dk=>{ const c=getAbsen(s.id,dk); return ` <tr>
-          <td>${fmtTgl(new Date(dk))}</td>
-          <td>${statusBadge(c, absenLabel(c))}</td>
-        </tr>`; }).join(''); return ` <div class="section">
-          <div class="section-head">
-            <h2>Kehadiran — ${s.nama}</h2>
-            <div class="controls">${siswaPicker()}</div>
-          </div>
-          <div class="section-body">
-            <table>
-              <thead>
-                <tr>
-                  <th>Tanggal</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody>${rows}</tbody>
-            </table>
-          </div>
-        </div>`; } function viewSppAnak(){ if(!SISWA.length) return ` <div class="empty">Belum ada data siswa.</div>`; const s = siswaById(state.ortuSiswaId) || SISWA[0]; let tunggakan=0; const rows = BULAN_NAMA.map((b,m)=>{ const rec = getSpp(s.id,m); if(rec.status==='belum') tunggakan += SPP_NOMINAL; const cell = rec.status==='lunas' ? statusBadge('lunas','Lunas') + ` <span class="hint" style="display:inline;">(${rec.tanggal})</span>` : rec.status==='belum' ? statusBadge('belum','Belum Bayar') : statusBadge('belum_tempo','Belum Jatuh Tempo'); return ` <tr>
-          <td>${b} 2026</td>
-          <td class="num">${fmtRp(SPP_NOMINAL)}</td>
-          <td>${cell}</td>
-        </tr>`; }).join(''); return ` <div class="section">
-          <div class="section-head">
-            <h2>Status SPP — ${s.nama}</h2>
-            <div class="controls">${siswaPicker()}</div>
-          </div>
-          <div class="section-body">
-            <table>
-              <thead>
-                <tr>
-                  <th>Bulan</th>
-                  <th class="num">Nominal</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody>${rows}</tbody>
-            </table>
-          </div>
-        </div>
-        <div class="stat-row" style="grid-template-columns:1fr;">
-          <div class="stat c-pink">
-            <div class="num">${fmtRp(tunggakan)}</div>
-            <div class="lbl">Total tunggakan</div>
-          </div>
-        </div>`; } const VIEWS = { dasbor:viewDasbor, siswa:viewSiswa, spp:viewSpp, rekap:viewRekap, 'input-absen':viewInputAbsen, 'riwayat-absen':viewRiwayatAbsen, 'ringkasan-anak':viewRingkasanAnak, 'absen-anak':viewAbsenAnak, 'spp-anak':viewSppAnak }; function render(){ if(!state.ortuSiswaId && SISWA.length) state.ortuSiswaId = SISWA[0].id; document.getElementById('roleOptions').innerHTML = Object.keys(ROLE_LABEL).map(r=>` <button class="role-btn ${state.role===r?'active':''}" onclick="window.__app.setRole('${r}')">${ROLE_LABEL[r]}</button>`).join(''); document.getElementById('nav').innerHTML = NAV_BY_ROLE[state.role].map(item=>` <button class="nav-item ${state.nav===item.id?'active':''}" onclick="window.__app.setNav('${item.id}')">${ICON[item.icon]} <span>${item.label}</span>
-        </button>`).join(''); const [title,sub] = PAGE_TITLE[state.nav]; document.getElementById('pageTitle').textContent = title; document.getElementById('pageSub').textContent = sub; document.getElementById('todayChip').textContent = fmtTgl(TODAY); document.getElementById('view').innerHTML = VIEWS[state.nav](); } function setConn(status, text){ const dot = document.getElementById('connDot'); dot.className = 'conn-dot' + (status==='ok'?' ok':status==='err'?' err':''); document.getElementById('connText').textContent = text; }
-
-/* =========================================================
-         SUPABASE CONFIG
-         Isi dari Supabase Dashboard > Project Settings > API.
-         Gunakan Publishable/anon key, BUKAN service_role/secret key.
-      ========================================================= */
+    <script type="module">
+      // ============================================================
+      // SUPABASE CONFIGURATION
+      // ============================================================
       const SUPABASE_URL = "https://uwrbirojmuudshhrrcgt.supabase.co";
       const SUPABASE_ANON_KEY = "sb_publishable_SP0aUTX9jn9p1Kzv74S_Fg_eT4Hrs5E";
 
@@ -996,329 +684,550 @@ for(let day=1; day<=daysInMonth; day++){
         SUPABASE_ANON_KEY &&
         !SUPABASE_ANON_KEY.includes("PASTE_YOUR");
 
-      const supabase = isConfigured
-        ? (await import("https://esm.sh/@supabase/supabase-js@2")).createClient(
-            SUPABASE_URL,
-            SUPABASE_ANON_KEY
-          )
-        : null;
+      let supabase = null;
 
-      /* =========================================================
-         SUPABASE DATA LAYER
-      ========================================================= */
-      async function sb(promise){
-        const {data,error}=await promise;
-        if(error) throw error;
-        return data;
+      if (isConfigured) {
+        const { createClient } = await import("https://esm.sh/@supabase/supabase-js@2");
+        supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
       }
 
-      async function loadAllData(){
-        const [siswaRows,absenRows,sppRows]=await Promise.all([
-          sb(supabase.from('siswa').select('*').order('created_at',{ascending:true})),
-          sb(supabase.from('absensi').select('*')),
-          sb(supabase.from('spp').select('*'))
-        ]);
+      // ============================================================
+      // GLOBAL STATE
+      // ============================================================
+      let currentUser = null;
+      let currentUserRole = null;
 
-        SISWA=siswaRows.map(row=>({
-          id:String(row.id),
-          nama:row.nama,
-          kelas:row.kelas,
-          ortu:row.ortu
-        }));
+      // ============================================================
+      // LOGIN UI
+      // ============================================================
+      function renderLoginPage() {
+        return `
+          <div class="login-container">
+            <div class="login-box">
+              <div class="login-header">
+                <div class="login-logo">🎒</div>
+                <div class="login-brand">
+                  <h1>Gantariku</h1>
+                  <p>Absensi &amp; SPP</p>
+                </div>
+              </div>
 
-        ABSEN={};
-        absenRows.forEach(row=>{
-          ABSEN[`${row.siswa_id}_${row.tanggal}`]=row.status;
-        });
+              <div class="error-msg" id="loginError"></div>
 
-        SPP={};
-        sppRows.forEach(row=>{
-          SPP[`${row.siswa_id}_${row.bulan}`]={
-            status:row.status,
-            tanggal:row.tanggal,
-            nominal:Number(row.nominal||SPP_NOMINAL)
-          };
-        });
+              <form class="login-form" id="loginForm">
+                <div class="form-group">
+                  <label for="role">Masuk sebagai</label>
+                  <select id="role" required>
+                    <option value="">Pilih peran...</option>
+                    <option value="admin">Admin Sekolah</option>
+                    <option value="guru">Guru</option>
+                    <option value="ortu">Orang Tua</option>
+                  </select>
+                </div>
 
-        render();
-      }
+                <div class="form-group">
+                  <label for="email">Email</label>
+                  <input type="email" id="email" placeholder="nama@sekolah.id" required>
+                </div>
 
-      async function refreshData(){
-        try{
-          await loadAllData();
-          setConn('ok','Terhubung — data real-time');
-        }catch(error){
-          console.error('Gagal memuat data:',error);
-          setConn('err','Gagal memuat data');
-        }
-      }
+                <div class="form-group">
+                  <label for="password">Password</label>
+                  <input type="password" id="password" placeholder="••••••••" required>
+                </div>
 
-      async function seedDatabase(){
-        const initial=[
-          {id:'1',nama:'Ahmad Fauzi',kelas:'7A',ortu:'Bapak Slamet'},
-          {id:'2',nama:'Siti Aisyah',kelas:'7A',ortu:'Ibu Ratna'},
-          {id:'3',nama:'Budi Santoso',kelas:'7A',ortu:'Bapak Hendra'},
-          {id:'4',nama:'Dewi Lestari',kelas:'7A',ortu:'Ibu Sari'},
-          {id:'5',nama:'Rizky Pratama',kelas:'7A',ortu:'Bapak Agus'},
-          {id:'6',nama:'Nurul Hidayah',kelas:'8A',ortu:'Ibu Wati'},
-          {id:'7',nama:'Fajar Nugroho',kelas:'8A',ortu:'Bapak Joko'},
-          {id:'8',nama:'Putri Amelia',kelas:'8A',ortu:'Ibu Yuni'},
-          {id:'9',nama:'Andi Setiawan',kelas:'8A',ortu:'Bapak Wawan'},
-          {id:'10',nama:'Kartika Sari',kelas:'8A',ortu:'Ibu Ningsih'}
-        ];
+                <button type="submit" class="login-btn" id="loginBtn">
+                  <span id="loginBtnText">Masuk</span>
+                </button>
+              </form>
 
-        await sb(supabase.from('siswa').upsert(
-          initial.map(s=>({id:s.id,nama:s.nama,kelas:s.kelas,ortu:s.ortu})),
-          {onConflict:'id'}
-        ));
-
-        const absenRows=[];
-        const sppRows=[];
-
-        initial.forEach(s=>{
-          TANGGAL_LIST.forEach((dk,idx)=>{
-            const r=seededRand(Number(s.id)*97+idx*13);
-            const status=r>0.93?'A':r>0.86?'S':r>0.80?'I':'H';
-            absenRows.push({siswa_id:s.id,tanggal:dk,status});
-          });
-
-          for(let m=0;m<=BULAN_INI_INDEX;m++){
-            const r=seededRand(Number(s.id)*31+m*7+3);
-            if(r>0.24){
-              const day=1+Math.floor(seededRand(Number(s.id)+m)*10);
-              sppRows.push({
-                siswa_id:s.id,
-                bulan:m,
-                status:'lunas',
-                tanggal:`${String(day).padStart(2,'0')} ${BULAN_NAMA[m].slice(0,3)} ${TODAY.getFullYear()}`,
-                nominal:SPP_NOMINAL
-              });
-            }else{
-              sppRows.push({
-                siswa_id:s.id,
-                bulan:m,
-                status:'belum',
-                tanggal:null,
-                nominal:SPP_NOMINAL
-              });
-            }
-          }
-        });
-
-        await sb(supabase.from('absensi').upsert(
-          absenRows,{onConflict:'siswa_id,tanggal'}
-        ));
-
-        await sb(supabase.from('spp').upsert(
-          sppRows,{onConflict:'siswa_id,bulan'}
-        ));
-      }
-
-      /* =========================================================
-         ACTIONS
-      ========================================================= */
-      const actions={
-        setRole,
-        setNav,
-
-        setSiswaCari:v=>{state.siswaCari=v;render();},
-        toggleAddSiswa:()=>{
-          state.showAddSiswa=!state.showAddSiswa;
-          render();
-        },
-
-        addSiswa:async()=>{
-          const nama=document.getElementById('fNama').value.trim();
-          const kelas=document.getElementById('fKelas').value;
-          const ortu=document.getElementById('fOrtu').value.trim();
-
-          if(!nama||!ortu){
-            alert('Isi nama siswa dan nama orang tua/wali terlebih dahulu.');
-            return;
-          }
-
-          try{
-            await sb(supabase.from('siswa').insert({
-              id:crypto.randomUUID(),
-              nama,kelas,ortu
-            }));
-            state.showAddSiswa=false;
-            state.siswaCari='';
-            await refreshData();
-          }catch(error){
-            console.error(error);
-            alert('Gagal menyimpan siswa: '+error.message);
-          }
-        },
-
-        deleteSiswa:async id=>{
-          if(!confirm('Hapus siswa ini beserta data absensi dan SPP terkait?')) return;
-
-          try{
-            await sb(supabase.from('siswa').delete().eq('id',String(id)));
-            await refreshData();
-          }catch(error){
-            console.error(error);
-            alert('Gagal menghapus siswa: '+error.message);
-          }
-        },
-
-        setSppCari:v=>{state.sppCari=v;render();},
-        setSppFilter:v=>{state.sppFilter=v;render();},
-        setSppBulan:v=>{state.sppBulan=Number(v);render();},
-
-        toggleSpp:async(id,m,newStatus)=>{
-          try{
-            await sb(supabase.from('spp').upsert({
-              siswa_id:String(id),
-              bulan:Number(m),
-              status:newStatus,
-              tanggal:newStatus==='lunas'?fmtTgl(TODAY):null,
-              nominal:SPP_NOMINAL
-            },{onConflict:'siswa_id,bulan'}));
-            await refreshData();
-          }catch(error){
-            console.error(error);
-            alert('Gagal memperbarui SPP: '+error.message);
-          }
-        },
-
-        tandaiSemuaLunas:async(ids,m)=>{
-          try{
-            const rows=ids.map(id=>({
-              siswa_id:String(id),
-              bulan:Number(m),
-              status:'lunas',
-              tanggal:fmtTgl(TODAY),
-              nominal:SPP_NOMINAL
-            }));
-            if(rows.length){
-              await sb(supabase.from('spp').upsert(
-                rows,{onConflict:'siswa_id,bulan'}
-              ));
-            }
-            await refreshData();
-          }catch(error){
-            console.error(error);
-            alert('Gagal memperbarui SPP: '+error.message);
-          }
-        },
-
-        setRekapKelas:v=>{state.rekapKelas=v;render();},
-        setRekapBulan:v=>{state.rekapBulan=Number(v);render();},
-        setGuruKelas:v=>{state.guruKelas=v;render();},
-        setGuruTanggal:v=>{state.guruTanggal=v;render();},
-
-        setAbsen:async(id,tgl,code)=>{
-          try{
-            await sb(supabase.from('absensi').upsert({
-              siswa_id:String(id),
-              tanggal:tgl,
-              status:code
-            },{onConflict:'siswa_id,tanggal'}));
-            await refreshData();
-          }catch(error){
-            console.error(error);
-            alert('Gagal menyimpan absensi: '+error.message);
-          }
-        },
-
-        tandaiSemuaHadir:async(kelas,tgl)=>{
-          try{
-            const rows=SISWA.filter(s=>s.kelas===kelas).map(s=>({
-              siswa_id:String(s.id),
-              tanggal:tgl,
-              status:'H'
-            }));
-            if(rows.length){
-              await sb(supabase.from('absensi').upsert(
-                rows,{onConflict:'siswa_id,tanggal'}
-              ));
-            }
-            await refreshData();
-          }catch(error){
-            console.error(error);
-            alert('Gagal menyimpan absensi: '+error.message);
-          }
-        },
-
-        setOrtuSiswa:v=>{state.ortuSiswaId=v;render();}
-      };
-
-      window.__app=actions;
-
-      /* =========================================================
-         BOOTSTRAP
-      ========================================================= */
-      function renderSetupNotice(){
-        document.querySelector('.sidebar').style.display='none';
-        document.getElementById('pageTitle').textContent='Setup Supabase diperlukan';
-        document.getElementById('pageSub').textContent='Isi konfigurasi Supabase di index.html';
-
-        document.getElementById('view').innerHTML=`
-          <div class="setup-wrap">
-            <h2>Supabase belum dikonfigurasi</h2>
-            <p>
-              Cari <code>SUPABASE_URL</code> dan <code>SUPABASE_ANON_KEY</code>
-              pada bagian atas script, lalu isi menggunakan nilai dari
-              Supabase Dashboard → Project Settings → API.
-            </p>
-            <p>
-              Jangan masukkan <strong>service_role</strong> atau secret key ke file HTML.
-            </p>
+              <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--line); font-size: 12px; color: var(--ink-soft); text-align: center;">
+                <p style="margin: 0 0 8px;">Demo Credentials:</p>
+                <code style="background: var(--muted); padding: 4px 8px; border-radius: 4px; display: block;">admin@sekolah.id / password123</code>
+              </div>
+            </div>
           </div>
         `;
       }
 
-      function subscribeRealtime(){
-        supabase
-          .channel('sekolahku-realtime')
-          .on('postgres_changes',
-            {event:'*',schema:'public',table:'siswa'},
-            refreshData)
-          .on('postgres_changes',
-            {event:'*',schema:'public',table:'absensi'},
-            refreshData)
-          .on('postgres_changes',
-            {event:'*',schema:'public',table:'spp'},
-            refreshData)
-          .subscribe(status=>{
-            if(status==='SUBSCRIBED'){
-              setConn('ok','Terhubung — data real-time');
-            }
-          });
-      }
+      // ============================================================
+      // LOGIN HANDLER
+      // ============================================================
+      async function handleLogin(e) {
+        e.preventDefault();
 
-      async function bootstrap(){
-        if(!isConfigured){
-          renderSetupNotice();
+        const role = document.getElementById("role").value;
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+        const errorEl = document.getElementById("loginError");
+        const btnEl = document.getElementById("loginBtn");
+        const btnText = document.getElementById("loginBtnText");
+
+        errorEl.textContent = "";
+        errorEl.classList.remove("show");
+
+        if (!role || !email || !password) {
+          errorEl.textContent = "Semua field harus diisi";
+          errorEl.classList.add("show");
           return;
         }
 
-        try{
-          render();
-          setConn('','Menghubungkan...');
+        btnEl.disabled = true;
+        btnText.innerHTML = '<span class="loading-spinner"></span>Memproses...';
 
-          const rows=await sb(
-            supabase.from('siswa').select('id').limit(1)
-          );
-
-          if(!rows.length){
-            setConn('','Menyiapkan data awal...');
-            await seedDatabase();
+        try {
+          if (!supabase) {
+            throw new Error("Supabase belum dikonfigurasi");
           }
 
-          await loadAllData();
-          subscribeRealtime();
-          setConn('ok','Terhubung — data real-time');
-        }catch(error){
-          console.error('Bootstrap error:',error);
-          render();
-          setConn('err','Gagal terhubung — cek Supabase & RLS');
+          // Step 1: Authenticate user
+          const { data: { user }, error: authError } = await supabase.auth.signInWithPassword({
+            email,
+            password,
+          });
+
+          if (authError) {
+            throw new Error(authError.message || "Email atau password salah");
+          }
+
+          // Step 2: Get user role from database
+          const { data: userData, error: dbError } = await supabase
+            .from("pengguna")
+            .select("id, nama, email, role")
+            .eq("user_id", user.id)
+            .eq("role", role)
+            .single();
+
+          if (dbError || !userData) {
+            throw new Error("Akun tidak ditemukan atau role tidak sesuai");
+          }
+
+          // Step 3: Set user data
+          currentUser = userData;
+          currentUserRole = userData.role;
+
+          // Store in localStorage
+          localStorage.setItem("gantariku_user", JSON.stringify(userData));
+          localStorage.setItem("gantariku_token", user.id);
+
+          // Render app
+          renderApp();
+
+        } catch (error) {
+          console.error("Login error:", error);
+          errorEl.textContent = error.message || "Terjadi kesalahan saat login";
+          errorEl.classList.add("show");
+        } finally {
+          btnEl.disabled = false;
+          btnText.textContent = "Masuk";
         }
       }
 
-      bootstrap();
-</script>
-</body>
+      // ============================================================
+      // APP UI
+      // ============================================================
+      function renderApp() {
+        const html = `
+          <div class="app">
+            <aside class="sidebar">
+              <div class="brand">
+                <div class="brand-mark">🎒</div>
+                <div>
+                  <div class="brand-text">Gantariku</div>
+                  <div class="brand-sub">Absensi &amp; SPP</div>
+                </div>
+              </div>
+
+              <div class="user-info">
+                <div class="user-name">${currentUser.nama}</div>
+                <div class="user-role">${getRoleLabel(currentUserRole)}</div>
+              </div>
+
+              <div class="nav" id="nav"></div>
+
+              <div class="sidebar-foot">
+                <div class="conn-status">
+                  <span class="conn-dot ok"></span>
+                  <span>Terhubung</span>
+                </div>
+                <button class="logout-btn" onclick="window.__app.logout()">Logout</button>
+              </div>
+            </aside>
+
+            <main class="content">
+              <header class="topbar">
+                <div>
+                  <h1 id="pageTitle">Dasbor</h1>
+                  <p id="pageSub">Ringkasan hari ini</p>
+                </div>
+                <div class="today-chip" id="todayChip"></div>
+              </header>
+              <section class="view" id="view"></section>
+            </main>
+          </div>
+        `;
+
+        document.getElementById("app").innerHTML = html;
+        renderNav();
+        renderView();
+        updateTodayChip();
+      }
+
+      // ============================================================
+      // NAVIGATION
+      // ============================================================
+      const NAV_CONFIG = {
+        admin: [
+          { id: "dasbor", label: "Dasbor", icon: "📊" },
+          { id: "siswa", label: "Data Siswa", icon: "👥" },
+          { id: "spp", label: "Monitoring SPP", icon: "💰" },
+          { id: "rekap", label: "Rekap Absensi", icon: "📋" },
+        ],
+        guru: [
+          { id: "input-absen", label: "Input Absensi", icon: "✓" },
+          { id: "riwayat-absen", label: "Riwayat Absensi", icon: "📅" },
+        ],
+        ortu: [
+          { id: "ringkasan", label: "Ringkasan Anak", icon: "👧" },
+          { id: "absen-anak", label: "Kehadiran Anak", icon: "📅" },
+          { id: "spp-anak", label: "Status SPP", icon: "💳" },
+        ],
+      };
+
+      let currentNav = "dasbor";
+
+      function renderNav() {
+        const nav = NAV_CONFIG[currentUserRole] || [];
+        const navEl = document.getElementById("nav");
+        navEl.innerHTML = nav
+          .map(
+            (item) =>
+              `<button class="nav-item ${currentNav === item.id ? "active" : ""}" 
+                       onclick="window.__app.goTo('${item.id}')">
+                <span>${item.icon}</span>
+                <span>${item.label}</span>
+              </button>`
+          )
+          .join("");
+      }
+
+      function goTo(navId) {
+        currentNav = navId;
+        renderNav();
+        renderView();
+      }
+
+      // ============================================================
+      // VIEWS
+      // ============================================================
+      function renderView() {
+        const viewEl = document.getElementById("view");
+        const titleEl = document.getElementById("pageTitle");
+        const subEl = document.getElementById("pageSub");
+
+        let html = "";
+        let title = "Dasbor";
+        let subtitle = "Ringkasan hari ini";
+
+        switch (currentNav) {
+          case "dasbor":
+            html = renderDasbor();
+            title = "Dasbor";
+            subtitle = "Ringkasan hari ini";
+            break;
+          case "siswa":
+            html = renderSiswa();
+            title = "Data Siswa";
+            subtitle = "Kelola data siswa";
+            break;
+          case "spp":
+            html = renderSpp();
+            title = "Monitoring SPP";
+            subtitle = "Pantau pembayaran SPP";
+            break;
+          case "rekap":
+            html = renderRekap();
+            title = "Rekap Absensi";
+            subtitle = "Laporan kehadiran";
+            break;
+          case "input-absen":
+            html = renderInputAbsen();
+            title = "Input Absensi";
+            subtitle = "Catat kehadiran siswa";
+            break;
+          case "riwayat-absen":
+            html = renderRiwayatAbsen();
+            title = "Riwayat Absensi";
+            subtitle = "Lihat riwayat kehadiran";
+            break;
+          case "ringkasan":
+            html = renderRingkasanAnak();
+            title = "Ringkasan Anak";
+            subtitle = "Ikhtisar prestasi dan pembayaran";
+            break;
+          case "absen-anak":
+            html = renderAbsenAnak();
+            title = "Kehadiran Anak";
+            subtitle = "Riwayat kehadiran";
+            break;
+          case "spp-anak":
+            html = renderSppAnak();
+            title = "Status SPP";
+            subtitle = "Status pembayaran SPP";
+            break;
+          default:
+            html = `<div class="empty">Menu tidak ditemukan</div>`;
+        }
+
+        viewEl.innerHTML = html;
+        titleEl.textContent = title;
+        subEl.textContent = subtitle;
+      }
+
+      // ============================================================
+      // VIEW IMPLEMENTATIONS
+      // ============================================================
+      function renderDasbor() {
+        return `
+          <div class="stat-row">
+            <div class="stat c-teal">
+              <div class="num">24/28</div>
+              <div class="lbl">Hadir hari ini</div>
+            </div>
+            <div class="stat c-good">
+              <div class="num">25</div>
+              <div class="lbl">Lunas SPP — Januari</div>
+            </div>
+            <div class="stat c-bad">
+              <div class="num">3</div>
+              <div class="lbl">Belum bayar — Januari</div>
+            </div>
+            <div class="stat c-pink">
+              <div class="num">Rp 450.000</div>
+              <div class="lbl">Total tunggakan</div>
+            </div>
+          </div>
+          <div class="section">
+            <div class="section-head">
+              <h2>Kehadiran hari ini</h2>
+            </div>
+            <div class="section-body">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Nama</th>
+                    <th>Kelas</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Ahmad Ridho</td>
+                    <td>7A</td>
+                    <td><span class="badge badge-good">Hadir</span></td>
+                  </tr>
+                  <tr>
+                    <td>Budi Santoso</td>
+                    <td>7A</td>
+                    <td><span class="badge badge-sick">Sakit</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        `;
+      }
+
+      function renderSiswa() {
+        return `
+          <div class="section">
+            <div class="section-head">
+              <h2>Daftar Siswa</h2>
+              <div class="controls">
+                <input type="text" placeholder="Cari nama atau kelas...">
+                <button class="btn">+ Tambah Siswa</button>
+              </div>
+            </div>
+            <div class="section-body">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Nama</th>
+                    <th>Kelas</th>
+                    <th>Orang Tua</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Ahmad Ridho</td>
+                    <td>7A</td>
+                    <td>Achmad Santoso</td>
+                    <td><button class="btn ghost small">Edit</button></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        `;
+      }
+
+      function renderSpp() {
+        return `
+          <div class="section">
+            <div class="section-head">
+              <h2>Monitoring SPP</h2>
+              <div class="controls">
+                <select>
+                  <option>Januari 2026</option>
+                  <option>Februari 2026</option>
+                </select>
+                <select>
+                  <option selected>Semua status</option>
+                  <option>Lunas</option>
+                  <option>Belum Bayar</option>
+                </select>
+              </div>
+            </div>
+            <div class="section-body">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Nama</th>
+                    <th>Kelas</th>
+                    <th class="num">Nominal</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Ahmad Ridho</td>
+                    <td>7A</td>
+                    <td class="num">Rp 150.000</td>
+                    <td><span class="badge badge-good">Lunas</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        `;
+      }
+
+      function renderRekap() {
+        return `<div class="empty">Fitur Rekap Absensi - Segera hadir</div>`;
+      }
+
+      function renderInputAbsen() {
+        return `
+          <div class="section">
+            <div class="section-head">
+              <h2>Input Absensi</h2>
+              <div class="controls">
+                <select>
+                  <option>Kelas 7A</option>
+                  <option>Kelas 8A</option>
+                </select>
+                <select>
+                  <option selected>Tanggal hari ini</option>
+                </select>
+              </div>
+            </div>
+            <div class="section-body">
+              <div class="empty">Mulai input absensi siswa</div>
+            </div>
+          </div>
+        `;
+      }
+
+      function renderRiwayatAbsen() {
+        return `<div class="empty">Fitur Riwayat Absensi - Segera hadir</div>`;
+      }
+
+      function renderRingkasanAnak() {
+        return `<div class="empty">Fitur Ringkasan Anak - Segera hadir</div>`;
+      }
+
+      function renderAbsenAnak() {
+        return `<div class="empty">Fitur Kehadiran Anak - Segera hadir</div>`;
+      }
+
+      function renderSppAnak() {
+        return `<div class="empty">Fitur Status SPP - Segera hadir</div>`;
+      }
+
+      // ============================================================
+      // UTILITIES
+      // ============================================================
+      function updateTodayChip() {
+        const today = new Date();
+        const options = { day: "numeric", month: "short", year: "numeric" };
+        const formatted = today.toLocaleDateString("id-ID", options);
+        document.getElementById("todayChip").textContent = formatted;
+      }
+
+      function getRoleLabel(role) {
+        const map = {
+          admin: "Admin Sekolah",
+          guru: "Guru",
+          ortu: "Orang Tua",
+        };
+        return map[role] || role;
+      }
+
+      async function logout() {
+        try {
+          if (supabase) {
+            await supabase.auth.signOut();
+          }
+          localStorage.removeItem("gantariku_user");
+          localStorage.removeItem("gantariku_token");
+          currentUser = null;
+          currentUserRole = null;
+          renderLogin();
+        } catch (error) {
+          console.error("Logout error:", error);
+          renderLogin();
+        }
+      }
+
+      function renderLogin() {
+        document.getElementById("app").innerHTML = renderLoginPage();
+        document.getElementById("loginForm").addEventListener("submit", handleLogin);
+      }
+
+      // ============================================================
+      // INITIALIZATION
+      // ============================================================
+      async function init() {
+        try {
+          // Check if user already logged in
+          if (supabase) {
+            const { data: { session } } = await supabase.auth.getSession();
+
+            if (session) {
+              const userData = localStorage.getItem("gantariku_user");
+              if (userData) {
+                currentUser = JSON.parse(userData);
+                currentUserRole = currentUser.role;
+                renderApp();
+                return;
+              }
+            }
+          }
+        } catch (error) {
+          console.error("Init error:", error);
+        }
+
+        renderLogin();
+      }
+
+      // Expose app functions to window
+      window.__app = {
+        goTo,
+        logout,
+      };
+
+      // Start app
+      init();
+    </script>
+  </body>
 </html>
