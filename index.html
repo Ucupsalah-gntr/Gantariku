@@ -29,9 +29,7 @@
         --muted: #F1EEFA;
       }
 
-      * {
-        box-sizing: border-box;
-      }
+      * { box-sizing: border-box; }
 
       body {
         margin: 0;
@@ -42,9 +40,7 @@
         -webkit-font-smoothing: antialiased;
       }
 
-      h1, h2 {
-        font-family: 'Space Grotesk', sans-serif;
-      }
+      h1, h2 { font-family: 'Space Grotesk', sans-serif; }
 
       /* ========== LOGIN PAGE ========== */
       .login-container {
@@ -83,9 +79,7 @@
         color: white;
       }
 
-      .login-brand {
-        text-align: left;
-      }
+      .login-brand { text-align: left; }
 
       .login-brand h1 {
         font-size: 24px;
@@ -149,18 +143,9 @@
         transition: transform .1s, box-shadow .2s;
       }
 
-      .login-btn:hover {
-        box-shadow: 0 10px 30px rgba(108, 76, 241, .3);
-      }
-
-      .login-btn:active {
-        transform: scale(.95);
-      }
-
-      .login-btn:disabled {
-        opacity: .6;
-        cursor: not-allowed;
-      }
+      .login-btn:hover { box-shadow: 0 10px 30px rgba(108, 76, 241, .3); }
+      .login-btn:active { transform: scale(.95); }
+      .login-btn:disabled { opacity: .6; cursor: not-allowed; }
 
       .error-msg {
         padding: 10px 12px;
@@ -171,9 +156,7 @@
         display: none;
       }
 
-      .error-msg.show {
-        display: block;
-      }
+      .error-msg.show { display: block; }
 
       .loading-spinner {
         display: inline-block;
@@ -186,15 +169,10 @@
         margin-right: 6px;
       }
 
-      @keyframes spin {
-        to { transform: rotate(360deg); }
-      }
+      @keyframes spin { to { transform: rotate(360deg); } }
 
       /* ========== APP PAGE ========== */
-      .app {
-        display: flex;
-        min-height: 100vh;
-      }
+      .app { display: flex; min-height: 100vh; }
 
       .sidebar {
         width: 246px;
@@ -231,10 +209,7 @@
         line-height: 1.1;
       }
 
-      .brand-sub {
-        font-size: 11px;
-        color: rgba(255, 255, 255, .7);
-      }
+      .brand-sub { font-size: 11px; color: rgba(255, 255, 255, .7); }
 
       .user-info {
         background: rgba(255, 255, 255, .12);
@@ -244,22 +219,10 @@
         font-size: 12px;
       }
 
-      .user-name {
-        font-weight: 600;
-        color: #fff;
-      }
+      .user-name { font-weight: 600; color: #fff; }
+      .user-role { font-size: 11px; color: rgba(255, 255, 255, .7); margin-top: 2px; }
 
-      .user-role {
-        font-size: 11px;
-        color: rgba(255, 255, 255, .7);
-        margin-top: 2px;
-      }
-
-      .nav {
-        display: flex;
-        flex-direction: column;
-        gap: 3px;
-      }
+      .nav { display: flex; flex-direction: column; gap: 3px; }
 
       .nav-item {
         all: unset;
@@ -273,9 +236,7 @@
         color: rgba(255, 255, 255, .8);
       }
 
-      .nav-item:hover {
-        background: rgba(255, 255, 255, .1);
-      }
+      .nav-item:hover { background: rgba(255, 255, 255, .1); }
 
       .nav-item.active {
         background: rgba(255, 255, 255, .95);
@@ -314,14 +275,9 @@
         text-align: center;
       }
 
-      .logout-btn:hover {
-        background: rgba(255, 255, 255, .1);
-      }
+      .logout-btn:hover { background: rgba(255, 255, 255, .1); }
 
-      .content {
-        flex: 1;
-        min-width: 0;
-      }
+      .content { flex: 1; min-width: 0; }
 
       .topbar {
         padding: 26px 34px 16px;
@@ -332,17 +288,8 @@
         flex-wrap: wrap;
       }
 
-      .topbar h1 {
-        font-size: 23px;
-        font-weight: 700;
-        margin: 0 0 4px;
-      }
-
-      .topbar p {
-        margin: 0;
-        color: var(--ink-soft);
-        font-size: 13px;
-      }
+      .topbar h1 { font-size: 23px; font-weight: 700; margin: 0 0 4px; }
+      .topbar p { margin: 0; color: var(--ink-soft); font-size: 13px; }
 
       .today-chip {
         background: var(--surface);
@@ -355,10 +302,7 @@
         white-space: nowrap;
       }
 
-      .view {
-        padding: 6px 34px 50px;
-        max-width: 1160px;
-      }
+      .view { padding: 6px 34px 50px; max-width: 1160px; }
 
       .stat-row {
         display: grid;
@@ -387,11 +331,7 @@
         line-height: 1.1;
       }
 
-      .stat .lbl {
-        font-size: 12px;
-        color: var(--ink-soft);
-        margin-top: 5px;
-      }
+      .stat .lbl { font-size: 12px; color: var(--ink-soft); margin-top: 5px; }
 
       .section {
         background: var(--surface);
@@ -411,15 +351,8 @@
         flex-wrap: wrap;
       }
 
-      .section-head h2 {
-        font-size: 16px;
-        font-weight: 700;
-        margin: 0;
-      }
-
-      .section-body {
-        padding: 18px 20px;
-      }
+      .section-head h2 { font-size: 16px; font-weight: 700; margin: 0; }
+      .section-body { padding: 18px 20px; }
 
       .controls {
         display: flex;
@@ -431,6 +364,8 @@
       input[type=text],
       input[type=email],
       input[type=password],
+      input[type=date],
+      input[type=number],
       select {
         font-family: 'Inter', sans-serif;
         font-size: 13px;
@@ -444,6 +379,8 @@
       input[type=text]:focus,
       input[type=email]:focus,
       input[type=password]:focus,
+      input[type=date]:focus,
+      input[type=number]:focus,
       select:focus {
         outline: 2px solid var(--primary);
         outline-offset: 1px;
@@ -462,18 +399,9 @@
         transition: background .15s, transform .1s;
       }
 
-      .btn:hover {
-        background: var(--primary-dark);
-      }
-
-      .btn:active {
-        transform: scale(.97);
-      }
-
-      .btn.secondary {
-        background: var(--primary-soft);
-        color: var(--primary-dark);
-      }
+      .btn:hover { background: var(--primary-dark); }
+      .btn:active { transform: scale(.97); }
+      .btn.secondary { background: var(--primary-soft); color: var(--primary-dark); }
 
       .btn.ghost {
         background: transparent;
@@ -481,15 +409,9 @@
         border: 1px solid var(--line);
       }
 
-      .btn.small {
-        padding: 6px 11px;
-        font-size: 11.5px;
-      }
+      .btn.small { padding: 6px 11px; font-size: 11.5px; }
 
-      table {
-        width: 100%;
-        border-collapse: collapse;
-      }
+      table { width: 100%; border-collapse: collapse; }
 
       th {
         text-align: left;
@@ -508,16 +430,10 @@
         font-size: 13.5px;
       }
 
-      tbody tr:hover {
-        background: var(--bg);
-      }
+      tbody tr:hover { background: var(--bg); }
+      tr:last-child td { border-bottom: none; }
 
-      tr:last-child td {
-        border-bottom: none;
-      }
-
-      td.num,
-      th.num {
+      td.num, th.num {
         text-align: right;
         font-variant-numeric: tabular-nums;
       }
@@ -544,15 +460,11 @@
       }
 
       @media (max-width: 900px) {
-        .stat-row {
-          grid-template-columns: repeat(2, 1fr);
-        }
+        .stat-row { grid-template-columns: repeat(2, 1fr); }
       }
 
       @media (max-width: 760px) {
-        .app {
-          flex-direction: column;
-        }
+        .app { flex-direction: column; }
 
         .sidebar {
           width: 100%;
@@ -563,25 +475,13 @@
           padding: 14px 16px;
         }
 
-        .nav,
-        .sidebar-foot {
-          display: none;
-        }
+        .nav, .sidebar-foot { display: none; }
 
-        .view,
-        .topbar {
-          padding-left: 18px;
-          padding-right: 18px;
-        }
+        .view, .topbar { padding-left: 18px; padding-right: 18px; }
 
-        .stat-row {
-          grid-template-columns: 1fr 1fr;
-        }
+        .stat-row { grid-template-columns: 1fr 1fr; }
 
-        .login-box {
-          padding: 30px 20px;
-          max-width: calc(100% - 40px);
-        }
+        .login-box { padding: 30px 20px; max-width: calc(100% - 40px); }
       }
     </style>
   </head>
@@ -611,33 +511,52 @@
       // GLOBAL STATE
       // ============================================================
       let currentUser = null;
-let currentUserRole = null;
+      let currentUserRole = null;
+      let currentNav = "dasbor";
+      let semuaSiswa = [];
 
-// ============================================================
-// LOAD USER PROFILE
-// ============================================================
-async function loadUserProfile(userId) {
-  if (!supabase) {
-    throw new Error("Supabase belum dikonfigurasi");
-  }
+      // ============================================================
+      // NAVIGATION CONFIG
+      // ============================================================
+      const NAV_CONFIG = {
+        admin: [
+          { id: "dasbor", label: "Dasbor", icon: "📊" },
+          { id: "siswa", label: "Data Siswa", icon: "👥" },
+          { id: "spp", label: "Monitoring SPP", icon: "💰" },
+          { id: "rekap", label: "Rekap Absensi", icon: "📋" },
+        ],
+        guru: [
+          { id: "input-absen", label: "Input Absensi", icon: "✓" },
+          { id: "riwayat-absen", label: "Riwayat Absensi", icon: "📅" },
+        ],
+        ortu: [
+          { id: "ringkasan", label: "Ringkasan Anak", icon: "👧" },
+          { id: "absen-anak", label: "Kehadiran Anak", icon: "📅" },
+          { id: "spp-anak", label: "Status SPP", icon: "💳" },
+        ],
+      };
 
-  const { data, error } = await supabase
-    .from("pengguna")
-    .select("id, user_id, nama, email, role")
-    .eq("user_id", userId)
-    .single();
+      // ============================================================
+      // LOAD USER PROFILE
+      // ============================================================
+      async function loadUserProfile(userId) {
+        if (!supabase) throw new Error("Supabase belum dikonfigurasi");
 
-  if (error) {
-    console.error("Profile error:", error);
-    throw new Error("Profil pengguna tidak ditemukan atau tidak dapat diakses.");
-  }
+        const { data, error } = await supabase
+          .from("pengguna")
+          .select("id, user_id, nama, email, role")
+          .eq("user_id", userId)
+          .single();
 
-  if (!data) {
-    throw new Error("Profil pengguna tidak ditemukan.");
-  }
+        if (error) {
+          console.error("Profile error:", error);
+          throw new Error("Profil pengguna tidak ditemukan atau tidak dapat diakses.");
+        }
+        if (!data) throw new Error("Profil pengguna tidak ditemukan.");
 
-  return data;
-}
+        return data;
+      }
+
       // ============================================================
       // LOGIN UI
       // ============================================================
@@ -656,7 +575,6 @@ async function loadUserProfile(userId) {
               <div class="error-msg" id="loginError"></div>
 
               <form class="login-form" id="loginForm">
-                
                 <div class="form-group">
                   <label for="email">Email</label>
                   <input type="email" id="email" placeholder="nama@sekolah.id" required>
@@ -676,103 +594,79 @@ async function loadUserProfile(userId) {
         `;
       }
 
+      function renderLogin() {
+        document.getElementById("app").innerHTML = renderLoginPage();
+        document.getElementById("loginForm").addEventListener("submit", handleLogin);
+      }
+
       // ============================================================
       // LOGIN HANDLER
       // ============================================================
-     async function handleLogin(e) {
-  e.preventDefault();
+      async function handleLogin(e) {
+        e.preventDefault();
 
-  const email = document.getElementById("email").value.trim();
-  const password = document.getElementById("password").value;
+        const email = document.getElementById("email").value.trim();
+        const password = document.getElementById("password").value;
 
-  const errorEl = document.getElementById("loginError");
-  const btnEl = document.getElementById("loginBtn");
-  const btnText = document.getElementById("loginBtnText");
+        const errorEl = document.getElementById("loginError");
+        const btnEl = document.getElementById("loginBtn");
+        const btnText = document.getElementById("loginBtnText");
 
-  errorEl.textContent = "";
-  errorEl.classList.remove("show");
+        errorEl.textContent = "";
+        errorEl.classList.remove("show");
 
-  if (!email || !password) {
-    errorEl.textContent = "Email dan password harus diisi.";
-    errorEl.classList.add("show");
-    return;
-  }
+        if (!email || !password) {
+          errorEl.textContent = "Email dan password harus diisi.";
+          errorEl.classList.add("show");
+          return;
+        }
 
-  btnEl.disabled = true;
-  btnText.innerHTML =
-    '<span class="loading-spinner"></span>Memproses...';
+        btnEl.disabled = true;
+        btnText.innerHTML = '<span class="loading-spinner"></span>Memproses...';
 
-  try {
-    if (!supabase) {
-      throw new Error("Supabase belum dikonfigurasi.");
-    }
+        try {
+          if (!supabase) throw new Error("Supabase belum dikonfigurasi.");
 
-    // ========================================================
-    // STEP 1 - LOGIN KE SUPABASE AUTH
-    // ========================================================
+          const { data: authData, error: authError } = await supabase.auth.signInWithPassword({ email, password });
+          if (authError) throw new Error("Email atau password salah.");
+          if (!authData.user) throw new Error("User tidak ditemukan.");
 
-    const {
-      data: authData,
-      error: authError
-    } = await supabase.auth.signInWithPassword({
-      email,
-      password
-    });
+          const profile = await loadUserProfile(authData.user.id);
 
-    if (authError) {
-      throw new Error("Email atau password salah.");
-    }
+          currentUser = profile;
+          currentUserRole = profile.role;
+          currentNav = NAV_CONFIG[currentUserRole]?.[0]?.id || "dasbor";
 
-    if (!authData.user) {
-      throw new Error("User tidak ditemukan.");
-    }
+          renderApp();
+        } catch (error) {
+          console.error("Login error:", error);
+          if (supabase) await supabase.auth.signOut();
+          errorEl.textContent = error.message || "Terjadi kesalahan saat login.";
+          errorEl.classList.add("show");
+        } finally {
+          btnEl.disabled = false;
+          btnText.textContent = "Masuk";
+        }
+      }
 
-    // ========================================================
-    // STEP 2 - AMBIL PROFIL & ROLE DARI DATABASE
-    // ========================================================
+      async function logout() {
+        try {
+          if (supabase) {
+            const { error } = await supabase.auth.signOut();
+            if (error) console.error("Logout error:", error);
+          }
+        } catch (error) {
+          console.error("Logout error:", error);
+        } finally {
+          currentUser = null;
+          currentUserRole = null;
+          currentNav = "dasbor";
+          renderLogin();
+        }
+      }
 
-    const profile = await loadUserProfile(authData.user.id);
-
-    // ========================================================
-    // STEP 3 - SIMPAN DI MEMORY APLIKASI
-    // ========================================================
-
-    currentUser = profile;
-    currentUserRole = profile.role;
-
-    // ========================================================
-    // STEP 4 - TAMPILKAN APLIKASI
-    // ========================================================
-
-    currentNav =
-      NAV_CONFIG[currentUserRole]?.[0]?.id || "dasbor";
-
-    renderApp();
-
-  } catch (error) {
-
-    console.error("Login error:", error);
-
-    // Jika Auth berhasil tetapi profil gagal,
-    // bersihkan session agar tidak terjadi login setengah.
-    if (supabase) {
-      await supabase.auth.signOut();
-    }
-
-    errorEl.textContent =
-      error.message || "Terjadi kesalahan saat login.";
-
-    errorEl.classList.add("show");
-
-  } finally {
-
-    btnEl.disabled = false;
-    btnText.textContent = "Masuk";
-
-  }
-}
       // ============================================================
-      // APP UI
+      // APP SHELL
       // ============================================================
       function renderApp() {
         const html = `
@@ -818,36 +712,13 @@ async function loadUserProfile(userId) {
         updateTodayChip();
       }
 
-      // ============================================================
-      // NAVIGATION
-      // ============================================================
-      const NAV_CONFIG = {
-        admin: [
-          { id: "dasbor", label: "Dasbor", icon: "📊" },
-          { id: "siswa", label: "Data Siswa", icon: "👥" },
-          { id: "spp", label: "Monitoring SPP", icon: "💰" },
-          { id: "rekap", label: "Rekap Absensi", icon: "📋" },
-        ],
-        guru: [
-          { id: "input-absen", label: "Input Absensi", icon: "✓" },
-          { id: "riwayat-absen", label: "Riwayat Absensi", icon: "📅" },
-        ],
-        ortu: [
-          { id: "ringkasan", label: "Ringkasan Anak", icon: "👧" },
-          { id: "absen-anak", label: "Kehadiran Anak", icon: "📅" },
-          { id: "spp-anak", label: "Status SPP", icon: "💳" },
-        ],
-      };
-
-      let currentNav = "dasbor";
-
       function renderNav() {
         const nav = NAV_CONFIG[currentUserRole] || [];
         const navEl = document.getElementById("nav");
         navEl.innerHTML = nav
           .map(
             (item) =>
-              `<button class="nav-item ${currentNav === item.id ? "active" : ""}" 
+              `<button class="nav-item ${currentNav === item.id ? "active" : ""}"
                        onclick="window.__app.goTo('${item.id}')">
                 <span>${item.icon}</span>
                 <span>${item.label}</span>
@@ -863,7 +734,7 @@ async function loadUserProfile(userId) {
       }
 
       // ============================================================
-      // VIEWS
+      // VIEW ROUTER
       // ============================================================
       function renderView() {
         const viewEl = document.getElementById("view");
@@ -925,172 +796,57 @@ async function loadUserProfile(userId) {
         }
 
         viewEl.innerHTML = html;
+        titleEl.textContent = title;
+        subEl.textContent = subtitle;
 
-titleEl.textContent = title;
+        // ------------------------------------------------------
+        // Hook setelah render, per halaman
+        // ------------------------------------------------------
+        if (currentNav === "dasbor") {
+          loadDasbor();
+        }
 
-subEl.textContent = subtitle;
+        if (currentNav === "siswa") {
+          loadSiswa();
 
+          const searchInput = document.getElementById("cariSiswa");
+          if (searchInput) searchInput.addEventListener("input", cariSiswa);
 
-// ============================================================
-// KHUSUS HALAMAN SISWA
-// ============================================================
+          const formSiswa = document.getElementById("formSiswa");
+          if (formSiswa) formSiswa.addEventListener("submit", simpanSiswa);
+        }
 
-if (currentNav === "siswa") {
+        if (currentNav === "spp") {
+          loadSpp();
 
-  loadSiswa();
-function renderDaftarSiswa(dataSiswa) {
-function cariSiswa() {
+          const formSpp = document.getElementById("formSpp");
+          if (formSpp) formSpp.addEventListener("submit", simpanSpp);
 
-  const input =
-    document.getElementById("cariSiswa");
+          const filterBulan = document.getElementById("filterBulanSpp");
+          const filterTahun = document.getElementById("filterTahunSpp");
+          const filterStatus = document.getElementById("filterStatusSpp");
+          if (filterBulan) filterBulan.addEventListener("change", loadSpp);
+          if (filterTahun) filterTahun.addEventListener("change", loadSpp);
+          if (filterStatus) filterStatus.addEventListener("change", loadSpp);
+        }
 
-  if (!input) return;
+        if (currentNav === "input-absen") {
+          loadKelasOptions("inputAbsenKelas");
+        }
 
+        if (currentNav === "rekap") {
+          loadKelasOptions("rekapKelas");
+        }
 
-  const keyword =
-    input.value
-      .toLowerCase()
-      .trim();
-
-
-  const hasil =
-    semuaSiswa.filter(siswa => {
-
-      const nama =
-        (siswa.nama || "")
-          .toLowerCase();
-
-      const nis =
-        (siswa.nis || "")
-          .toLowerCase();
-
-      const kelas =
-        (siswa.kelas || "")
-          .toLowerCase();
-
-      const tahunAjaran =
-        (siswa.tahun_ajaran || "")
-          .toLowerCase();
-
-
-      return (
-        nama.includes(keyword) ||
-        nis.includes(keyword) ||
-        kelas.includes(keyword) ||
-        tahunAjaran.includes(keyword)
-      );
-
-    });
-if (currentNav === "dasbor") {
-  loadDasbor();
-}
-
-if (currentNav === "spp") {
-  loadSpp();
-
-  const formSpp = document.getElementById("formSpp");
-  if (formSpp) formSpp.addEventListener("submit", simpanSpp);
-
-  const filterBulan = document.getElementById("filterBulanSpp");
-  const filterTahun = document.getElementById("filterTahunSpp");
-  const filterStatus = document.getElementById("filterStatusSpp");
-  if (filterBulan) filterBulan.addEventListener("change", loadSpp);
-  if (filterTahun) filterTahun.addEventListener("change", loadSpp);
-  if (filterStatus) filterStatus.addEventListener("change", loadSpp);
-}
-
-if (currentNav === "input-absen") {
-  loadKelasOptions("inputAbsenKelas");
-}
-
-if (currentNav === "rekap") {
-  loadKelasOptions("rekapKelas");
-}
-
-if (currentNav === "riwayat-absen") {
-  loadKelasOptions("riwayatKelas");
-}
-
-  renderDaftarSiswa(hasil);
-
-}
-  const tbody =
-    document.getElementById("daftarSiswa");
-
-  if (!tbody) return;
-
-
-  if (!dataSiswa || dataSiswa.length === 0) {
-
-    tbody.innerHTML = `
-      <tr>
-        <td
-          colspan="5"
-          style="text-align:center;"
-        >
-          Data siswa tidak ditemukan.
-        </td>
-      </tr>
-    `;
-
-    return;
-
-  }
-
-
-  tbody.innerHTML =
-    dataSiswa.map(
-      siswa => `
-
-        <tr>
-
-          <td>
-            ${siswa.nama || "-"}
-          </td>
-
-
-          <td>
-            ${siswa.nis || "-"}
-          </td>
-
-
-          <td>
-            ${siswa.kelas || "-"}
-          </td>
-
-
-          <td>
-            ${siswa.tahun_ajaran || "-"}
-          </td>
-
-
-          <td>
-            ${siswa.nomor_hp_ortu || "-"}
-          </td>
-
-        </tr>
-
-      `
-    ).join("");
-
-}
-
-  const searchInput = document.getElementById("cariSiswa");
-  if (searchInput) {
-    searchInput.addEventListener("input", cariSiswa);
-  }
-
-  const formSiswa = document.getElementById("formSiswa");
-  if (formSiswa) {
-    formSiswa.addEventListener("submit", simpanSiswa);
-  }
-}
-}
+        if (currentNav === "riwayat-absen") {
+          loadKelasOptions("riwayatKelas");
+        }
+      }
 
       // ============================================================
-      // VIEW IMPLEMENTATIONS
+      // VIEW: DASBOR
       // ============================================================
-            function renderDasbor() {
+      function renderDasbor() {
         return `
           <div class="stat-row">
             <div class="stat c-teal">
@@ -1124,225 +880,338 @@ if (currentNav === "riwayat-absen") {
         `;
       }
 
+      async function loadDasbor() {
+        if (!supabase) return;
+
+        const today = new Date();
+        const todayStr = today.toISOString().slice(0, 10);
+        const bulanIni = today.getMonth() + 1;
+        const tahunIni = today.getFullYear();
+
+        const lblLunas = document.getElementById("lblLunas");
+        const lblBelumBayar = document.getElementById("lblBelumBayar");
+        if (lblLunas) lblLunas.textContent = `Lunas SPP — ${namaBulan(bulanIni)}`;
+        if (lblBelumBayar) lblBelumBayar.textContent = `Belum bayar — ${namaBulan(bulanIni)}`;
+
+        try {
+          const { count: totalSiswa } = await supabase
+            .from("siswa")
+            .select("id", { count: "exact", head: true });
+
+          const { data: absensiHariIni, error: absensiError } = await supabase
+            .from("absensi")
+            .select("status, siswa:siswa_id ( nama, kelas )")
+            .eq("tanggal", todayStr);
+          if (absensiError) throw absensiError;
+
+          const hadirCount = (absensiHariIni || []).filter((a) => a.status === "Hadir").length;
+          const statHadirEl = document.getElementById("statHadir");
+          if (statHadirEl) statHadirEl.textContent = `${hadirCount}/${totalSiswa || 0}`;
+
+          const tbody = document.getElementById("tbodyKehadiranHariIni");
+          if (tbody) {
+            if (!absensiHariIni || absensiHariIni.length === 0) {
+              tbody.innerHTML = `<tr><td colspan="3" style="text-align:center;">Belum ada absensi hari ini.</td></tr>`;
+            } else {
+              tbody.innerHTML = absensiHariIni
+                .map(
+                  (a) => `
+                <tr>
+                  <td>${a.siswa?.nama || "-"}</td>
+                  <td>${a.siswa?.kelas || "-"}</td>
+                  <td><span class="badge ${statusBadgeAbsensi(a.status)}">${a.status || "-"}</span></td>
+                </tr>
+              `
+                )
+                .join("");
+            }
+          }
+
+          const { data: sppBulanIni, error: sppError } = await supabase
+            .from("spp")
+            .select("status, nominal")
+            .eq("bulan", bulanIni)
+            .eq("tahun", tahunIni);
+          if (sppError) throw sppError;
+
+          const lunas = (sppBulanIni || []).filter((s) => s.status === "Lunas");
+          const belumBayar = (sppBulanIni || []).filter((s) => s.status !== "Lunas");
+          const totalTunggakan = belumBayar.reduce((sum, s) => sum + (Number(s.nominal) || 0), 0);
+
+          document.getElementById("statLunas").textContent = lunas.length;
+          document.getElementById("statBelumBayar").textContent = belumBayar.length;
+          document.getElementById("statTunggakan").textContent = formatRupiah(totalTunggakan);
+        } catch (error) {
+          console.error("Error load dasbor:", error);
+        }
+      }
+
+      // ============================================================
+      // VIEW: DATA SISWA
+      // ============================================================
       function renderSiswa() {
-  return `
-    <div class="section">
-
-      <div class="section-head">
-        <h2>Daftar Siswa</h2>
-
-        <div class="controls">
-          <input type="text"
-  id="cariSiswa"
-  placeholder="Cari nama, NIS, kelas..."
->
-
-          <button
-            class="btn"
-            onclick="window.__app.bukaFormSiswa()"
-          >
-            + Tambah Siswa
-          </button>
-        </div>
-      </div>
-
-      <!-- FORM TAMBAH SISWA -->
-      <div
-        id="formSiswaContainer"
-        style="display:none; padding:20px; border-bottom:1px solid var(--line);"
-      >
-
-        <h3 style="margin-top:0;">
-          Tambah Siswa Baru
-        </h3>
-
-        <form id="formSiswa">
-
-          <div style="
-            display:grid;
-            grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-            gap:15px;
-          ">
-
-            <div class="form-group">
-              <label>Nama Siswa</label>
-
-              <input
-                type="text"
-                id="siswaNama"
-                placeholder="Masukkan nama siswa"
-                required
-              >
+        return `
+          <div class="section">
+            <div class="section-head">
+              <h2>Daftar Siswa</h2>
+              <div class="controls">
+                <input type="text" id="cariSiswa" placeholder="Cari nama, NIS, kelas...">
+                <button class="btn" onclick="window.__app.bukaFormSiswa()">+ Tambah Siswa</button>
+              </div>
             </div>
 
+            <div id="formSiswaContainer" style="display:none; padding:20px; border-bottom:1px solid var(--line);">
+              <h3 style="margin-top:0;">Tambah Siswa Baru</h3>
+              <form id="formSiswa">
+                <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:15px;">
+                  <div class="form-group">
+                    <label>Nama Siswa</label>
+                    <input type="text" id="siswaNama" placeholder="Masukkan nama siswa" required>
+                  </div>
+                  <div class="form-group">
+                    <label>NIS</label>
+                    <input type="text" id="siswaNis" placeholder="Masukkan NIS" required>
+                  </div>
+                  <div class="form-group">
+                    <label>Kelas</label>
+                    <input type="text" id="siswaKelas" placeholder="Contoh: 7A" required>
+                  </div>
+                  <div class="form-group">
+                    <label>Tahun Ajaran</label>
+                    <input type="text" id="siswaTahunAjaran" placeholder="Contoh: 2026/2027">
+                  </div>
+                  <div class="form-group">
+                    <label>Tanggal Lahir</label>
+                    <input type="date" id="siswaTanggalLahir">
+                  </div>
+                  <div class="form-group">
+                    <label>Jenis Kelamin</label>
+                    <select id="siswaJenisKelamin">
+                      <option value="">Pilih jenis kelamin</option>
+                      <option value="L">Laki-laki</option>
+                      <option value="P">Perempuan</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label>Nomor HP Orang Tua</label>
+                    <input type="text" id="siswaNomorHpOrtu" placeholder="Contoh: 081234567890">
+                  </div>
+                  <div class="form-group">
+                    <label>Alamat</label>
+                    <input type="text" id="siswaAlamat" placeholder="Masukkan alamat">
+                  </div>
+                </div>
 
-            <div class="form-group">
-              <label>NIS</label>
-
-              <input
-                type="text"
-                id="siswaNis"
-                placeholder="Masukkan NIS"
-                required
-              >
+                <div style="display:flex; gap:10px; margin-top:20px;">
+                  <button type="submit" class="btn" id="btnSimpanSiswa">Simpan Siswa</button>
+                  <button type="button" class="btn ghost" onclick="window.__app.tutupFormSiswa()">Batal</button>
+                </div>
+              </form>
             </div>
 
-
-            <div class="form-group">
-              <label>Kelas</label>
-
-              <input
-                type="text"
-                id="siswaKelas"
-                placeholder="Contoh: 7A"
-                required
-              >
+            <div class="section-body">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Nama</th>
+                    <th>NIS</th>
+                    <th>Kelas</th>
+                    <th>Tahun Ajaran</th>
+                    <th>Nomor HP Orang Tua</th>
+                    <th>Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="daftarSiswa">
+                  <tr><td colspan="6" style="text-align:center;">Memuat data siswa...</td></tr>
+                </tbody>
+              </table>
             </div>
-
-
-            <div class="form-group">
-              <label>Tahun Ajaran</label>
-
-              <input
-                type="text"
-                id="siswaTahunAjaran"
-                placeholder="Contoh: 2026/2027"
-              >
-            </div>
-
-
-            <div class="form-group">
-              <label>Tanggal Lahir</label>
-
-              <input
-                type="date"
-                id="siswaTanggalLahir"
-              >
-            </div>
-
-
-            <div class="form-group">
-              <label>Jenis Kelamin</label>
-
-              <select id="siswaJenisKelamin">
-
-                <option value="">
-                  Pilih jenis kelamin
-                </option>
-
-                <option value="L">
-                  Laki-laki
-                </option>
-
-                <option value="P">
-                  Perempuan
-                </option>
-
-              </select>
-            </div>
-
-
-            <div class="form-group">
-              <label>Nomor HP Orang Tua</label>
-
-              <input
-                type="text"
-                id="siswaNomorHpOrtu"
-                placeholder="Contoh: 081234567890"
-              >
-            </div>
-
-
-            <div class="form-group">
-              <label>Alamat</label>
-
-              <input
-                type="text"
-                id="siswaAlamat"
-                placeholder="Masukkan alamat"
-              >
-            </div>
-
           </div>
+        `;
+      }
 
+      function bukaFormSiswa() {
+        const formContainer = document.getElementById("formSiswaContainer");
+        if (formContainer) formContainer.style.display = "block";
+      }
 
-          <div
-            style="
-              display:flex;
-              gap:10px;
-              margin-top:20px;
-            "
-          >
+      function tutupFormSiswa() {
+        const formContainer = document.getElementById("formSiswaContainer");
+        const form = document.getElementById("formSiswa");
+        if (formContainer) formContainer.style.display = "none";
+        if (form) form.reset();
+      }
 
-            <button
-              type="submit"
-              class="btn"
-              id="btnSimpanSiswa"
-            >
-              Simpan Siswa
-            </button>
+      async function simpanSiswa(event) {
+        event.preventDefault();
 
+        if (!supabase) {
+          alert("Supabase belum terhubung.");
+          return;
+        }
 
-            <button
-              type="button"
-              class="btn ghost"
-              onclick="window.__app.tutupFormSiswa()"
-            >
-              Batal
-            </button>
+        const btn = document.getElementById("btnSimpanSiswa");
+        const nama = document.getElementById("siswaNama").value.trim();
+        const nis = document.getElementById("siswaNis").value.trim();
+        const kelas = document.getElementById("siswaKelas").value.trim();
+        const tahunAjaran = document.getElementById("siswaTahunAjaran").value.trim();
+        const tanggalLahir = document.getElementById("siswaTanggalLahir").value;
+        const jenisKelamin = document.getElementById("siswaJenisKelamin").value;
+        const nomorHpOrtu = document.getElementById("siswaNomorHpOrtu").value.trim();
+        const alamat = document.getElementById("siswaAlamat").value.trim();
 
-          </div>
+        if (!nama || !nis || !kelas) {
+          alert("Nama, NIS, dan Kelas wajib diisi.");
+          return;
+        }
 
-        </form>
+        btn.disabled = true;
+        btn.textContent = "Menyimpan...";
 
-      </div>
+        try {
+          const dataSiswa = {
+            nama,
+            nis,
+            kelas,
+            tahun_ajaran: tahunAjaran || null,
+            tanggal_lahir: tanggalLahir || null,
+            jenis_kelamin: jenisKelamin || null,
+            nomor_hp_ortu: nomorHpOrtu || null,
+            alamat: alamat || null,
+          };
 
+          const { error } = await supabase.from("siswa").insert(dataSiswa).select();
+          if (error) throw error;
 
-      <!-- TABEL SISWA -->
-      <div class="section-body">
+          alert("Siswa berhasil ditambahkan!");
+          tutupFormSiswa();
+          await loadSiswa();
+        } catch (error) {
+          console.error("Error tambah siswa:", error);
+          alert("Gagal menyimpan siswa:\n\n" + error.message);
+        } finally {
+          btn.disabled = false;
+          btn.textContent = "Simpan Siswa";
+        }
+      }
 
-        <table>
+      async function loadSiswa() {
+        const tbody = document.getElementById("daftarSiswa");
+        if (!tbody) return;
 
-          <thead>
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;">Memuat data siswa...</td></tr>`;
 
-            <tr>
-              <th>Nama</th>
-              <th>NIS</th>
-              <th>Kelas</th>
-              <th>Tahun Ajaran</th>
-              <th>Nomor HP Orang Tua</th>
-            </tr>
+        try {
+          if (!supabase) throw new Error("Supabase belum terhubung.");
 
-          </thead>
+          const { data, error } = await supabase
+            .from("siswa")
+            .select("id, nama, nis, kelas, tahun_ajaran, nomor_hp_ortu")
+            .order("created_at", { ascending: false });
 
+          if (error) throw error;
 
-          <tbody id="daftarSiswa">
+          semuaSiswa = data || [];
 
-            <tr>
+          if (semuaSiswa.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;">Belum ada data siswa.</td></tr>`;
+            return;
+          }
 
-              <td colspan="5" style="text-align:center;">
-                Memuat data siswa...
-              </td>
+          renderDaftarSiswa(semuaSiswa);
+        } catch (error) {
+          console.error("Error load siswa:", error);
+          tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:#E11D48;">Gagal memuat data siswa.</td></tr>`;
+        }
+      }
 
-            </tr>
+      function renderDaftarSiswa(dataSiswa) {
+        const tbody = document.getElementById("daftarSiswa");
+        if (!tbody) return;
 
-          </tbody>
+        if (!dataSiswa || dataSiswa.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;">Data siswa tidak ditemukan.</td></tr>`;
+          return;
+        }
 
-        </table>
+        tbody.innerHTML = dataSiswa
+          .map(
+            (siswa) => `
+          <tr>
+            <td>${siswa.nama || "-"}</td>
+            <td>${siswa.nis || "-"}</td>
+            <td>${siswa.kelas || "-"}</td>
+            <td>${siswa.tahun_ajaran || "-"}</td>
+            <td>${siswa.nomor_hp_ortu || "-"}</td>
+            <td>
+              <button class="btn ghost small" onclick="window.__app.hapusSiswa('${siswa.id}', '${(siswa.nama || "").replace(/'/g, "\\'")}')">
+                Hapus
+              </button>
+            </td>
+          </tr>
+        `
+          )
+          .join("");
+      }
 
-      </div>
+      function cariSiswa() {
+        const input = document.getElementById("cariSiswa");
+        if (!input) return;
 
-    </div>
-  `;
-}
+        const keyword = input.value.toLowerCase().trim();
 
-            function renderSpp() {
+        const hasil = semuaSiswa.filter((siswa) => {
+          const nama = (siswa.nama || "").toLowerCase();
+          const nis = (siswa.nis || "").toLowerCase();
+          const kelas = (siswa.kelas || "").toLowerCase();
+          const tahunAjaran = (siswa.tahun_ajaran || "").toLowerCase();
+
+          return (
+            nama.includes(keyword) ||
+            nis.includes(keyword) ||
+            kelas.includes(keyword) ||
+            tahunAjaran.includes(keyword)
+          );
+        });
+
+        renderDaftarSiswa(hasil);
+      }
+
+      async function hapusSiswa(id, nama) {
+        if (!supabase) {
+          alert("Supabase belum terhubung.");
+          return;
+        }
+
+        const konfirmasi = confirm(`Yakin ingin menghapus data siswa "${nama}"? Tindakan ini tidak bisa dibatalkan.`);
+        if (!konfirmasi) return;
+
+        try {
+          const { error } = await supabase.from("siswa").delete().eq("id", id);
+          if (error) throw error;
+          await loadSiswa();
+        } catch (error) {
+          console.error("Error hapus siswa:", error);
+          alert("Gagal menghapus siswa:\n\n" + error.message);
+        }
+      }
+
+      // ============================================================
+      // VIEW: MONITORING SPP
+      // ============================================================
+      function renderSpp() {
         const now = new Date();
-        const bulanOptions = ["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"]
-          .map((nm, i) => `<option value="${i + 1}" ${i + 1 === now.getMonth() + 1 ? "selected" : ""}>${nm}</option>`).join("");
+        const bulanOptions = [
+          "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+          "Juli", "Agustus", "September", "Oktober", "November", "Desember",
+        ]
+          .map((nm, i) => `<option value="${i + 1}" ${i + 1 === now.getMonth() + 1 ? "selected" : ""}>${nm}</option>`)
+          .join("");
+
         const tahunSekarang = now.getFullYear();
         const tahunOptions = [tahunSekarang - 1, tahunSekarang, tahunSekarang + 1]
-          .map(t => `<option value="${t}" ${t === tahunSekarang ? "selected" : ""}>${t}</option>`).join("");
+          .map((t) => `<option value="${t}" ${t === tahunSekarang ? "selected" : ""}>${t}</option>`)
+          .join("");
 
         return `
           <div class="section">
@@ -1370,7 +1239,10 @@ if (currentNav === "riwayat-absen") {
                   </div>
                   <div class="form-group"><label>Bulan</label><select id="sppBulan">${bulanOptions}</select></div>
                   <div class="form-group"><label>Tahun</label><select id="sppTahun">${tahunOptions}</select></div>
-                  <div class="form-group"><label>Nominal (Rp)</label><input type="number" id="sppNominal" placeholder="Contoh: 150000" required></div>
+                  <div class="form-group">
+                    <label>Nominal (Rp)</label>
+                    <input type="number" id="sppNominal" placeholder="Contoh: 150000" required>
+                  </div>
                   <div class="form-group">
                     <label>Status</label>
                     <select id="sppStatus">
@@ -1388,32 +1260,17 @@ if (currentNav === "riwayat-absen") {
 
             <div class="section-body">
               <table>
-                <thead><tr><th>Nama</th><th>Kelas</th><th class="num">Nominal</th><th>Status</th><th>Aksi</th></tr></thead>
-                <tbody id="daftarSpp"><tr><td colspan="5" style="text-align:center;">Memuat data SPP...</td></tr></tbody>
-              </table>
-            </div>
-          </div>
-        `;
-      }
-
-            function renderRekap() {
-        const todayStr = new Date().toISOString().slice(0, 10);
-        return `
-          <div class="section">
-            <div class="section-head">
-              <h2>Rekap Absensi</h2>
-              <div class="controls">
-                <select id="rekapKelas"><option value="">Semua kelas</option></select>
-                <input type="date" id="rekapDari" value="${todayStr}">
-                <input type="date" id="rekapSampai" value="${todayStr}">
-                <button class="btn secondary" onclick="window.__app.loadRekapAbsensi()">Tampilkan</button>
-              </div>
-            </div>
-            <div class="section-body">
-              <table>
-                <thead><tr><th>Tanggal</th><th>Nama</th><th>Kelas</th><th>Status</th><th>Keterangan</th></tr></thead>
-                <tbody id="daftarRekapAbsensi">
-                  <tr><td colspan="5" style="text-align:center;">Pilih rentang tanggal, lalu klik Tampilkan.</td></tr>
+                <thead>
+                  <tr>
+                    <th>Nama</th>
+                    <th>Kelas</th>
+                    <th class="num">Nominal</th>
+                    <th>Status</th>
+                    <th>Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="daftarSpp">
+                  <tr><td colspan="5" style="text-align:center;">Memuat data SPP...</td></tr>
                 </tbody>
               </table>
             </div>
@@ -1421,7 +1278,173 @@ if (currentNav === "riwayat-absen") {
         `;
       }
 
-            function renderInputAbsen() {
+      function bukaFormSpp() {
+        const c = document.getElementById("formSppContainer");
+        if (c) c.style.display = "block";
+        loadDaftarSiswaUntukFormSpp();
+      }
+
+      function tutupFormSpp() {
+        const c = document.getElementById("formSppContainer");
+        const f = document.getElementById("formSpp");
+        if (c) c.style.display = "none";
+        if (f) f.reset();
+      }
+
+      async function loadDaftarSiswaUntukFormSpp() {
+        const select = document.getElementById("sppSiswaId");
+        if (!select || !supabase) return;
+
+        try {
+          const { data, error } = await supabase.from("siswa").select("id, nama, kelas").order("nama", { ascending: true });
+          if (error) throw error;
+
+          if (!data || data.length === 0) {
+            select.innerHTML = `<option value="">Belum ada siswa</option>`;
+            return;
+          }
+
+          select.innerHTML = data.map((s) => `<option value="${s.id}">${s.nama} — ${s.kelas || "-"}</option>`).join("");
+        } catch (error) {
+          console.error("Error load siswa untuk SPP:", error);
+          select.innerHTML = `<option value="">Gagal memuat siswa</option>`;
+        }
+      }
+
+      async function simpanSpp(event) {
+        event.preventDefault();
+        if (!supabase) {
+          alert("Supabase belum terhubung.");
+          return;
+        }
+
+        const btn = document.getElementById("btnSimpanSpp");
+        const siswaId = document.getElementById("sppSiswaId").value;
+        const bulan = Number(document.getElementById("sppBulan").value);
+        const tahun = Number(document.getElementById("sppTahun").value);
+        const nominal = Number(document.getElementById("sppNominal").value);
+        const status = document.getElementById("sppStatus").value;
+
+        if (!siswaId || !nominal) {
+          alert("Siswa dan nominal wajib diisi.");
+          return;
+        }
+
+        btn.disabled = true;
+        btn.textContent = "Menyimpan...";
+
+        try {
+          const dataSpp = {
+            siswa_id: siswaId,
+            bulan,
+            tahun,
+            nominal,
+            status,
+            tanggal_bayar: status === "Lunas" ? new Date().toISOString().slice(0, 10) : null,
+            dicatat_oleh: currentUser ? currentUser.id : null,
+          };
+
+          const { error } = await supabase.from("spp").insert(dataSpp).select();
+          if (error) throw error;
+
+          alert("Tagihan SPP berhasil ditambahkan!");
+          tutupFormSpp();
+          await loadSpp();
+        } catch (error) {
+          console.error("Error tambah SPP:", error);
+          alert("Gagal menyimpan tagihan:\n\n" + error.message);
+        } finally {
+          btn.disabled = false;
+          btn.textContent = "Simpan Tagihan";
+        }
+      }
+
+      async function loadSpp() {
+        const tbody = document.getElementById("daftarSpp");
+        if (!tbody || !supabase) return;
+
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;">Memuat data SPP...</td></tr>`;
+
+        try {
+          const bulan = Number(document.getElementById("filterBulanSpp")?.value);
+          const tahun = Number(document.getElementById("filterTahunSpp")?.value);
+          const status = document.getElementById("filterStatusSpp")?.value;
+
+          let query = supabase
+            .from("spp")
+            .select("id, nominal, status, siswa:siswa_id ( nama, kelas )")
+            .eq("bulan", bulan)
+            .eq("tahun", tahun);
+
+          if (status) query = query.eq("status", status);
+
+          const { data, error } = await query.order("created_at", { ascending: false });
+          if (error) throw error;
+
+          if (!data || data.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;">Belum ada data SPP untuk periode ini.</td></tr>`;
+            return;
+          }
+
+          tbody.innerHTML = data
+            .map(
+              (s) => `
+            <tr>
+              <td>${s.siswa?.nama || "-"}</td>
+              <td>${s.siswa?.kelas || "-"}</td>
+              <td class="num">${formatRupiah(s.nominal)}</td>
+              <td><span class="badge ${s.status === "Lunas" ? "badge-good" : "badge-bad"}">${s.status}</span></td>
+              <td>
+                ${
+                  s.status === "Lunas"
+                    ? `<button class="btn ghost small" onclick="window.__app.hapusSpp('${s.id}')">Hapus</button>`
+                    : `<button class="btn small" onclick="window.__app.tandaiLunas('${s.id}')">Tandai Lunas</button>
+                       <button class="btn ghost small" onclick="window.__app.hapusSpp('${s.id}')">Hapus</button>`
+                }
+              </td>
+            </tr>
+          `
+            )
+            .join("");
+        } catch (error) {
+          console.error("Error load SPP:", error);
+          tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#E11D48;">Gagal memuat data SPP.</td></tr>`;
+        }
+      }
+
+      async function tandaiLunas(id) {
+        if (!supabase) return;
+        try {
+          const { error } = await supabase
+            .from("spp")
+            .update({ status: "Lunas", tanggal_bayar: new Date().toISOString().slice(0, 10) })
+            .eq("id", id);
+          if (error) throw error;
+          await loadSpp();
+        } catch (error) {
+          console.error("Error tandai lunas:", error);
+          alert("Gagal menandai lunas:\n\n" + error.message);
+        }
+      }
+
+      async function hapusSpp(id) {
+        if (!supabase) return;
+        if (!confirm("Yakin ingin menghapus tagihan SPP ini?")) return;
+
+        try {
+          const { error } = await supabase.from("spp").delete().eq("id", id);
+          if (error) throw error;
+          await loadSpp();
+        } catch (error) {
+          console.error("Error hapus SPP:", error);
+          alert("Gagal menghapus tagihan:\n\n" + error.message);
+        }
+      }
+
+      // ============================================================
+      // VIEW: INPUT ABSENSI (guru)
+      // ============================================================
+      function renderInputAbsen() {
         const todayStr = new Date().toISOString().slice(0, 10);
         return `
           <div class="section">
@@ -1448,7 +1471,168 @@ if (currentNav === "riwayat-absen") {
         `;
       }
 
-            function renderRiwayatAbsen() {
+      async function loadFormInputAbsen() {
+        const kelas = document.getElementById("inputAbsenKelas")?.value;
+        const tanggal = document.getElementById("inputAbsenTanggal")?.value;
+        const tbody = document.getElementById("daftarInputAbsen");
+        const btnSimpan = document.getElementById("btnSimpanAbsen");
+        if (!tbody) return;
+
+        if (!kelas || !tanggal) {
+          tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;">Pilih kelas dan tanggal terlebih dahulu.</td></tr>`;
+          if (btnSimpan) btnSimpan.style.display = "none";
+          return;
+        }
+
+        tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;">Memuat siswa...</td></tr>`;
+
+        try {
+          const { data: daftarSiswa, error: siswaError } = await supabase
+            .from("siswa")
+            .select("id, nama, nis")
+            .eq("kelas", kelas)
+            .order("nama", { ascending: true });
+          if (siswaError) throw siswaError;
+
+          if (!daftarSiswa || daftarSiswa.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;">Tidak ada siswa di kelas ini.</td></tr>`;
+            if (btnSimpan) btnSimpan.style.display = "none";
+            return;
+          }
+
+          const { data: absensiExisting, error: absensiError } = await supabase
+            .from("absensi")
+            .select("id, siswa_id, status, keterangan")
+            .eq("tanggal", tanggal)
+            .in("siswa_id", daftarSiswa.map((s) => s.id));
+          if (absensiError) throw absensiError;
+
+          const absensiMap = {};
+          (absensiExisting || []).forEach((a) => {
+            absensiMap[a.siswa_id] = a;
+          });
+
+          tbody.innerHTML = daftarSiswa
+            .map((s) => {
+              const existing = absensiMap[s.id];
+              const statusTerpilih = existing ? existing.status : "Hadir";
+              const keteranganNilai = existing ? existing.keterangan || "" : "";
+              const opsiStatus = ["Hadir", "Izin", "Sakit", "Alpa"]
+                .map((st) => `<option value="${st}" ${st === statusTerpilih ? "selected" : ""}>${st}</option>`)
+                .join("");
+
+              return `
+                <tr data-siswa-id="${s.id}" data-absensi-id="${existing ? existing.id : ""}">
+                  <td>${s.nama || "-"}</td>
+                  <td>${s.nis || "-"}</td>
+                  <td><select class="absen-status">${opsiStatus}</select></td>
+                  <td><input type="text" class="absen-keterangan" value="${keteranganNilai}" placeholder="Opsional"></td>
+                </tr>
+              `;
+            })
+            .join("");
+
+          if (btnSimpan) btnSimpan.style.display = "inline-block";
+        } catch (error) {
+          console.error("Error load form absensi:", error);
+          tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#E11D48;">Gagal memuat data siswa.</td></tr>`;
+        }
+      }
+
+      async function simpanAbsensiMassal() {
+        if (!supabase) {
+          alert("Supabase belum terhubung.");
+          return;
+        }
+
+        const tanggal = document.getElementById("inputAbsenTanggal")?.value;
+        const btnSimpan = document.getElementById("btnSimpanAbsen");
+        const baris = document.querySelectorAll("#daftarInputAbsen tr[data-siswa-id]");
+
+        if (!tanggal || baris.length === 0) {
+          alert("Tidak ada data untuk disimpan.");
+          return;
+        }
+
+        if (btnSimpan) {
+          btnSimpan.disabled = true;
+          btnSimpan.textContent = "Menyimpan...";
+        }
+
+        try {
+          const dataUpdate = [];
+          const dataInsert = [];
+
+          baris.forEach((tr) => {
+            const siswaId = tr.getAttribute("data-siswa-id");
+            const absensiId = tr.getAttribute("data-absensi-id");
+            const status = tr.querySelector(".absen-status").value;
+            const keterangan = tr.querySelector(".absen-keterangan").value.trim();
+            const record = {
+              siswa_id: siswaId,
+              tanggal,
+              status,
+              keterangan: keterangan || null,
+              input_oleh: currentUser ? currentUser.id : null,
+            };
+
+            if (absensiId) dataUpdate.push({ id: absensiId, ...record });
+            else dataInsert.push(record);
+          });
+
+          if (dataInsert.length > 0) {
+            const { error } = await supabase.from("absensi").insert(dataInsert);
+            if (error) throw error;
+          }
+
+          for (const item of dataUpdate) {
+            const { id, ...record } = item;
+            const { error } = await supabase.from("absensi").update(record).eq("id", id);
+            if (error) throw error;
+          }
+
+          alert("Absensi berhasil disimpan!");
+          await loadFormInputAbsen();
+        } catch (error) {
+          console.error("Error simpan absensi:", error);
+          alert("Gagal menyimpan absensi:\n\n" + error.message);
+        } finally {
+          if (btnSimpan) {
+            btnSimpan.disabled = false;
+            btnSimpan.textContent = "Simpan Absensi";
+          }
+        }
+      }
+
+      // ============================================================
+      // VIEW: REKAP ABSENSI (admin) & RIWAYAT ABSENSI (guru)
+      // ============================================================
+      function renderRekap() {
+        const todayStr = new Date().toISOString().slice(0, 10);
+        return `
+          <div class="section">
+            <div class="section-head">
+              <h2>Rekap Absensi</h2>
+              <div class="controls">
+                <select id="rekapKelas"><option value="">Semua kelas</option></select>
+                <input type="date" id="rekapDari" value="${todayStr}">
+                <input type="date" id="rekapSampai" value="${todayStr}">
+                <button class="btn secondary" onclick="window.__app.loadRekapAbsensi()">Tampilkan</button>
+              </div>
+            </div>
+            <div class="section-body">
+              <table>
+                <thead><tr><th>Tanggal</th><th>Nama</th><th>Kelas</th><th>Status</th><th>Keterangan</th></tr></thead>
+                <tbody id="daftarRekapAbsensi">
+                  <tr><td colspan="5" style="text-align:center;">Pilih rentang tanggal, lalu klik Tampilkan.</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        `;
+      }
+
+      function renderRiwayatAbsen() {
         const todayStr = new Date().toISOString().slice(0, 10);
         return `
           <div class="section">
@@ -1473,6 +1657,68 @@ if (currentNav === "riwayat-absen") {
         `;
       }
 
+      async function loadAbsensiRange(kelasSelectId, dariId, sampaiId, tbodyId) {
+        const tbody = document.getElementById(tbodyId);
+        if (!tbody || !supabase) return;
+
+        const kelas = document.getElementById(kelasSelectId)?.value;
+        const dari = document.getElementById(dariId)?.value;
+        const sampai = document.getElementById(sampaiId)?.value;
+
+        if (!dari || !sampai) {
+          tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;">Pilih rentang tanggal terlebih dahulu.</td></tr>`;
+          return;
+        }
+
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;">Memuat data...</td></tr>`;
+
+        try {
+          const { data, error } = await supabase
+            .from("absensi")
+            .select("tanggal, status, keterangan, siswa:siswa_id ( nama, kelas )")
+            .gte("tanggal", dari)
+            .lte("tanggal", sampai)
+            .order("tanggal", { ascending: false });
+          if (error) throw error;
+
+          let hasil = data || [];
+          if (kelas) hasil = hasil.filter((a) => a.siswa?.kelas === kelas);
+
+          if (hasil.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;">Tidak ada data absensi pada rentang ini.</td></tr>`;
+            return;
+          }
+
+          tbody.innerHTML = hasil
+            .map(
+              (a) => `
+            <tr>
+              <td>${a.tanggal || "-"}</td>
+              <td>${a.siswa?.nama || "-"}</td>
+              <td>${a.siswa?.kelas || "-"}</td>
+              <td><span class="badge ${statusBadgeAbsensi(a.status)}">${a.status || "-"}</span></td>
+              <td>${a.keterangan || "-"}</td>
+            </tr>
+          `
+            )
+            .join("");
+        } catch (error) {
+          console.error("Error load absensi range:", error);
+          tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#E11D48;">Gagal memuat data.</td></tr>`;
+        }
+      }
+
+      function loadRekapAbsensi() {
+        loadAbsensiRange("rekapKelas", "rekapDari", "rekapSampai", "daftarRekapAbsensi");
+      }
+
+      function loadRiwayatAbsensi() {
+        loadAbsensiRange("riwayatKelas", "riwayatDari", "riwayatSampai", "daftarRiwayatAbsensi");
+      }
+
+      // ============================================================
+      // VIEW: HALAMAN ORANG TUA (belum diimplementasikan)
+      // ============================================================
       function renderRingkasanAnak() {
         return `<div class="empty">Fitur Ringkasan Anak - Segera hadir</div>`;
       }
@@ -1484,679 +1730,45 @@ if (currentNav === "riwayat-absen") {
       function renderSppAnak() {
         return `<div class="empty">Fitur Status SPP - Segera hadir</div>`;
       }
-// ============================================================
-// FITUR SISWA - TAHAP 1
-// ============================================================
 
-
-function bukaFormSiswa() {
-
-  const formContainer =
-    document.getElementById("formSiswaContainer");
-
-  if (formContainer) {
-
-    formContainer.style.display = "block";
-
-  }
-
-}
-
-
-function tutupFormSiswa() {
-
-  const formContainer =
-    document.getElementById("formSiswaContainer");
-
-  const form =
-    document.getElementById("formSiswa");
-
-  if (formContainer) {
-
-    formContainer.style.display = "none";
-
-  }
-
-  if (form) {
-
-    form.reset();
-
-  }
-
-}
-      async function simpanSiswa(event) {
-function bukaFormSpp() {
-  const c = document.getElementById("formSppContainer");
-  if (c) c.style.display = "block";
-  loadDaftarSiswaUntukFormSpp();
-}
-
-function tutupFormSpp() {
-  const c = document.getElementById("formSppContainer");
-  const f = document.getElementById("formSpp");
-  if (c) c.style.display = "none";
-  if (f) f.reset();
-}
-
-async function loadDaftarSiswaUntukFormSpp() {
-  const select = document.getElementById("sppSiswaId");
-  if (!select || !supabase) return;
-  try {
-    const { data, error } = await supabase.from("siswa").select("id, nama, kelas").order("nama", { ascending: true });
-    if (error) throw error;
-    if (!data || data.length === 0) { select.innerHTML = `<option value="">Belum ada siswa</option>`; return; }
-    select.innerHTML = data.map(s => `<option value="${s.id}">${s.nama} — ${s.kelas || "-"}</option>`).join("");
-  } catch (error) {
-    console.error("Error load siswa untuk SPP:", error);
-    select.innerHTML = `<option value="">Gagal memuat siswa</option>`;
-  }
-}
-
-async function simpanSpp(event) {
-  event.preventDefault();
-  if (!supabase) { alert("Supabase belum terhubung."); return; }
-
-  const btn = document.getElementById("btnSimpanSpp");
-  const siswaId = document.getElementById("sppSiswaId").value;
-  const bulan = Number(document.getElementById("sppBulan").value);
-  const tahun = Number(document.getElementById("sppTahun").value);
-  const nominal = Number(document.getElementById("sppNominal").value);
-  const status = document.getElementById("sppStatus").value;
-
-  if (!siswaId || !nominal) { alert("Siswa dan nominal wajib diisi."); return; }
-
-  btn.disabled = true;
-  btn.textContent = "Menyimpan...";
-
-  try {
-    const dataSpp = {
-      siswa_id: siswaId, bulan, tahun, nominal, status,
-      tanggal_bayar: status === "Lunas" ? new Date().toISOString().slice(0, 10) : null,
-      dicatat_oleh: currentUser ? currentUser.id : null,
-    };
-    const { error } = await supabase.from("spp").insert(dataSpp).select();
-    if (error) throw error;
-    alert("Tagihan SPP berhasil ditambahkan!");
-    tutupFormSpp();
-    await loadSpp();
-  } catch (error) {
-    console.error("Error tambah SPP:", error);
-    alert("Gagal menyimpan tagihan:\n\n" + error.message);
-  } finally {
-    btn.disabled = false;
-    btn.textContent = "Simpan Tagihan";
-  }
-}
-
-async function loadSpp() {
-  const tbody = document.getElementById("daftarSpp");
-  if (!tbody || !supabase) return;
-  tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;">Memuat data SPP...</td></tr>`;
-
-  try {
-    const bulan = Number(document.getElementById("filterBulanSpp")?.value);
-    const tahun = Number(document.getElementById("filterTahunSpp")?.value);
-    const status = document.getElementById("filterStatusSpp")?.value;
-
-    let query = supabase.from("spp")
-      .select("id, nominal, status, siswa:siswa_id ( nama, kelas )")
-      .eq("bulan", bulan).eq("tahun", tahun);
-    if (status) query = query.eq("status", status);
-
-    const { data, error } = await query.order("created_at", { ascending: false });
-    if (error) throw error;
-
-    if (!data || data.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;">Belum ada data SPP untuk periode ini.</td></tr>`;
-      return;
-    }
-
-    tbody.innerHTML = data.map(s => `
-      <tr>
-        <td>${s.siswa?.nama || "-"}</td>
-        <td>${s.siswa?.kelas || "-"}</td>
-        <td class="num">${formatRupiah(s.nominal)}</td>
-        <td><span class="badge ${s.status === "Lunas" ? "badge-good" : "badge-bad"}">${s.status}</span></td>
-        <td>
-          ${s.status === "Lunas"
-            ? `<button class="btn ghost small" onclick="window.__app.hapusSpp('${s.id}')">Hapus</button>`
-            : `<button class="btn small" onclick="window.__app.tandaiLunas('${s.id}')">Tandai Lunas</button>
-               <button class="btn ghost small" onclick="window.__app.hapusSpp('${s.id}')">Hapus</button>`}
-        </td>
-      </tr>
-    `).join("");
-  } catch (error) {
-    console.error("Error load SPP:", error);
-    tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#E11D48;">Gagal memuat data SPP.</td></tr>`;
-  }
-}
-
-async function tandaiLunas(id) {
-  if (!supabase) return;
-  try {
-    const { error } = await supabase.from("spp")
-      .update({ status: "Lunas", tanggal_bayar: new Date().toISOString().slice(0, 10) }).eq("id", id);
-    if (error) throw error;
-    await loadSpp();
-  } catch (error) {
-    console.error("Error tandai lunas:", error);
-    alert("Gagal menandai lunas:\n\n" + error.message);
-  }
-}
-
-async function hapusSpp(id) {
-  if (!supabase) return;
-  if (!confirm("Yakin ingin menghapus tagihan SPP ini?")) return;
-  try {
-    const { error } = await supabase.from("spp").delete().eq("id", id);
-    if (error) throw error;
-    await loadSpp();
-  } catch (error) {
-    console.error("Error hapus SPP:", error);
-    alert("Gagal menghapus tagihan:\n\n" + error.message);
-  }
-}
-        async function loadAbsensiRange(kelasSelectId, dariId, sampaiId, tbodyId) {
-  const tbody = document.getElementById(tbodyId);
-  if (!tbody || !supabase) return;
-
-  const kelas = document.getElementById(kelasSelectId)?.value;
-  const dari = document.getElementById(dariId)?.value;
-  const sampai = document.getElementById(sampaiId)?.value;
-
-  if (!dari || !sampai) {
-    tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;">Pilih rentang tanggal terlebih dahulu.</td></tr>`;
-    return;
-  }
-
-  tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;">Memuat data...</td></tr>`;
-
-  try {
-    const { data, error } = await supabase.from("absensi")
-      .select("tanggal, status, keterangan, siswa:siswa_id ( nama, kelas )")
-      .gte("tanggal", dari).lte("tanggal", sampai).order("tanggal", { ascending: false });
-    if (error) throw error;
-
-    let hasil = data || [];
-    if (kelas) hasil = hasil.filter(a => a.siswa?.kelas === kelas);
-
-    if (hasil.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;">Tidak ada data absensi pada rentang ini.</td></tr>`;
-      return;
-    }
-
-    tbody.innerHTML = hasil.map(a => `
-      <tr>
-        <td>${a.tanggal || "-"}</td>
-        <td>${a.siswa?.nama || "-"}</td>
-        <td>${a.siswa?.kelas || "-"}</td>
-        <td><span class="badge ${statusBadgeAbsensi(a.status)}">${a.status || "-"}</span></td>
-        <td>${a.keterangan || "-"}</td>
-      </tr>
-    `).join("");
-  } catch (error) {
-    console.error("Error load absensi range:", error);
-    tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#E11D48;">Gagal memuat data.</td></tr>`;
-  }
-}
-
-function loadRekapAbsensi() {
-  loadAbsensiRange("rekapKelas", "rekapDari", "rekapSampai", "daftarRekapAbsensi");
-}
-
-function loadRiwayatAbsensi() {
-  loadAbsensiRange("riwayatKelas", "riwayatDari", "riwayatSampai", "daftarRiwayatAbsensi");
-}
-  event.preventDefault();
-
-
-  if (!supabase) {
-
-    alert(
-      "Supabase belum terhubung."
-    );
-
-    return;
-
-  }
-
-
-  const btn =
-    document.getElementById("btnSimpanSiswa");
-
-
-  const nama =
-    document.getElementById("siswaNama").value.trim();
-
-
-  const nis =
-    document.getElementById("siswaNis").value.trim();
-
-
-  const kelas =
-    document.getElementById("siswaKelas").value.trim();
-
-
-  const tahunAjaran =
-    document.getElementById("siswaTahunAjaran").value.trim();
-
-
-  const tanggalLahir =
-    document.getElementById("siswaTanggalLahir").value;
-
-
-  const jenisKelamin =
-    document.getElementById("siswaJenisKelamin").value;
-
-
-  const nomorHpOrtu =
-    document.getElementById("siswaNomorHpOrtu").value.trim();
-
-
-  const alamat =
-    document.getElementById("siswaAlamat").value.trim();
-
-
-  if (!nama || !nis || !kelas) {
-
-    alert(
-      "Nama, NIS, dan Kelas wajib diisi."
-    );
-
-    return;
-
-  }
-
-
-  btn.disabled = true;
-
-  btn.textContent =
-    "Menyimpan...";
-
-
-  try {
-
-    const dataSiswa = {
-
-      nama: nama,
-
-      nis: nis,
-
-      kelas: kelas,
-
-      tahun_ajaran:
-        tahunAjaran || null,
-
-      tanggal_lahir:
-        tanggalLahir || null,
-
-      jenis_kelamin:
-        jenisKelamin || null,
-
-      nomor_hp_ortu:
-        nomorHpOrtu || null,
-
-      alamat:
-        alamat || null
-
-    };
-
-
-    const {
-      data,
-      error
-    } = await supabase
-
-      .from("siswa")
-
-      .insert(dataSiswa)
-
-      .select();
-
-
-    if (error) {
-
-      throw error;
-
-    }
-
-
-    alert(
-      "Siswa berhasil ditambahkan!"
-    );
-
-
-    tutupFormSiswa();
-
-
-    await loadSiswa();
-
-
-  } catch (error) {
-
-    console.error(
-      "Error tambah siswa:",
-      error
-    );
-
-
-    alert(
-      "Gagal menyimpan siswa:\n\n" +
-      error.message
-    );
-
-  } finally {
-
-    btn.disabled = false;
-
-    btn.textContent =
-      "Simpan Siswa";
-
-  }
-
-}
-      function renderDaftarSiswa(dataSiswa) {
-  const tbody = document.getElementById("daftarSiswa");
-  if (!tbody) return;
-
-  if (!dataSiswa || dataSiswa.length === 0) {
-    tbody.innerHTML = `
-      <tr>
-        <td colspan="6" style="text-align:center;">
-          Data siswa tidak ditemukan.
-        </td>
-      </tr>
-    `;
-    return;
-  }
-
-  tbody.innerHTML = dataSiswa.map(siswa => `
-    <tr>
-      <td>${siswa.nama || "-"}</td>
-      <td>${siswa.nis || "-"}</td>
-      <td>${siswa.kelas || "-"}</td>
-      <td>${siswa.tahun_ajaran || "-"}</td>
-      <td>${siswa.nomor_hp_ortu || "-"}</td>
-      <td>
-        <button class="btn ghost small" onclick="window.__app.hapusSiswa('${siswa.id}', '${(siswa.nama || "").replace(/'/g, "\\'")}')">
-          Hapus
-        </button>
-      </td>
-    </tr>
-  `).join("");
-}
-
-function cariSiswa() {
-  const input = document.getElementById("cariSiswa");
-  if (!input) return;
-
-  const keyword = input.value.toLowerCase().trim();
-
-  const hasil = semuaSiswa.filter(siswa => {
-    const nama = (siswa.nama || "").toLowerCase();
-    const nis = (siswa.nis || "").toLowerCase();
-    const kelas = (siswa.kelas || "").toLowerCase();
-    const tahunAjaran = (siswa.tahun_ajaran || "").toLowerCase();
-
-    return (
-      nama.includes(keyword) ||
-      nis.includes(keyword) ||
-      kelas.includes(keyword) ||
-      tahunAjaran.includes(keyword)
-    );
-  });
-
-  renderDaftarSiswa(hasil);
-}
-      async function hapusSiswa(id, nama) {
-
-  if (!supabase) {
-    alert("Supabase belum terhubung.");
-    return;
-  }
-
-  const konfirmasi = confirm(
-    `Yakin ingin menghapus data siswa "${nama}"? Tindakan ini tidak bisa dibatalkan.`
-  );
-
-  if (!konfirmasi) {
-    return;
-  }
-
-  try {
-
-    const { error } = await supabase
-      .from("siswa")
-      .delete()
-      .eq("id", id);
-
-    if (error) {
-      throw error;
-    }
-
-    await loadSiswa();
-
-  } catch (error) {
-
-    console.error("Error hapus siswa:", error);
-
-    alert(
-      "Gagal menghapus siswa:\n\n" + error.message
-    );
-
-  }
-
-}
-      function statusBadgeAbsensi(status) {
-  const map = { "Hadir": "badge-good", "Izin": "badge-warn", "Sakit": "badge-sick", "Alpa": "badge-bad" };
-  return map[status] || "badge-muted";
-}
-
-function formatRupiah(angka) {
-  const n = Number(angka) || 0;
-  return "Rp " + n.toLocaleString("id-ID");
-}
-
-function namaBulan(bulanNum) {
-  const nama = ["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
-  return nama[(Number(bulanNum) || 1) - 1] || "-";
-}
-
-async function loadKelasOptions(selectId) {
-  const select = document.getElementById(selectId);
-  if (!select || !supabase) return;
-  try {
-    const { data, error } = await supabase.from("siswa").select("kelas");
-    if (error) throw error;
-    const kelasUnik = [...new Set((data || []).map(s => s.kelas).filter(Boolean))].sort();
-    select.innerHTML = `<option value="">Pilih kelas...</option>` +
-      kelasUnik.map(k => `<option value="${k}">${k}</option>`).join("");
-  } catch (error) {
-    console.error("Error load kelas:", error);
-  }
-}
-     async function loadDasbor() {
-  if (!supabase) return;
-
-  const today = new Date();
-  const todayStr = today.toISOString().slice(0, 10);
-  const bulanIni = today.getMonth() + 1;
-  const tahunIni = today.getFullYear();
-
-  const lblLunas = document.getElementById("lblLunas");
-  const lblBelumBayar = document.getElementById("lblBelumBayar");
-  if (lblLunas) lblLunas.textContent = `Lunas SPP — ${namaBulan(bulanIni)}`;
-  if (lblBelumBayar) lblBelumBayar.textContent = `Belum bayar — ${namaBulan(bulanIni)}`;
-
-  try {
-    const { count: totalSiswa } = await supabase
-      .from("siswa").select("id", { count: "exact", head: true });
-
-    const { data: absensiHariIni, error: absensiError } = await supabase
-      .from("absensi")
-      .select("status, siswa:siswa_id ( nama, kelas )")
-      .eq("tanggal", todayStr);
-    if (absensiError) throw absensiError;
-
-    const hadirCount = (absensiHariIni || []).filter(a => a.status === "Hadir").length;
-    const statHadirEl = document.getElementById("statHadir");
-    if (statHadirEl) statHadirEl.textContent = `${hadirCount}/${totalSiswa || 0}`;
-
-    const tbody = document.getElementById("tbodyKehadiranHariIni");
-    if (tbody) {
-      if (!absensiHariIni || absensiHariIni.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="3" style="text-align:center;">Belum ada absensi hari ini.</td></tr>`;
-      } else {
-        tbody.innerHTML = absensiHariIni.map(a => `
-          <tr>
-            <td>${a.siswa?.nama || "-"}</td>
-            <td>${a.siswa?.kelas || "-"}</td>
-            <td><span class="badge ${statusBadgeAbsensi(a.status)}">${a.status || "-"}</span></td>
-          </tr>
-        `).join("");
-      }
-    }
-
-    const { data: sppBulanIni, error: sppError } = await supabase
-      .from("spp").select("status, nominal").eq("bulan", bulanIni).eq("tahun", tahunIni);
-    if (sppError) throw sppError;
-
-    const lunas = (sppBulanIni || []).filter(s => s.status === "Lunas");
-    const belumBayar = (sppBulanIni || []).filter(s => s.status !== "Lunas");
-    const totalTunggakan = belumBayar.reduce((sum, s) => sum + (Number(s.nominal) || 0), 0);
-
-    document.getElementById("statLunas").textContent = lunas.length;
-    document.getElementById("statBelumBayar").textContent = belumBayar.length;
-    document.getElementById("statTunggakan").textContent = formatRupiah(totalTunggakan);
-
-  } catch (error) {
-    console.error("Error load dasbor:", error);
-  }
-}
-      let semuaSiswa = [];
-     async function loadSiswa() {
-
-  const tbody =
-    document.getElementById("daftarSiswa");
-
-
-  if (!tbody) {
-
-    return;
-
-  }
-
-
-  tbody.innerHTML = `
-    <tr>
-
-      <td
-        colspan="5"
-        style="text-align:center;"
-      >
-        Memuat data siswa...
-      </td>
-
-    </tr>
-  `;
-
-
-  try {
-
-    if (!supabase) {
-
-      throw new Error(
-        "Supabase belum terhubung."
-      );
-
-    }
-
-
-    const {
-      data,
-      error
-    } = await supabase
-
-      .from("siswa")
-
-      .select(`
-        id,
-        nama,
-        nis,
-        kelas,
-        tahun_ajaran,
-        nomor_hp_ortu
-      `)
-
-      .order(
-        "created_at",
-        {
-          ascending: false
-        }
-      );
-
-
-    if (error) {
-
-      throw error;
-
-    }
-    semuaSiswa = data || [];
-    if (!data || data.length === 0) {
-
-      tbody.innerHTML = `
-        <tr>
-
-          <td
-            colspan="5"
-            style="text-align:center;"
-          >
-            Belum ada data siswa.
-          </td>
-
-        </tr>
-      `;
-
-      return;
-
-    }
-
-
-   renderDaftarSiswa(semuaSiswa);
-
-
-  } catch (error) {
-
-    console.error(
-      "Error load siswa:",
-      error
-    );
-
-
-    tbody.innerHTML = `
-      <tr>
-
-        <td
-          colspan="5"
-          style="
-            text-align:center;
-            color:#E11D48;
-          "
-        >
-
-          Gagal memuat data siswa.
-
-        </td>
-
-      </tr>
-    `;
-
-  }
-
-}
       // ============================================================
       // UTILITIES
       // ============================================================
+      function statusBadgeAbsensi(status) {
+        const map = { Hadir: "badge-good", Izin: "badge-warn", Sakit: "badge-sick", Alpa: "badge-bad" };
+        return map[status] || "badge-muted";
+      }
+
+      function formatRupiah(angka) {
+        const n = Number(angka) || 0;
+        return "Rp " + n.toLocaleString("id-ID");
+      }
+
+      function namaBulan(bulanNum) {
+        const nama = [
+          "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+          "Juli", "Agustus", "September", "Oktober", "November", "Desember",
+        ];
+        return nama[(Number(bulanNum) || 1) - 1] || "-";
+      }
+
+      async function loadKelasOptions(selectId) {
+        const select = document.getElementById(selectId);
+        if (!select || !supabase) return;
+
+        try {
+          const { data, error } = await supabase.from("siswa").select("kelas");
+          if (error) throw error;
+
+          const kelasUnik = [...new Set((data || []).map((s) => s.kelas).filter(Boolean))].sort();
+          select.innerHTML =
+            `<option value="">Pilih kelas...</option>` +
+            kelasUnik.map((k) => `<option value="${k}">${k}</option>`).join("");
+        } catch (error) {
+          console.error("Error load kelas:", error);
+        }
+      }
+
       function updateTodayChip() {
         const today = new Date();
         const options = { day: "numeric", month: "short", year: "numeric" };
@@ -2165,246 +1777,67 @@ async function loadKelasOptions(selectId) {
       }
 
       function getRoleLabel(role) {
-        const map = {
-          admin: "Admin Sekolah",
-          guru: "Guru",
-          ortu: "Orang Tua",
-        };
+        const map = { admin: "Admin Sekolah", guru: "Guru", ortu: "Orang Tua" };
         return map[role] || role;
-      }
-
-      async function logout() {
-
-  try {
-
-    if (supabase) {
-      const { error } = await supabase.auth.signOut();
-
-      if (error) {
-        console.error("Logout error:", error);
-      }
-    }
-
-  } catch (error) {
-
-    console.error("Logout error:", error);
-
-  } finally {
-
-    currentUser = null;
-    currentUserRole = null;
-    currentNav = "dasbor";
-
-    renderLogin();
-
-  }
-}
-
-      function renderLogin() {
-        document.getElementById("app").innerHTML = renderLoginPage();
-        document.getElementById("loginForm").addEventListener("submit", handleLogin);
       }
 
       // ============================================================
       // INITIALIZATION
       // ============================================================
       async function init() {
+        try {
+          if (!supabase) {
+            renderLogin();
+            return;
+          }
 
-  try {
+          const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+          if (sessionError) throw sessionError;
 
-    if (!supabase) {
-      renderLogin();
-      return;
-    }
-async function loadFormInputAbsen() {
-  const kelas = document.getElementById("inputAbsenKelas")?.value;
-  const tanggal = document.getElementById("inputAbsenTanggal")?.value;
-  const tbody = document.getElementById("daftarInputAbsen");
-  const btnSimpan = document.getElementById("btnSimpanAbsen");
-  if (!tbody) return;
+          if (!session) {
+            renderLogin();
+            return;
+          }
 
-  if (!kelas || !tanggal) {
-    tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;">Pilih kelas dan tanggal terlebih dahulu.</td></tr>`;
-    if (btnSimpan) btnSimpan.style.display = "none";
-    return;
-  }
+          const { data: { user }, error: userError } = await supabase.auth.getUser();
+          if (userError || !user) {
+            await supabase.auth.signOut();
+            renderLogin();
+            return;
+          }
 
-  tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;">Memuat siswa...</td></tr>`;
+          const profile = await loadUserProfile(user.id);
 
-  try {
-    const { data: daftarSiswa, error: siswaError } = await supabase
-      .from("siswa").select("id, nama, nis").eq("kelas", kelas).order("nama", { ascending: true });
-    if (siswaError) throw siswaError;
+          currentUser = profile;
+          currentUserRole = profile.role;
+          currentNav = NAV_CONFIG[currentUserRole]?.[0]?.id || "dasbor";
 
-    if (!daftarSiswa || daftarSiswa.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;">Tidak ada siswa di kelas ini.</td></tr>`;
-      if (btnSimpan) btnSimpan.style.display = "none";
-      return;
-    }
-
-    const { data: absensiExisting, error: absensiError } = await supabase
-      .from("absensi").select("id, siswa_id, status, keterangan")
-      .eq("tanggal", tanggal).in("siswa_id", daftarSiswa.map(s => s.id));
-    if (absensiError) throw absensiError;
-
-    const absensiMap = {};
-    (absensiExisting || []).forEach(a => { absensiMap[a.siswa_id] = a; });
-
-    tbody.innerHTML = daftarSiswa.map(s => {
-      const existing = absensiMap[s.id];
-      const statusTerpilih = existing ? existing.status : "Hadir";
-      const keteranganNilai = existing ? (existing.keterangan || "") : "";
-      const opsiStatus = ["Hadir", "Izin", "Sakit", "Alpa"]
-        .map(st => `<option value="${st}" ${st === statusTerpilih ? "selected" : ""}>${st}</option>`).join("");
-
-      return `
-        <tr data-siswa-id="${s.id}" data-absensi-id="${existing ? existing.id : ""}">
-          <td>${s.nama || "-"}</td>
-          <td>${s.nis || "-"}</td>
-          <td><select class="absen-status">${opsiStatus}</select></td>
-          <td><input type="text" class="absen-keterangan" value="${keteranganNilai}" placeholder="Opsional"></td>
-        </tr>
-      `;
-    }).join("");
-
-    if (btnSimpan) btnSimpan.style.display = "inline-block";
-  } catch (error) {
-    console.error("Error load form absensi:", error);
-    tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#E11D48;">Gagal memuat data siswa.</td></tr>`;
-  }
-}
-
-async function simpanAbsensiMassal() {
-  if (!supabase) { alert("Supabase belum terhubung."); return; }
-
-  const tanggal = document.getElementById("inputAbsenTanggal")?.value;
-  const btnSimpan = document.getElementById("btnSimpanAbsen");
-  const baris = document.querySelectorAll("#daftarInputAbsen tr[data-siswa-id]");
-
-  if (!tanggal || baris.length === 0) { alert("Tidak ada data untuk disimpan."); return; }
-
-  if (btnSimpan) { btnSimpan.disabled = true; btnSimpan.textContent = "Menyimpan..."; }
-
-  try {
-    const dataUpdate = [];
-    const dataInsert = [];
-
-    baris.forEach(tr => {
-      const siswaId = tr.getAttribute("data-siswa-id");
-      const absensiId = tr.getAttribute("data-absensi-id");
-      const status = tr.querySelector(".absen-status").value;
-      const keterangan = tr.querySelector(".absen-keterangan").value.trim();
-      const record = { siswa_id: siswaId, tanggal, status, keterangan: keterangan || null, input_oleh: currentUser ? currentUser.id : null };
-
-      if (absensiId) dataUpdate.push({ id: absensiId, ...record });
-      else dataInsert.push(record);
-    });
-
-    if (dataInsert.length > 0) {
-      const { error } = await supabase.from("absensi").insert(dataInsert);
-      if (error) throw error;
-    }
-
-    for (const item of dataUpdate) {
-      const { id, ...record } = item;
-      const { error } = await supabase.from("absensi").update(record).eq("id", id);
-      if (error) throw error;
-    }
-
-    alert("Absensi berhasil disimpan!");
-    await loadFormInputAbsen();
-  } catch (error) {
-    console.error("Error simpan absensi:", error);
-    alert("Gagal menyimpan absensi:\n\n" + error.message);
-  } finally {
-    if (btnSimpan) { btnSimpan.disabled = false; btnSimpan.textContent = "Simpan Absensi"; }
-  }
-}
-    // ========================================================
-    // CEK SESSION SUPABASE
-    // ========================================================
-
-    const {
-      data: { session },
-      error: sessionError
-    } = await supabase.auth.getSession();
-
-    if (sessionError) {
-      throw sessionError;
-    }
-
-    // Tidak ada session
-    if (!session) {
-      renderLogin();
-      return;
-    }
-
-    // ========================================================
-    // VALIDASI USER AKTIF
-    // ========================================================
-
-    const {
-      data: { user },
-      error: userError
-    } = await supabase.auth.getUser();
-
-    if (userError || !user) {
-
-      await supabase.auth.signOut();
-
-      renderLogin();
-
-      return;
-    }
-
-    // ========================================================
-    // AMBIL PROFIL TERBARU DARI DATABASE
-    // ========================================================
-
-    const profile = await loadUserProfile(user.id);
-
-    currentUser = profile;
-    currentUserRole = profile.role;
-
-    // Tentukan menu awal berdasarkan role
-    currentNav =
-      NAV_CONFIG[currentUserRole]?.[0]?.id || "dasbor";
-
-    renderApp();
-
-  } catch (error) {
-
-    console.error("Init error:", error);
-
-    // Jika session bermasalah,
-    // paksa kembali ke login
-    if (supabase) {
-      await supabase.auth.signOut();
-    }
-
-    currentUser = null;
-    currentUserRole = null;
-
-    renderLogin();
-  }
-}
+          renderApp();
+        } catch (error) {
+          console.error("Init error:", error);
+          if (supabase) await supabase.auth.signOut();
+          currentUser = null;
+          currentUserRole = null;
+          renderLogin();
+        }
+      }
 
       // Expose app functions to window
-            window.__app = {
-  goTo,
-  logout,
-  bukaFormSiswa,
-  tutupFormSiswa,
-  hapusSiswa,
-  bukaFormSpp,
-  tutupFormSpp,
-  tandaiLunas,
-  hapusSpp,
-  loadFormInputAbsen,
-  simpanAbsensiMassal,
-  loadRekapAbsensi,
-  loadRiwayatAbsensi,
-};
+      window.__app = {
+        goTo,
+        logout,
+        bukaFormSiswa,
+        tutupFormSiswa,
+        hapusSiswa,
+        bukaFormSpp,
+        tutupFormSpp,
+        tandaiLunas,
+        hapusSpp,
+        loadFormInputAbsen,
+        simpanAbsensiMassal,
+        loadRekapAbsensi,
+        loadRiwayatAbsensi,
+      };
 
       // Start app
       init();
