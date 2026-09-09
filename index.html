@@ -611,8 +611,33 @@
       // GLOBAL STATE
       // ============================================================
       let currentUser = null;
-      let currentUserRole = null;
+let currentUserRole = null;
 
+// ============================================================
+// LOAD USER PROFILE
+// ============================================================
+async function loadUserProfile(userId) {
+  if (!supabase) {
+    throw new Error("Supabase belum dikonfigurasi");
+  }
+
+  const { data, error } = await supabase
+    .from("pengguna")
+    .select("id, user_id, nama, email, role")
+    .eq("user_id", userId)
+    .single();
+
+  if (error) {
+    console.error("Profile error:", error);
+    throw new Error("Profil pengguna tidak ditemukan atau tidak dapat diakses.");
+  }
+
+  if (!data) {
+    throw new Error("Profil pengguna tidak ditemukan.");
+  }
+
+  return data;
+}
       // ============================================================
       // LOGIN UI
       // ============================================================
@@ -631,16 +656,7 @@
               <div class="error-msg" id="loginError"></div>
 
               <form class="login-form" id="loginForm">
-                <div class="form-group">
-                  <label for="role">Masuk sebagai</label>
-                  <select id="role" required>
-                    <option value="">Pilih peran...</option>
-                    <option value="admin">Admin Sekolah</option>
-                    <option value="guru">Guru</option>
-                    <option value="ortu">Orang Tua</option>
-                  </select>
-                </div>
-
+                
                 <div class="form-group">
                   <label for="email">Email</label>
                   <input type="email" id="email" placeholder="nama@sekolah.id" required>
@@ -663,76 +679,98 @@
       // ============================================================
       // LOGIN HANDLER
       // ============================================================
-      async function handleLogin(e) {
-        e.preventDefault();
+     async function handleLogin(e) {
+  e.preventDefault();
 
-        const role = document.getElementById("role").value;
-        const email = document.getElementById("email").value;
-        const password = document.getElementById("password").value;
-        const errorEl = document.getElementById("loginError");
-        const btnEl = document.getElementById("loginBtn");
-        const btnText = document.getElementById("loginBtnText");
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value;
 
-        errorEl.textContent = "";
-        errorEl.classList.remove("show");
+  const errorEl = document.getElementById("loginError");
+  const btnEl = document.getElementById("loginBtn");
+  const btnText = document.getElementById("loginBtnText");
 
-        if (!role || !email || !password) {
-          errorEl.textContent = "Semua field harus diisi";
-          errorEl.classList.add("show");
-          return;
-        }
+  errorEl.textContent = "";
+  errorEl.classList.remove("show");
 
-        btnEl.disabled = true;
-        btnText.innerHTML = '<span class="loading-spinner"></span>Memproses...';
+  if (!email || !password) {
+    errorEl.textContent = "Email dan password harus diisi.";
+    errorEl.classList.add("show");
+    return;
+  }
 
-        try {
-          if (!supabase) {
-            throw new Error("Supabase belum dikonfigurasi");
-          }
+  btnEl.disabled = true;
+  btnText.innerHTML =
+    '<span class="loading-spinner"></span>Memproses...';
 
-          // Step 1: Authenticate user
-          const { data: { user }, error: authError } = await supabase.auth.signInWithPassword({
-            email,
-            password,
-          });
+  try {
+    if (!supabase) {
+      throw new Error("Supabase belum dikonfigurasi.");
+    }
 
-          if (authError) {
-            throw new Error(authError.message || "Email atau password salah");
-          }
+    // ========================================================
+    // STEP 1 - LOGIN KE SUPABASE AUTH
+    // ========================================================
 
-          // Step 2: Get user role from database
-          const { data: userData, error: dbError } = await supabase
-            .from("pengguna")
-            .select("id, nama, email, role")
-            .eq("user_id", user.id)
-            .eq("role", role)
-            .single();
+    const {
+      data: authData,
+      error: authError
+    } = await supabase.auth.signInWithPassword({
+      email,
+      password
+    });
 
-          if (dbError || !userData) {
-            throw new Error("Akun tidak ditemukan atau role tidak sesuai");
-          }
+    if (authError) {
+      throw new Error("Email atau password salah.");
+    }
 
-          // Step 3: Set user data
-          currentUser = userData;
-          currentUserRole = userData.role;
+    if (!authData.user) {
+      throw new Error("User tidak ditemukan.");
+    }
 
-          // Store in localStorage
-          localStorage.setItem("gantariku_user", JSON.stringify(userData));
-          localStorage.setItem("gantariku_token", user.id);
+    // ========================================================
+    // STEP 2 - AMBIL PROFIL & ROLE DARI DATABASE
+    // ========================================================
 
-          // Render app
-          renderApp();
+    const profile = await loadUserProfile(authData.user.id);
 
-        } catch (error) {
-          console.error("Login error:", error);
-          errorEl.textContent = error.message || "Terjadi kesalahan saat login";
-          errorEl.classList.add("show");
-        } finally {
-          btnEl.disabled = false;
-          btnText.textContent = "Masuk";
-        }
-      }
+    // ========================================================
+    // STEP 3 - SIMPAN DI MEMORY APLIKASI
+    // ========================================================
 
+    currentUser = profile;
+    currentUserRole = profile.role;
+
+    // ========================================================
+    // STEP 4 - TAMPILKAN APLIKASI
+    // ========================================================
+
+    currentNav =
+      NAV_CONFIG[currentUserRole]?.[0]?.id || "dasbor";
+
+    renderApp();
+
+  } catch (error) {
+
+    console.error("Login error:", error);
+
+    // Jika Auth berhasil tetapi profil gagal,
+    // bersihkan session agar tidak terjadi login setengah.
+    if (supabase) {
+      await supabase.auth.signOut();
+    }
+
+    errorEl.textContent =
+      error.message || "Terjadi kesalahan saat login.";
+
+    errorEl.classList.add("show");
+
+  } finally {
+
+    btnEl.disabled = false;
+    btnText.textContent = "Masuk";
+
+  }
+}
       // ============================================================
       // APP UI
       // ============================================================
@@ -1082,20 +1120,31 @@
       }
 
       async function logout() {
-        try {
-          if (supabase) {
-            await supabase.auth.signOut();
-          }
-          localStorage.removeItem("gantariku_user");
-          localStorage.removeItem("gantariku_token");
-          currentUser = null;
-          currentUserRole = null;
-          renderLogin();
-        } catch (error) {
-          console.error("Logout error:", error);
-          renderLogin();
-        }
+
+  try {
+
+    if (supabase) {
+      const { error } = await supabase.auth.signOut();
+
+      if (error) {
+        console.error("Logout error:", error);
       }
+    }
+
+  } catch (error) {
+
+    console.error("Logout error:", error);
+
+  } finally {
+
+    currentUser = null;
+    currentUserRole = null;
+    currentNav = "dasbor";
+
+    renderLogin();
+
+  }
+}
 
       function renderLogin() {
         document.getElementById("app").innerHTML = renderLoginPage();
@@ -1106,27 +1155,82 @@
       // INITIALIZATION
       // ============================================================
       async function init() {
-        try {
-          // Check if user already logged in
-          if (supabase) {
-            const { data: { session } } = await supabase.auth.getSession();
 
-            if (session) {
-              const userData = localStorage.getItem("gantariku_user");
-              if (userData) {
-                currentUser = JSON.parse(userData);
-                currentUserRole = currentUser.role;
-                renderApp();
-                return;
-              }
-            }
-          }
-        } catch (error) {
-          console.error("Init error:", error);
-        }
+  try {
 
-        renderLogin();
-      }
+    if (!supabase) {
+      renderLogin();
+      return;
+    }
+
+    // ========================================================
+    // CEK SESSION SUPABASE
+    // ========================================================
+
+    const {
+      data: { session },
+      error: sessionError
+    } = await supabase.auth.getSession();
+
+    if (sessionError) {
+      throw sessionError;
+    }
+
+    // Tidak ada session
+    if (!session) {
+      renderLogin();
+      return;
+    }
+
+    // ========================================================
+    // VALIDASI USER AKTIF
+    // ========================================================
+
+    const {
+      data: { user },
+      error: userError
+    } = await supabase.auth.getUser();
+
+    if (userError || !user) {
+
+      await supabase.auth.signOut();
+
+      renderLogin();
+
+      return;
+    }
+
+    // ========================================================
+    // AMBIL PROFIL TERBARU DARI DATABASE
+    // ========================================================
+
+    const profile = await loadUserProfile(user.id);
+
+    currentUser = profile;
+    currentUserRole = profile.role;
+
+    // Tentukan menu awal berdasarkan role
+    currentNav =
+      NAV_CONFIG[currentUserRole]?.[0]?.id || "dasbor";
+
+    renderApp();
+
+  } catch (error) {
+
+    console.error("Init error:", error);
+
+    // Jika session bermasalah,
+    // paksa kembali ke login
+    if (supabase) {
+      await supabase.auth.signOut();
+    }
+
+    currentUser = null;
+    currentUserRole = null;
+
+    renderLogin();
+  }
+}
 
       // Expose app functions to window
       window.__app = {
