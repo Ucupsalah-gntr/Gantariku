@@ -981,7 +981,35 @@ function cariSiswa() {
       );
 
     });
+if (currentNav === "dasbor") {
+  loadDasbor();
+}
 
+if (currentNav === "spp") {
+  loadSpp();
+
+  const formSpp = document.getElementById("formSpp");
+  if (formSpp) formSpp.addEventListener("submit", simpanSpp);
+
+  const filterBulan = document.getElementById("filterBulanSpp");
+  const filterTahun = document.getElementById("filterTahunSpp");
+  const filterStatus = document.getElementById("filterStatusSpp");
+  if (filterBulan) filterBulan.addEventListener("change", loadSpp);
+  if (filterTahun) filterTahun.addEventListener("change", loadSpp);
+  if (filterStatus) filterStatus.addEventListener("change", loadSpp);
+}
+
+if (currentNav === "input-absen") {
+  loadKelasOptions("inputAbsenKelas");
+}
+
+if (currentNav === "rekap") {
+  loadKelasOptions("rekapKelas");
+}
+
+if (currentNav === "riwayat-absen") {
+  loadKelasOptions("riwayatKelas");
+}
 
   renderDaftarSiswa(hasil);
 
@@ -1062,50 +1090,33 @@ function cariSiswa() {
       // ============================================================
       // VIEW IMPLEMENTATIONS
       // ============================================================
-      function renderDasbor() {
+            function renderDasbor() {
         return `
           <div class="stat-row">
             <div class="stat c-teal">
-              <div class="num">24/28</div>
+              <div class="num" id="statHadir">–</div>
               <div class="lbl">Hadir hari ini</div>
             </div>
             <div class="stat c-good">
-              <div class="num">25</div>
-              <div class="lbl">Lunas SPP — Januari</div>
+              <div class="num" id="statLunas">–</div>
+              <div class="lbl" id="lblLunas">Lunas SPP</div>
             </div>
             <div class="stat c-bad">
-              <div class="num">3</div>
-              <div class="lbl">Belum bayar — Januari</div>
+              <div class="num" id="statBelumBayar">–</div>
+              <div class="lbl" id="lblBelumBayar">Belum bayar</div>
             </div>
             <div class="stat c-pink">
-              <div class="num">Rp 450.000</div>
+              <div class="num" id="statTunggakan">–</div>
               <div class="lbl">Total tunggakan</div>
             </div>
           </div>
           <div class="section">
-            <div class="section-head">
-              <h2>Kehadiran hari ini</h2>
-            </div>
+            <div class="section-head"><h2>Kehadiran hari ini</h2></div>
             <div class="section-body">
               <table>
-                <thead>
-                  <tr>
-                    <th>Nama</th>
-                    <th>Kelas</th>
-                    <th>Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>Ahmad Ridho</td>
-                    <td>7A</td>
-                    <td><span class="badge badge-good">Hadir</span></td>
-                  </tr>
-                  <tr>
-                    <td>Budi Santoso</td>
-                    <td>7A</td>
-                    <td><span class="badge badge-sick">Sakit</span></td>
-                  </tr>
+                <thead><tr><th>Nama</th><th>Kelas</th><th>Status</th></tr></thead>
+                <tbody id="tbodyKehadiranHariIni">
+                  <tr><td colspan="3" style="text-align:center;">Memuat data...</td></tr>
                 </tbody>
               </table>
             </div>
@@ -1325,40 +1336,84 @@ function cariSiswa() {
   `;
 }
 
-      function renderSpp() {
+            function renderSpp() {
+        const now = new Date();
+        const bulanOptions = ["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"]
+          .map((nm, i) => `<option value="${i + 1}" ${i + 1 === now.getMonth() + 1 ? "selected" : ""}>${nm}</option>`).join("");
+        const tahunSekarang = now.getFullYear();
+        const tahunOptions = [tahunSekarang - 1, tahunSekarang, tahunSekarang + 1]
+          .map(t => `<option value="${t}" ${t === tahunSekarang ? "selected" : ""}>${t}</option>`).join("");
+
         return `
           <div class="section">
             <div class="section-head">
               <h2>Monitoring SPP</h2>
               <div class="controls">
-                <select>
-                  <option>Januari 2026</option>
-                  <option>Februari 2026</option>
+                <select id="filterBulanSpp">${bulanOptions}</select>
+                <select id="filterTahunSpp">${tahunOptions}</select>
+                <select id="filterStatusSpp">
+                  <option value="">Semua status</option>
+                  <option value="Lunas">Lunas</option>
+                  <option value="Belum Bayar">Belum Bayar</option>
                 </select>
-                <select>
-                  <option selected>Semua status</option>
-                  <option>Lunas</option>
-                  <option>Belum Bayar</option>
-                </select>
+                <button class="btn" onclick="window.__app.bukaFormSpp()">+ Tambah Tagihan</button>
+              </div>
+            </div>
+
+            <div id="formSppContainer" style="display:none; padding:20px; border-bottom:1px solid var(--line);">
+              <h3 style="margin-top:0;">Tambah Tagihan SPP</h3>
+              <form id="formSpp">
+                <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:15px;">
+                  <div class="form-group">
+                    <label>Siswa</label>
+                    <select id="sppSiswaId" required><option value="">Memuat daftar siswa...</option></select>
+                  </div>
+                  <div class="form-group"><label>Bulan</label><select id="sppBulan">${bulanOptions}</select></div>
+                  <div class="form-group"><label>Tahun</label><select id="sppTahun">${tahunOptions}</select></div>
+                  <div class="form-group"><label>Nominal (Rp)</label><input type="number" id="sppNominal" placeholder="Contoh: 150000" required></div>
+                  <div class="form-group">
+                    <label>Status</label>
+                    <select id="sppStatus">
+                      <option value="Belum Bayar">Belum Bayar</option>
+                      <option value="Lunas">Lunas</option>
+                    </select>
+                  </div>
+                </div>
+                <div style="display:flex; gap:10px; margin-top:20px;">
+                  <button type="submit" class="btn" id="btnSimpanSpp">Simpan Tagihan</button>
+                  <button type="button" class="btn ghost" onclick="window.__app.tutupFormSpp()">Batal</button>
+                </div>
+              </form>
+            </div>
+
+            <div class="section-body">
+              <table>
+                <thead><tr><th>Nama</th><th>Kelas</th><th class="num">Nominal</th><th>Status</th><th>Aksi</th></tr></thead>
+                <tbody id="daftarSpp"><tr><td colspan="5" style="text-align:center;">Memuat data SPP...</td></tr></tbody>
+              </table>
+            </div>
+          </div>
+        `;
+      }}
+
+            function renderRekap() {
+        const todayStr = new Date().toISOString().slice(0, 10);
+        return `
+          <div class="section">
+            <div class="section-head">
+              <h2>Rekap Absensi</h2>
+              <div class="controls">
+                <select id="rekapKelas"><option value="">Semua kelas</option></select>
+                <input type="date" id="rekapDari" value="${todayStr}">
+                <input type="date" id="rekapSampai" value="${todayStr}">
+                <button class="btn secondary" onclick="window.__app.loadRekapAbsensi()">Tampilkan</button>
               </div>
             </div>
             <div class="section-body">
               <table>
-                <thead>
-                  <tr>
-                    <th>Nama</th>
-                    <th>Kelas</th>
-                    <th class="num">Nominal</th>
-                    <th>Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>Ahmad Ridho</td>
-                    <td>7A</td>
-                    <td class="num">Rp 150.000</td>
-                    <td><span class="badge badge-good">Lunas</span></td>
-                  </tr>
+                <thead><tr><th>Tanggal</th><th>Nama</th><th>Kelas</th><th>Status</th><th>Keterangan</th></tr></thead>
+                <tbody id="daftarRekapAbsensi">
+                  <tr><td colspan="5" style="text-align:center;">Pilih rentang tanggal, lalu klik Tampilkan.</td></tr>
                 </tbody>
               </table>
             </div>
@@ -1366,34 +1421,56 @@ function cariSiswa() {
         `;
       }
 
-      function renderRekap() {
-        return `<div class="empty">Fitur Rekap Absensi - Segera hadir</div>`;
-      }
-
-      function renderInputAbsen() {
+            function renderInputAbsen() {
+        const todayStr = new Date().toISOString().slice(0, 10);
         return `
           <div class="section">
             <div class="section-head">
               <h2>Input Absensi</h2>
               <div class="controls">
-                <select>
-                  <option>Kelas 7A</option>
-                  <option>Kelas 8A</option>
-                </select>
-                <select>
-                  <option selected>Tanggal hari ini</option>
-                </select>
+                <select id="inputAbsenKelas"><option value="">Pilih kelas...</option></select>
+                <input type="date" id="inputAbsenTanggal" value="${todayStr}">
+                <button class="btn secondary" onclick="window.__app.loadFormInputAbsen()">Tampilkan</button>
               </div>
             </div>
             <div class="section-body">
-              <div class="empty">Mulai input absensi siswa</div>
+              <table>
+                <thead><tr><th>Nama</th><th>NIS</th><th>Status</th><th>Keterangan</th></tr></thead>
+                <tbody id="daftarInputAbsen">
+                  <tr><td colspan="4" style="text-align:center;">Pilih kelas dan tanggal, lalu klik Tampilkan.</td></tr>
+                </tbody>
+              </table>
+              <div style="margin-top:16px;">
+                <button class="btn" id="btnSimpanAbsen" onclick="window.__app.simpanAbsensiMassal()" style="display:none;">Simpan Absensi</button>
+              </div>
             </div>
           </div>
         `;
       }
 
-      function renderRiwayatAbsen() {
-        return `<div class="empty">Fitur Riwayat Absensi - Segera hadir</div>`;
+            function renderRiwayatAbsen() {
+        const todayStr = new Date().toISOString().slice(0, 10);
+        return `
+          <div class="section">
+            <div class="section-head">
+              <h2>Riwayat Absensi</h2>
+              <div class="controls">
+                <select id="riwayatKelas"><option value="">Semua kelas</option></select>
+                <input type="date" id="riwayatDari" value="${todayStr}">
+                <input type="date" id="riwayatSampai" value="${todayStr}">
+                <button class="btn secondary" onclick="window.__app.loadRiwayatAbsensi()">Tampilkan</button>
+              </div>
+            </div>
+            <div class="section-body">
+              <table>
+                <thead><tr><th>Tanggal</th><th>Nama</th><th>Kelas</th><th>Status</th><th>Keterangan</th></tr></thead>
+                <tbody id="daftarRiwayatAbsensi">
+                  <tr><td colspan="5" style="text-align:center;">Pilih rentang tanggal, lalu klik Tampilkan.</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        `;
       }
 
       function renderRingkasanAnak() {
@@ -1448,7 +1525,188 @@ function tutupFormSiswa() {
 
 }
       async function simpanSiswa(event) {
+function bukaFormSpp() {
+  const c = document.getElementById("formSppContainer");
+  if (c) c.style.display = "block";
+  loadDaftarSiswaUntukFormSpp();
+}
 
+function tutupFormSpp() {
+  const c = document.getElementById("formSppContainer");
+  const f = document.getElementById("formSpp");
+  if (c) c.style.display = "none";
+  if (f) f.reset();
+}
+
+async function loadDaftarSiswaUntukFormSpp() {
+  const select = document.getElementById("sppSiswaId");
+  if (!select || !supabase) return;
+  try {
+    const { data, error } = await supabase.from("siswa").select("id, nama, kelas").order("nama", { ascending: true });
+    if (error) throw error;
+    if (!data || data.length === 0) { select.innerHTML = `<option value="">Belum ada siswa</option>`; return; }
+    select.innerHTML = data.map(s => `<option value="${s.id}">${s.nama} — ${s.kelas || "-"}</option>`).join("");
+  } catch (error) {
+    console.error("Error load siswa untuk SPP:", error);
+    select.innerHTML = `<option value="">Gagal memuat siswa</option>`;
+  }
+}
+
+async function simpanSpp(event) {
+  event.preventDefault();
+  if (!supabase) { alert("Supabase belum terhubung."); return; }
+
+  const btn = document.getElementById("btnSimpanSpp");
+  const siswaId = document.getElementById("sppSiswaId").value;
+  const bulan = Number(document.getElementById("sppBulan").value);
+  const tahun = Number(document.getElementById("sppTahun").value);
+  const nominal = Number(document.getElementById("sppNominal").value);
+  const status = document.getElementById("sppStatus").value;
+
+  if (!siswaId || !nominal) { alert("Siswa dan nominal wajib diisi."); return; }
+
+  btn.disabled = true;
+  btn.textContent = "Menyimpan...";
+
+  try {
+    const dataSpp = {
+      siswa_id: siswaId, bulan, tahun, nominal, status,
+      tanggal_bayar: status === "Lunas" ? new Date().toISOString().slice(0, 10) : null,
+      dicatat_oleh: currentUser ? currentUser.id : null,
+    };
+    const { error } = await supabase.from("spp").insert(dataSpp).select();
+    if (error) throw error;
+    alert("Tagihan SPP berhasil ditambahkan!");
+    tutupFormSpp();
+    await loadSpp();
+  } catch (error) {
+    console.error("Error tambah SPP:", error);
+    alert("Gagal menyimpan tagihan:\n\n" + error.message);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "Simpan Tagihan";
+  }
+}
+
+async function loadSpp() {
+  const tbody = document.getElementById("daftarSpp");
+  if (!tbody || !supabase) return;
+  tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;">Memuat data SPP...</td></tr>`;
+
+  try {
+    const bulan = Number(document.getElementById("filterBulanSpp")?.value);
+    const tahun = Number(document.getElementById("filterTahunSpp")?.value);
+    const status = document.getElementById("filterStatusSpp")?.value;
+
+    let query = supabase.from("spp")
+      .select("id, nominal, status, siswa:siswa_id ( nama, kelas )")
+      .eq("bulan", bulan).eq("tahun", tahun);
+    if (status) query = query.eq("status", status);
+
+    const { data, error } = await query.order("created_at", { ascending: false });
+    if (error) throw error;
+
+    if (!data || data.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;">Belum ada data SPP untuk periode ini.</td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = data.map(s => `
+      <tr>
+        <td>${s.siswa?.nama || "-"}</td>
+        <td>${s.siswa?.kelas || "-"}</td>
+        <td class="num">${formatRupiah(s.nominal)}</td>
+        <td><span class="badge ${s.status === "Lunas" ? "badge-good" : "badge-bad"}">${s.status}</span></td>
+        <td>
+          ${s.status === "Lunas"
+            ? `<button class="btn ghost small" onclick="window.__app.hapusSpp('${s.id}')">Hapus</button>`
+            : `<button class="btn small" onclick="window.__app.tandaiLunas('${s.id}')">Tandai Lunas</button>
+               <button class="btn ghost small" onclick="window.__app.hapusSpp('${s.id}')">Hapus</button>`}
+        </td>
+      </tr>
+    `).join("");
+  } catch (error) {
+    console.error("Error load SPP:", error);
+    tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#E11D48;">Gagal memuat data SPP.</td></tr>`;
+  }
+}
+
+async function tandaiLunas(id) {
+  if (!supabase) return;
+  try {
+    const { error } = await supabase.from("spp")
+      .update({ status: "Lunas", tanggal_bayar: new Date().toISOString().slice(0, 10) }).eq("id", id);
+    if (error) throw error;
+    await loadSpp();
+  } catch (error) {
+    console.error("Error tandai lunas:", error);
+    alert("Gagal menandai lunas:\n\n" + error.message);
+  }
+}
+
+async function hapusSpp(id) {
+  if (!supabase) return;
+  if (!confirm("Yakin ingin menghapus tagihan SPP ini?")) return;
+  try {
+    const { error } = await supabase.from("spp").delete().eq("id", id);
+    if (error) throw error;
+    await loadSpp();
+  } catch (error) {
+    console.error("Error hapus SPP:", error);
+    alert("Gagal menghapus tagihan:\n\n" + error.message);
+  }
+}
+        async function loadAbsensiRange(kelasSelectId, dariId, sampaiId, tbodyId) {
+  const tbody = document.getElementById(tbodyId);
+  if (!tbody || !supabase) return;
+
+  const kelas = document.getElementById(kelasSelectId)?.value;
+  const dari = document.getElementById(dariId)?.value;
+  const sampai = document.getElementById(sampaiId)?.value;
+
+  if (!dari || !sampai) {
+    tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;">Pilih rentang tanggal terlebih dahulu.</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;">Memuat data...</td></tr>`;
+
+  try {
+    const { data, error } = await supabase.from("absensi")
+      .select("tanggal, status, keterangan, siswa:siswa_id ( nama, kelas )")
+      .gte("tanggal", dari).lte("tanggal", sampai).order("tanggal", { ascending: false });
+    if (error) throw error;
+
+    let hasil = data || [];
+    if (kelas) hasil = hasil.filter(a => a.siswa?.kelas === kelas);
+
+    if (hasil.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;">Tidak ada data absensi pada rentang ini.</td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = hasil.map(a => `
+      <tr>
+        <td>${a.tanggal || "-"}</td>
+        <td>${a.siswa?.nama || "-"}</td>
+        <td>${a.siswa?.kelas || "-"}</td>
+        <td><span class="badge ${statusBadgeAbsensi(a.status)}">${a.status || "-"}</span></td>
+        <td>${a.keterangan || "-"}</td>
+      </tr>
+    `).join("");
+  } catch (error) {
+    console.error("Error load absensi range:", error);
+    tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#E11D48;">Gagal memuat data.</td></tr>`;
+  }
+}
+
+function loadRekapAbsensi() {
+  loadAbsensiRange("rekapKelas", "rekapDari", "rekapSampai", "daftarRekapAbsensi");
+}
+
+function loadRiwayatAbsensi() {
+  loadAbsensiRange("riwayatKelas", "riwayatDari", "riwayatSampai", "daftarRiwayatAbsensi");
+}
   event.preventDefault();
 
 
@@ -1689,7 +1947,93 @@ function cariSiswa() {
   }
 
 }
-     let semuaSiswa = [];
+      function statusBadgeAbsensi(status) {
+  const map = { "Hadir": "badge-good", "Izin": "badge-warn", "Sakit": "badge-sick", "Alpa": "badge-bad" };
+  return map[status] || "badge-muted";
+}
+
+function formatRupiah(angka) {
+  const n = Number(angka) || 0;
+  return "Rp " + n.toLocaleString("id-ID");
+}
+
+function namaBulan(bulanNum) {
+  const nama = ["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
+  return nama[(Number(bulanNum) || 1) - 1] || "-";
+}
+
+async function loadKelasOptions(selectId) {
+  const select = document.getElementById(selectId);
+  if (!select || !supabase) return;
+  try {
+    const { data, error } = await supabase.from("siswa").select("kelas");
+    if (error) throw error;
+    const kelasUnik = [...new Set((data || []).map(s => s.kelas).filter(Boolean))].sort();
+    select.innerHTML = `<option value="">Pilih kelas...</option>` +
+      kelasUnik.map(k => `<option value="${k}">${k}</option>`).join("");
+  } catch (error) {
+    console.error("Error load kelas:", error);
+  }
+}
+     async function loadDasbor() {
+  if (!supabase) return;
+
+  const today = new Date();
+  const todayStr = today.toISOString().slice(0, 10);
+  const bulanIni = today.getMonth() + 1;
+  const tahunIni = today.getFullYear();
+
+  const lblLunas = document.getElementById("lblLunas");
+  const lblBelumBayar = document.getElementById("lblBelumBayar");
+  if (lblLunas) lblLunas.textContent = `Lunas SPP — ${namaBulan(bulanIni)}`;
+  if (lblBelumBayar) lblBelumBayar.textContent = `Belum bayar — ${namaBulan(bulanIni)}`;
+
+  try {
+    const { count: totalSiswa } = await supabase
+      .from("siswa").select("id", { count: "exact", head: true });
+
+    const { data: absensiHariIni, error: absensiError } = await supabase
+      .from("absensi")
+      .select("status, siswa:siswa_id ( nama, kelas )")
+      .eq("tanggal", todayStr);
+    if (absensiError) throw absensiError;
+
+    const hadirCount = (absensiHariIni || []).filter(a => a.status === "Hadir").length;
+    const statHadirEl = document.getElementById("statHadir");
+    if (statHadirEl) statHadirEl.textContent = `${hadirCount}/${totalSiswa || 0}`;
+
+    const tbody = document.getElementById("tbodyKehadiranHariIni");
+    if (tbody) {
+      if (!absensiHariIni || absensiHariIni.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="3" style="text-align:center;">Belum ada absensi hari ini.</td></tr>`;
+      } else {
+        tbody.innerHTML = absensiHariIni.map(a => `
+          <tr>
+            <td>${a.siswa?.nama || "-"}</td>
+            <td>${a.siswa?.kelas || "-"}</td>
+            <td><span class="badge ${statusBadgeAbsensi(a.status)}">${a.status || "-"}</span></td>
+          </tr>
+        `).join("");
+      }
+    }
+
+    const { data: sppBulanIni, error: sppError } = await supabase
+      .from("spp").select("status, nominal").eq("bulan", bulanIni).eq("tahun", tahunIni);
+    if (sppError) throw sppError;
+
+    const lunas = (sppBulanIni || []).filter(s => s.status === "Lunas");
+    const belumBayar = (sppBulanIni || []).filter(s => s.status !== "Lunas");
+    const totalTunggakan = belumBayar.reduce((sum, s) => sum + (Number(s.nominal) || 0), 0);
+
+    document.getElementById("statLunas").textContent = lunas.length;
+    document.getElementById("statBelumBayar").textContent = belumBayar.length;
+    document.getElementById("statTunggakan").textContent = formatRupiah(totalTunggakan);
+
+  } catch (error) {
+    console.error("Error load dasbor:", error);
+  }
+}
+      let semuaSiswa = [];
      async function loadSiswa() {
 
   const tbody =
@@ -1872,7 +2216,110 @@ function cariSiswa() {
       renderLogin();
       return;
     }
+async function loadFormInputAbsen() {
+  const kelas = document.getElementById("inputAbsenKelas")?.value;
+  const tanggal = document.getElementById("inputAbsenTanggal")?.value;
+  const tbody = document.getElementById("daftarInputAbsen");
+  const btnSimpan = document.getElementById("btnSimpanAbsen");
+  if (!tbody) return;
 
+  if (!kelas || !tanggal) {
+    tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;">Pilih kelas dan tanggal terlebih dahulu.</td></tr>`;
+    if (btnSimpan) btnSimpan.style.display = "none";
+    return;
+  }
+
+  tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;">Memuat siswa...</td></tr>`;
+
+  try {
+    const { data: daftarSiswa, error: siswaError } = await supabase
+      .from("siswa").select("id, nama, nis").eq("kelas", kelas).order("nama", { ascending: true });
+    if (siswaError) throw siswaError;
+
+    if (!daftarSiswa || daftarSiswa.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;">Tidak ada siswa di kelas ini.</td></tr>`;
+      if (btnSimpan) btnSimpan.style.display = "none";
+      return;
+    }
+
+    const { data: absensiExisting, error: absensiError } = await supabase
+      .from("absensi").select("id, siswa_id, status, keterangan")
+      .eq("tanggal", tanggal).in("siswa_id", daftarSiswa.map(s => s.id));
+    if (absensiError) throw absensiError;
+
+    const absensiMap = {};
+    (absensiExisting || []).forEach(a => { absensiMap[a.siswa_id] = a; });
+
+    tbody.innerHTML = daftarSiswa.map(s => {
+      const existing = absensiMap[s.id];
+      const statusTerpilih = existing ? existing.status : "Hadir";
+      const keteranganNilai = existing ? (existing.keterangan || "") : "";
+      const opsiStatus = ["Hadir", "Izin", "Sakit", "Alpa"]
+        .map(st => `<option value="${st}" ${st === statusTerpilih ? "selected" : ""}>${st}</option>`).join("");
+
+      return `
+        <tr data-siswa-id="${s.id}" data-absensi-id="${existing ? existing.id : ""}">
+          <td>${s.nama || "-"}</td>
+          <td>${s.nis || "-"}</td>
+          <td><select class="absen-status">${opsiStatus}</select></td>
+          <td><input type="text" class="absen-keterangan" value="${keteranganNilai}" placeholder="Opsional"></td>
+        </tr>
+      `;
+    }).join("");
+
+    if (btnSimpan) btnSimpan.style.display = "inline-block";
+  } catch (error) {
+    console.error("Error load form absensi:", error);
+    tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#E11D48;">Gagal memuat data siswa.</td></tr>`;
+  }
+}
+
+async function simpanAbsensiMassal() {
+  if (!supabase) { alert("Supabase belum terhubung."); return; }
+
+  const tanggal = document.getElementById("inputAbsenTanggal")?.value;
+  const btnSimpan = document.getElementById("btnSimpanAbsen");
+  const baris = document.querySelectorAll("#daftarInputAbsen tr[data-siswa-id]");
+
+  if (!tanggal || baris.length === 0) { alert("Tidak ada data untuk disimpan."); return; }
+
+  if (btnSimpan) { btnSimpan.disabled = true; btnSimpan.textContent = "Menyimpan..."; }
+
+  try {
+    const dataUpdate = [];
+    const dataInsert = [];
+
+    baris.forEach(tr => {
+      const siswaId = tr.getAttribute("data-siswa-id");
+      const absensiId = tr.getAttribute("data-absensi-id");
+      const status = tr.querySelector(".absen-status").value;
+      const keterangan = tr.querySelector(".absen-keterangan").value.trim();
+      const record = { siswa_id: siswaId, tanggal, status, keterangan: keterangan || null, input_oleh: currentUser ? currentUser.id : null };
+
+      if (absensiId) dataUpdate.push({ id: absensiId, ...record });
+      else dataInsert.push(record);
+    });
+
+    if (dataInsert.length > 0) {
+      const { error } = await supabase.from("absensi").insert(dataInsert);
+      if (error) throw error;
+    }
+
+    for (const item of dataUpdate) {
+      const { id, ...record } = item;
+      const { error } = await supabase.from("absensi").update(record).eq("id", id);
+      if (error) throw error;
+    }
+
+    alert("Absensi berhasil disimpan!");
+    await loadFormInputAbsen();
+  } catch (error) {
+    console.error("Error simpan absensi:", error);
+    alert("Gagal menyimpan absensi:\n\n" + error.message);
+  } finally {
+    if (btnSimpan) { btnSimpan.disabled = false; btnSimpan.textContent = "Simpan Absensi"; }
+  }
+}
     // ========================================================
     // CEK SESSION SUPABASE
     // ========================================================
@@ -1943,17 +2390,20 @@ function cariSiswa() {
 }
 
       // Expose app functions to window
-      window.__app = {
-
+            window.__app = {
   goTo,
-
   logout,
-
   bukaFormSiswa,
-
   tutupFormSiswa,
-
- hapusSiswa,
+  hapusSiswa,
+  bukaFormSpp,
+  tutupFormSpp,
+  tandaiLunas,
+  hapusSpp,
+  loadFormInputAbsen,
+  simpanAbsensiMassal,
+  loadRekapAbsensi,
+  loadRiwayatAbsensi,
 };
 
       // Start app
