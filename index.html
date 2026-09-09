@@ -1059,18 +1059,6 @@ function cariSiswa() {
     );
 
   }
-const inputCari =
-    document.getElementById("cariSiswa");
-
-  if (inputCari) {
-
-    inputCari.addEventListener(
-      "input",
-      cariSiswa
-    );
-
-  }
-
 }
 }
       }
@@ -1137,11 +1125,11 @@ const inputCari =
         <h2>Daftar Siswa</h2>
 
         <div class="controls">
-          <input
-            type="text"
-            id="cariSiswa"
-            placeholder="Cari nama atau kelas..."
-          >
+          <input type="text"
+  id="cariSiswa"
+  placeholder="Cari nama, NIS, kelas..."
+  oninput="window.__app.cariSiswa()"
+>
 
           <button
             class="btn"
@@ -1877,6 +1865,8 @@ function tutupFormSiswa() {
   bukaFormSiswa,
 
   tutupFormSiswa,
+
+  cariSiswa,
 
 };
 
