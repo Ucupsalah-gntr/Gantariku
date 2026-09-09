@@ -182,7 +182,35 @@
         display: flex;
         flex-direction: column;
         padding: 24px 18px;
+        position: relative;
       }
+
+      /* Wrapper for user-info + nav + sidebar-foot. On desktop this is just
+         a normal flex column filling the sidebar; on mobile it becomes a
+         collapsible dropdown panel (see media query below). */
+      .sidebar-menu {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        min-height: 0;
+      }
+
+      .mobile-menu-btn {
+        display: none;
+        width: 36px;
+        height: 36px;
+        align-items: center;
+        justify-content: center;
+        border: none;
+        border-radius: 8px;
+        background: rgba(255, 255, 255, .15);
+        color: #fff;
+        font-size: 18px;
+        cursor: pointer;
+        flex-shrink: 0;
+      }
+
+      .mobile-menu-btn:hover { background: rgba(255, 255, 255, .25); }
 
       .brand {
         display: flex;
@@ -469,13 +497,38 @@
         .sidebar {
           width: 100%;
           flex-direction: row;
-          flex-wrap: wrap;
           align-items: center;
+          justify-content: space-between;
           gap: 10px;
-          padding: 14px 16px;
+          padding: 12px 16px;
         }
 
-        .nav, .sidebar-foot { display: none; }
+        .brand { margin-bottom: 0; }
+
+        .mobile-menu-btn { display: flex; }
+
+        /* Collapsed by default on mobile: shown as a dropdown panel
+           when the sidebar has the .mobile-open class (toggled by the
+           hamburger button). */
+        .sidebar-menu {
+          display: none;
+          position: absolute;
+          top: 100%;
+          left: 0;
+          right: 0;
+          background: var(--primary-dark);
+          padding: 14px 16px 18px;
+          box-shadow: 0 14px 30px rgba(33, 27, 59, .35);
+          z-index: 30;
+          max-height: calc(100vh - 60px);
+          overflow-y: auto;
+        }
+
+        .sidebar.mobile-open .sidebar-menu { display: flex; }
+
+        .user-info { margin-bottom: 14px; }
+
+        .sidebar-foot { padding-top: 10px; }
 
         .view, .topbar { padding-left: 18px; padding-right: 18px; }
 
@@ -503,8 +556,17 @@
       let supabase = null;
 
       if (isConfigured) {
-        const { createClient } = await import("https://esm.sh/@supabase/supabase-js@2");
-        supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        try {
+          const { createClient } = await import("https://esm.sh/@supabase/supabase-js@2");
+          supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        } catch (err) {
+          // Kalau CDN esm.sh gagal dimuat (jaringan lambat, diblokir, dsb),
+          // jangan biarkan seluruh script berhenti — cukup catat error dan
+          // biarkan aplikasi tetap render (akan jatuh ke tampilan login
+          // dengan pesan "belum terhubung").
+          console.error("Gagal memuat Supabase SDK:", err);
+          supabase = null;
+        }
       }
 
       // ============================================================
@@ -625,7 +687,7 @@
         btnText.innerHTML = '<span class="loading-spinner"></span>Memproses...';
 
         try {
-          if (!supabase) throw new Error("Supabase belum dikonfigurasi.");
+          if (!supabase) throw new Error("Tidak dapat terhubung ke server. Periksa koneksi internet Anda, lalu muat ulang halaman.");
 
           const { data: authData, error: authError } = await supabase.auth.signInWithPassword({ email, password });
           if (authError) throw new Error("Email atau password salah.");
@@ -671,7 +733,7 @@
       function renderApp() {
         const html = `
           <div class="app">
-            <aside class="sidebar">
+            <aside class="sidebar" id="sidebar">
               <div class="brand">
                 <div class="brand-mark">🎒</div>
                 <div>
@@ -680,16 +742,20 @@
                 </div>
               </div>
 
-              <div class="user-info">
-                <div class="user-name">${currentUser.nama}</div>
-                <div class="user-role">${getRoleLabel(currentUserRole)}</div>
-              </div>
+              <button class="mobile-menu-btn" id="mobileMenuBtn" onclick="window.__app.toggleMobileMenu()" aria-label="Buka menu">☰</button>
 
-              <div class="nav" id="nav"></div>
+              <div class="sidebar-menu" id="sidebarMenu">
+                <div class="user-info">
+                  <div class="user-name">${currentUser.nama}</div>
+                  <div class="user-role">${getRoleLabel(currentUserRole)}</div>
+                </div>
 
-              <div class="sidebar-foot">
-                <div><span class="conn-dot"></span> Terhubung</div>
-                <button class="logout-btn" onclick="window.__app.logout()">Logout</button>
+                <div class="nav" id="nav"></div>
+
+                <div class="sidebar-foot">
+                  <div><span class="conn-dot"></span> Terhubung</div>
+                  <button class="logout-btn" onclick="window.__app.logout()">Logout</button>
+                </div>
               </div>
             </aside>
 
@@ -729,8 +795,22 @@
 
       function goTo(navId) {
         currentNav = navId;
+        closeMobileMenu();
         renderNav();
         renderView();
+      }
+
+      // ------------------------------------------------------
+      // Menu mobile (hamburger)
+      // ------------------------------------------------------
+      function toggleMobileMenu() {
+        const sidebar = document.getElementById("sidebar");
+        if (sidebar) sidebar.classList.toggle("mobile-open");
+      }
+
+      function closeMobileMenu() {
+        const sidebar = document.getElementById("sidebar");
+        if (sidebar) sidebar.classList.remove("mobile-open");
       }
 
       // ============================================================
@@ -1826,6 +1906,7 @@
       window.__app = {
         goTo,
         logout,
+        toggleMobileMenu,
         bukaFormSiswa,
         tutupFormSiswa,
         hapusSiswa,
