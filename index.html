@@ -1604,7 +1604,7 @@ function tutupFormSiswa() {
   if (!dataSiswa || dataSiswa.length === 0) {
     tbody.innerHTML = `
       <tr>
-        <td colspan="5" style="text-align:center;">
+        <td colspan="6" style="text-align:center;">
           Data siswa tidak ditemukan.
         </td>
       </tr>
@@ -1619,6 +1619,11 @@ function tutupFormSiswa() {
       <td>${siswa.kelas || "-"}</td>
       <td>${siswa.tahun_ajaran || "-"}</td>
       <td>${siswa.nomor_hp_ortu || "-"}</td>
+      <td>
+        <button class="btn ghost small" onclick="window.__app.hapusSiswa('${siswa.id}', '${(siswa.nama || "").replace(/'/g, "\\'")}')">
+          Hapus
+        </button>
+      </td>
     </tr>
   `).join("");
 }
@@ -1644,6 +1649,45 @@ function cariSiswa() {
   });
 
   renderDaftarSiswa(hasil);
+}
+      async function hapusSiswa(id, nama) {
+
+  if (!supabase) {
+    alert("Supabase belum terhubung.");
+    return;
+  }
+
+  const konfirmasi = confirm(
+    `Yakin ingin menghapus data siswa "${nama}"? Tindakan ini tidak bisa dibatalkan.`
+  );
+
+  if (!konfirmasi) {
+    return;
+  }
+
+  try {
+
+    const { error } = await supabase
+      .from("siswa")
+      .delete()
+      .eq("id", id);
+
+    if (error) {
+      throw error;
+    }
+
+    await loadSiswa();
+
+  } catch (error) {
+
+    console.error("Error hapus siswa:", error);
+
+    alert(
+      "Gagal menghapus siswa:\n\n" + error.message
+    );
+
+  }
+
 }
      let semuaSiswa = [];
      async function loadSiswa() {
@@ -1908,6 +1952,8 @@ function cariSiswa() {
   bukaFormSiswa,
 
   tutupFormSiswa,
+
+ hapusSiswa,
 };
 
       // Start app
