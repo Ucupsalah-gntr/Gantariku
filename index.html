@@ -925,8 +925,35 @@ async function loadUserProfile(userId) {
         }
 
         viewEl.innerHTML = html;
-        titleEl.textContent = title;
-        subEl.textContent = subtitle;
+
+titleEl.textContent = title;
+
+subEl.textContent = subtitle;
+
+
+// ============================================================
+// KHUSUS HALAMAN SISWA
+// ============================================================
+
+if (currentNav === "siswa") {
+
+  loadSiswa();
+
+
+  const formSiswa =
+    document.getElementById("formSiswa");
+
+
+  if (formSiswa) {
+
+    formSiswa.addEventListener(
+      "submit",
+      simpanSiswa
+    );
+
+  }
+
+}
       }
 
       // ============================================================
@@ -984,38 +1011,217 @@ async function loadUserProfile(userId) {
       }
 
       function renderSiswa() {
-        return `
-          <div class="section">
-            <div class="section-head">
-              <h2>Daftar Siswa</h2>
-              <div class="controls">
-                <input type="text" placeholder="Cari nama atau kelas...">
-                <button class="btn">+ Tambah Siswa</button>
-              </div>
+  return `
+    <div class="section">
+
+      <div class="section-head">
+        <h2>Daftar Siswa</h2>
+
+        <div class="controls">
+          <input
+            type="text"
+            id="cariSiswa"
+            placeholder="Cari nama atau kelas..."
+          >
+
+          <button
+            class="btn"
+            onclick="window.__app.bukaFormSiswa()"
+          >
+            + Tambah Siswa
+          </button>
+        </div>
+      </div>
+
+      <!-- FORM TAMBAH SISWA -->
+      <div
+        id="formSiswaContainer"
+        style="display:none; padding:20px; border-bottom:1px solid var(--line);"
+      >
+
+        <h3 style="margin-top:0;">
+          Tambah Siswa Baru
+        </h3>
+
+        <form id="formSiswa">
+
+          <div style="
+            display:grid;
+            grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+            gap:15px;
+          ">
+
+            <div class="form-group">
+              <label>Nama Siswa</label>
+
+              <input
+                type="text"
+                id="siswaNama"
+                placeholder="Masukkan nama siswa"
+                required
+              >
             </div>
-            <div class="section-body">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Nama</th>
-                    <th>Kelas</th>
-                    <th>Orang Tua</th>
-                    <th></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>Ahmad Ridho</td>
-                    <td>7A</td>
-                    <td>Achmad Santoso</td>
-                    <td><button class="btn ghost small">Edit</button></td>
-                  </tr>
-                </tbody>
-              </table>
+
+
+            <div class="form-group">
+              <label>NIS</label>
+
+              <input
+                type="text"
+                id="siswaNis"
+                placeholder="Masukkan NIS"
+                required
+              >
             </div>
+
+
+            <div class="form-group">
+              <label>Kelas</label>
+
+              <input
+                type="text"
+                id="siswaKelas"
+                placeholder="Contoh: 7A"
+                required
+              >
+            </div>
+
+
+            <div class="form-group">
+              <label>Tahun Ajaran</label>
+
+              <input
+                type="text"
+                id="siswaTahunAjaran"
+                placeholder="Contoh: 2026/2027"
+              >
+            </div>
+
+
+            <div class="form-group">
+              <label>Tanggal Lahir</label>
+
+              <input
+                type="date"
+                id="siswaTanggalLahir"
+              >
+            </div>
+
+
+            <div class="form-group">
+              <label>Jenis Kelamin</label>
+
+              <select id="siswaJenisKelamin">
+
+                <option value="">
+                  Pilih jenis kelamin
+                </option>
+
+                <option value="L">
+                  Laki-laki
+                </option>
+
+                <option value="P">
+                  Perempuan
+                </option>
+
+              </select>
+            </div>
+
+
+            <div class="form-group">
+              <label>Nomor HP Orang Tua</label>
+
+              <input
+                type="text"
+                id="siswaNomorHpOrtu"
+                placeholder="Contoh: 081234567890"
+              >
+            </div>
+
+
+            <div class="form-group">
+              <label>Alamat</label>
+
+              <input
+                type="text"
+                id="siswaAlamat"
+                placeholder="Masukkan alamat"
+              >
+            </div>
+
           </div>
-        `;
-      }
+
+
+          <div
+            style="
+              display:flex;
+              gap:10px;
+              margin-top:20px;
+            "
+          >
+
+            <button
+              type="submit"
+              class="btn"
+              id="btnSimpanSiswa"
+            >
+              Simpan Siswa
+            </button>
+
+
+            <button
+              type="button"
+              class="btn ghost"
+              onclick="window.__app.tutupFormSiswa()"
+            >
+              Batal
+            </button>
+
+          </div>
+
+        </form>
+
+      </div>
+
+
+      <!-- TABEL SISWA -->
+      <div class="section-body">
+
+        <table>
+
+          <thead>
+
+            <tr>
+              <th>Nama</th>
+              <th>NIS</th>
+              <th>Kelas</th>
+              <th>Tahun Ajaran</th>
+              <th>Nomor HP Orang Tua</th>
+            </tr>
+
+          </thead>
+
+
+          <tbody id="daftarSiswa">
+
+            <tr>
+
+              <td colspan="5" style="text-align:center;">
+                Memuat data siswa...
+              </td>
+
+            </tr>
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </div>
+  `;
+}
 
       function renderSpp() {
         return `
@@ -1099,7 +1305,350 @@ async function loadUserProfile(userId) {
       function renderSppAnak() {
         return `<div class="empty">Fitur Status SPP - Segera hadir</div>`;
       }
+// ============================================================
+// FITUR SISWA - TAHAP 1
+// ============================================================
 
+
+function bukaFormSiswa() {
+
+  const formContainer =
+    document.getElementById("formSiswaContainer");
+
+  if (formContainer) {
+
+    formContainer.style.display = "block";
+
+  }
+
+}
+
+
+function tutupFormSiswa() {
+
+  const formContainer =
+    document.getElementById("formSiswaContainer");
+
+  const form =
+    document.getElementById("formSiswa");
+
+  if (formContainer) {
+
+    formContainer.style.display = "none";
+
+  }
+
+  if (form) {
+
+    form.reset();
+
+  }
+
+}
+      async function simpanSiswa(event) {
+
+  event.preventDefault();
+
+
+  if (!supabase) {
+
+    alert(
+      "Supabase belum terhubung."
+    );
+
+    return;
+
+  }
+
+
+  const btn =
+    document.getElementById("btnSimpanSiswa");
+
+
+  const nama =
+    document.getElementById("siswaNama").value.trim();
+
+
+  const nis =
+    document.getElementById("siswaNis").value.trim();
+
+
+  const kelas =
+    document.getElementById("siswaKelas").value.trim();
+
+
+  const tahunAjaran =
+    document.getElementById("siswaTahunAjaran").value.trim();
+
+
+  const tanggalLahir =
+    document.getElementById("siswaTanggalLahir").value;
+
+
+  const jenisKelamin =
+    document.getElementById("siswaJenisKelamin").value;
+
+
+  const nomorHpOrtu =
+    document.getElementById("siswaNomorHpOrtu").value.trim();
+
+
+  const alamat =
+    document.getElementById("siswaAlamat").value.trim();
+
+
+  if (!nama || !nis || !kelas) {
+
+    alert(
+      "Nama, NIS, dan Kelas wajib diisi."
+    );
+
+    return;
+
+  }
+
+
+  btn.disabled = true;
+
+  btn.textContent =
+    "Menyimpan...";
+
+
+  try {
+
+    const dataSiswa = {
+
+      nama: nama,
+
+      nis: nis,
+
+      kelas: kelas,
+
+      tahun_ajaran:
+        tahunAjaran || null,
+
+      tanggal_lahir:
+        tanggalLahir || null,
+
+      jenis_kelamin:
+        jenisKelamin || null,
+
+      nomor_hp_ortu:
+        nomorHpOrtu || null,
+
+      alamat:
+        alamat || null
+
+    };
+
+
+    const {
+      data,
+      error
+    } = await supabase
+
+      .from("siswa")
+
+      .insert(dataSiswa)
+
+      .select();
+
+
+    if (error) {
+
+      throw error;
+
+    }
+
+
+    alert(
+      "Siswa berhasil ditambahkan!"
+    );
+
+
+    tutupFormSiswa();
+
+
+    await loadSiswa();
+
+
+  } catch (error) {
+
+    console.error(
+      "Error tambah siswa:",
+      error
+    );
+
+
+    alert(
+      "Gagal menyimpan siswa:\n\n" +
+      error.message
+    );
+
+  } finally {
+
+    btn.disabled = false;
+
+    btn.textContent =
+      "Simpan Siswa";
+
+  }
+
+}
+      async function loadSiswa() {
+
+  const tbody =
+    document.getElementById("daftarSiswa");
+
+
+  if (!tbody) {
+
+    return;
+
+  }
+
+
+  tbody.innerHTML = `
+    <tr>
+
+      <td
+        colspan="5"
+        style="text-align:center;"
+      >
+        Memuat data siswa...
+      </td>
+
+    </tr>
+  `;
+
+
+  try {
+
+    if (!supabase) {
+
+      throw new Error(
+        "Supabase belum terhubung."
+      );
+
+    }
+
+
+    const {
+      data,
+      error
+    } = await supabase
+
+      .from("siswa")
+
+      .select(`
+        id,
+        nama,
+        nis,
+        kelas,
+        tahun_ajaran,
+        nomor_hp_ortu
+      `)
+
+      .order(
+        "created_at",
+        {
+          ascending: false
+        }
+      );
+
+
+    if (error) {
+
+      throw error;
+
+    }
+
+
+    if (!data || data.length === 0) {
+
+      tbody.innerHTML = `
+        <tr>
+
+          <td
+            colspan="5"
+            style="text-align:center;"
+          >
+            Belum ada data siswa.
+          </td>
+
+        </tr>
+      `;
+
+      return;
+
+    }
+
+
+    tbody.innerHTML =
+      data.map(
+        siswa => `
+
+          <tr>
+
+            <td>
+              ${siswa.nama || "-"}
+            </td>
+
+
+            <td>
+              ${siswa.nis || "-"}
+            </td>
+
+
+            <td>
+              ${siswa.kelas || "-"}
+            </td>
+
+
+            <td>
+              ${siswa.tahun_ajaran || "-"}
+            </td>
+
+
+            <td>
+              ${siswa.nomor_hp_ortu || "-"}
+            </td>
+
+          </tr>
+
+        `
+      ).join("");
+
+
+  } catch (error) {
+
+    console.error(
+      "Error load siswa:",
+      error
+    );
+
+
+    tbody.innerHTML = `
+      <tr>
+
+        <td
+          colspan="5"
+          style="
+            text-align:center;
+            color:#E11D48;
+          "
+        >
+
+          Gagal memuat data siswa.
+
+        </td>
+
+      </tr>
+    `;
+
+  }
+
+}
       // ============================================================
       // UTILITIES
       // ============================================================
@@ -1234,9 +1783,16 @@ async function loadUserProfile(userId) {
 
       // Expose app functions to window
       window.__app = {
-        goTo,
-        logout,
-      };
+
+  goTo,
+
+  logout,
+
+  bukaFormSiswa,
+
+  tutupFormSiswa,
+
+};
 
       // Start app
       init();
