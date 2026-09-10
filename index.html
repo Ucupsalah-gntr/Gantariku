@@ -578,6 +578,7 @@
       let currentUserRole = null;
       let currentNav = "dasbor";
       let semuaSiswa = [];
+      let semuaOrangTua = [];
 
       // ============================================================
       // NAVIGATION CONFIG
@@ -587,10 +588,13 @@
           { id: "dasbor", label: "Dasbor", icon: "📊" },
           { id: "siswa", label: "Data Siswa", icon: "👥" },
           { id: "spp", label: "Monitoring SPP", icon: "💰" },
+          { id: "guru", label: "Guru & Pelatih", icon: "🩰" },
+          { id: "absen-guru", label: "Absensi Guru", icon: "👩‍🏫" },
           { id: "rekap", label: "Rekap Absensi", icon: "📋" },
         ],
         guru: [
           { id: "input-absen", label: "Input Absensi", icon: "✓" },
+          { id: "absen-saya", label: "Kehadiran Saya", icon: "🕘" },
           { id: "riwayat-absen", label: "Riwayat Absensi", icon: "📅" },
         ],
         ortu: [
@@ -845,6 +849,21 @@
             title = "Monitoring SPP";
             subtitle = "Pantau pembayaran SPP";
             break;
+          case "guru":
+            html = renderGuru();
+            title = "Guru & Pelatih";
+            subtitle = "Daftar akun guru dan pelatih Gantari";
+            break;
+          case "absen-guru":
+            html = renderAbsensiGuruAdmin();
+            title = "Absensi Guru";
+            subtitle = "Pantau kehadiran guru dan pelatih";
+            break;
+          case "absen-saya":
+            html = renderAbsensiSaya();
+            title = "Kehadiran Saya";
+            subtitle = "Catat kehadiran Anda";
+            break;
           case "rekap":
             html = renderRekap();
             title = "Rekap Absensi";
@@ -898,6 +917,18 @@
 
           const formSiswa = document.getElementById("formSiswa");
           if (formSiswa) formSiswa.addEventListener("submit", simpanSiswa);
+        }
+
+        if (currentNav === "guru") {
+          loadGuru();
+        }
+
+        if (currentNav === "absen-guru") {
+          loadAbsensiGuruAdmin();
+        }
+
+        if (currentNav === "absen-saya") {
+          loadAbsensiSaya();
         }
 
         if (currentNav === "spp") {
@@ -1043,6 +1074,34 @@
       }
 
       // ============================================================
+      // DATA ORANG TUA UNTUK PENGHUBUNGAN SISWA
+      // ============================================================
+      async function loadOrangTuaUntukForm() {
+        const select = document.getElementById("siswaOrangTuaId");
+        if (!select || !supabase) return;
+
+        select.innerHTML = `<option value="">Tanpa akun orang tua</option>`;
+        try {
+          const { data, error } = await supabase
+            .from("pengguna")
+            .select("id, nama, email")
+            .eq("role", "ortu")
+            .order("nama", { ascending: true });
+
+          if (error) throw error;
+          semuaOrangTua = data || [];
+          select.innerHTML =
+            `<option value="">Tanpa akun orang tua</option>` +
+            semuaOrangTua
+              .map((o) => `<option value="${o.id}">${o.nama || o.email || "Orang tua"} — ${o.email || ""}</option>`)
+              .join("");
+        } catch (error) {
+          console.error("Error load akun orang tua:", error);
+          select.innerHTML = `<option value="">Gagal memuat akun orang tua</option>`;
+        }
+      }
+
+      // ============================================================
       // VIEW: DATA SISWA
       // ============================================================
       function renderSiswa() {
@@ -1093,6 +1152,13 @@
                     <input type="text" id="siswaNomorHpOrtu" placeholder="Contoh: 081234567890">
                   </div>
                   <div class="form-group">
+                    <label>Akun Orang Tua</label>
+                    <select id="siswaOrangTuaId">
+                      <option value="">Memuat akun orang tua...</option>
+                    </select>
+                    <small style="color:var(--ink-soft);">Hubungkan siswa dengan akun login orang tua agar data anak muncul otomatis.</small>
+                  </div>
+                  <div class="form-group">
                     <label>Alamat</label>
                     <input type="text" id="siswaAlamat" placeholder="Masukkan alamat">
                   </div>
@@ -1113,12 +1179,13 @@
                     <th>NIS</th>
                     <th>Kelas</th>
                     <th>Tahun Ajaran</th>
-                    <th>Nomor HP Orang Tua</th>
+                    <th>Orang Tua</th>
+                    <th>Nomor HP</th>
                     <th>Aksi</th>
                   </tr>
                 </thead>
                 <tbody id="daftarSiswa">
-                  <tr><td colspan="6" style="text-align:center;">Memuat data siswa...</td></tr>
+                  <tr><td colspan="7" style="text-align:center;">Memuat data siswa...</td></tr>
                 </tbody>
               </table>
             </div>
@@ -1129,6 +1196,7 @@
       function bukaFormSiswa() {
         const formContainer = document.getElementById("formSiswaContainer");
         if (formContainer) formContainer.style.display = "block";
+        loadOrangTuaUntukForm();
       }
 
       function tutupFormSiswa() {
@@ -1154,6 +1222,7 @@
         const tanggalLahir = document.getElementById("siswaTanggalLahir").value;
         const jenisKelamin = document.getElementById("siswaJenisKelamin").value;
         const nomorHpOrtu = document.getElementById("siswaNomorHpOrtu").value.trim();
+        const orangTuaId = document.getElementById("siswaOrangTuaId")?.value || null;
         const alamat = document.getElementById("siswaAlamat").value.trim();
 
         if (!nama || !nis || !kelas) {
@@ -1173,6 +1242,7 @@
             tanggal_lahir: tanggalLahir || null,
             jenis_kelamin: jenisKelamin || null,
             nomor_hp_ortu: nomorHpOrtu || null,
+            orang_tua_id: orangTuaId || null,
             alamat: alamat || null,
           };
 
@@ -1195,14 +1265,14 @@
         const tbody = document.getElementById("daftarSiswa");
         if (!tbody) return;
 
-        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;">Memuat data siswa...</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;">Memuat data siswa...</td></tr>`;
 
         try {
           if (!supabase) throw new Error("Supabase belum terhubung.");
 
           const { data, error } = await supabase
             .from("siswa")
-            .select("id, nama, nis, kelas, tahun_ajaran, nomor_hp_ortu")
+            .select("id, nama, nis, kelas, tahun_ajaran, nomor_hp_ortu, orang_tua_id, orang_tua:orang_tua_id ( id, nama, email )")
             .order("created_at", { ascending: false });
 
           if (error) throw error;
@@ -1210,14 +1280,14 @@
           semuaSiswa = data || [];
 
           if (semuaSiswa.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;">Belum ada data siswa.</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;">Belum ada data siswa.</td></tr>`;
             return;
           }
 
           renderDaftarSiswa(semuaSiswa);
         } catch (error) {
           console.error("Error load siswa:", error);
-          tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:#E11D48;">Gagal memuat data siswa.</td></tr>`;
+          tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:#E11D48;">Gagal memuat data siswa.</td></tr>`;
         }
       }
 
@@ -1226,7 +1296,7 @@
         if (!tbody) return;
 
         if (!dataSiswa || dataSiswa.length === 0) {
-          tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;">Data siswa tidak ditemukan.</td></tr>`;
+          tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;">Data siswa tidak ditemukan.</td></tr>`;
           return;
         }
 
@@ -1238,6 +1308,7 @@
             <td>${siswa.nis || "-"}</td>
             <td>${siswa.kelas || "-"}</td>
             <td>${siswa.tahun_ajaran || "-"}</td>
+            <td>${siswa.orang_tua?.nama || siswa.orang_tua?.email || "Belum ditautkan"}</td>
             <td>${siswa.nomor_hp_ortu || "-"}</td>
             <td>
               <button class="btn ghost small" onclick="window.__app.hapusSiswa('${siswa.id}', '${(siswa.nama || "").replace(/'/g, "\\'")}')">
@@ -1697,6 +1768,239 @@
             btnSimpan.disabled = false;
             btnSimpan.textContent = "Simpan Absensi";
           }
+        }
+      }
+
+      // ============================================================
+      // VIEW: GURU & PELATIH
+      // ============================================================
+      function renderGuru() {
+        return `
+          <div class="section">
+            <div class="section-head">
+              <h2>Guru & Pelatih Gantari</h2>
+              <div class="controls">
+                <input type="text" id="cariGuru" placeholder="Cari nama atau email...">
+                <button class="btn secondary" onclick="window.__app.loadGuru()">Refresh</button>
+              </div>
+            </div>
+            <div class="section-body">
+              <p style="margin-top:0;color:var(--ink-soft);font-size:13px;">
+                Akun guru/pelatih dikelola melalui autentikasi Supabase. Halaman ini menampilkan akun dengan role <strong>guru</strong> yang sudah terdaftar.
+              </p>
+              <table>
+                <thead><tr><th>Nama</th><th>Email</th><th>Role</th><th>Status</th></tr></thead>
+                <tbody id="daftarGuru"><tr><td colspan="4" style="text-align:center;">Memuat data guru...</td></tr></tbody>
+              </table>
+            </div>
+          </div>
+        `;
+      }
+
+      async function loadGuru() {
+        const tbody = document.getElementById("daftarGuru");
+        const searchInput = document.getElementById("cariGuru");
+        if (!tbody || !supabase) return;
+        tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;">Memuat data guru...</td></tr>`;
+        try {
+          const { data, error } = await supabase
+            .from("pengguna")
+            .select("id, nama, email, role")
+            .eq("role", "guru")
+            .order("nama", { ascending: true });
+          if (error) throw error;
+          const keyword = (searchInput?.value || "").toLowerCase().trim();
+          const hasil = (data || []).filter(g =>
+            (g.nama || "").toLowerCase().includes(keyword) ||
+            (g.email || "").toLowerCase().includes(keyword)
+          );
+          if (!hasil.length) {
+            tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;">Belum ada akun guru/pelatih.</td></tr>`;
+            return;
+          }
+          tbody.innerHTML = hasil.map(g => `
+            <tr>
+              <td>${g.nama || "-"}</td>
+              <td>${g.email || "-"}</td>
+              <td><span class="badge badge-good">Guru / Pelatih</span></td>
+              <td><span class="badge badge-muted">Aktif</span></td>
+            </tr>
+          `).join("");
+          if (searchInput && !searchInput.dataset.bound) {
+            searchInput.addEventListener("input", loadGuru);
+            searchInput.dataset.bound = "1";
+          }
+        } catch (error) {
+          console.error("Error load guru:", error);
+          tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;color:#E11D48;">Gagal memuat data guru: ${error.message}</td></tr>`;
+        }
+      }
+
+      // ============================================================
+      // ABSENSI GURU / PELATIH
+      // ============================================================
+      function renderAbsensiGuruAdmin() {
+        const todayStr = new Date().toISOString().slice(0, 10);
+        return `
+          <div class="section">
+            <div class="section-head">
+              <h2>Absensi Guru & Pelatih</h2>
+              <div class="controls">
+                <input type="date" id="guruAbsenTanggalDari" value="${todayStr}">
+                <input type="date" id="guruAbsenTanggalSampai" value="${todayStr}">
+                <select id="guruAbsenStatus">
+                  <option value="">Semua status</option>
+                  <option value="H">Hadir</option>
+                  <option value="I">Izin</option>
+                  <option value="S">Sakit</option>
+                  <option value="A">Alpa</option>
+                </select>
+                <button class="btn secondary" onclick="window.__app.loadAbsensiGuruAdmin()">Tampilkan</button>
+              </div>
+            </div>
+            <div class="section-body">
+              <table>
+                <thead><tr><th>Tanggal</th><th>Guru / Pelatih</th><th>Status</th><th>Keterangan</th></tr></thead>
+                <tbody id="daftarAbsensiGuru"><tr><td colspan="4" style="text-align:center;">Memuat data...</td></tr></tbody>
+              </table>
+            </div>
+          </div>
+        `;
+      }
+
+      async function loadAbsensiGuruAdmin() {
+        const tbody = document.getElementById("daftarAbsensiGuru");
+        if (!tbody || !supabase) return;
+        const dari = document.getElementById("guruAbsenTanggalDari")?.value;
+        const sampai = document.getElementById("guruAbsenTanggalSampai")?.value;
+        const status = document.getElementById("guruAbsenStatus")?.value;
+        tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;">Memuat data...</td></tr>`;
+        try {
+          let query = supabase
+            .from("absensi_guru")
+            .select("id, tanggal, status, keterangan, guru:guru_id ( nama, email )")
+            .gte("tanggal", dari)
+            .lte("tanggal", sampai)
+            .order("tanggal", { ascending: false });
+          if (status) query = query.eq("status", status);
+          const { data, error } = await query;
+          if (error) throw error;
+          if (!data?.length) {
+            tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;">Belum ada absensi guru pada periode ini.</td></tr>`;
+            return;
+          }
+          tbody.innerHTML = data.map(a => `
+            <tr>
+              <td>${a.tanggal || "-"}</td>
+              <td>${a.guru?.nama || "-"}<br><span style="font-size:11px;color:var(--ink-soft);">${a.guru?.email || ""}</span></td>
+              <td><span class="badge ${statusBadgeAbsensi(a.status)}">${labelStatusAbsensi(a.status)}</span></td>
+              <td>${a.keterangan || "-"}</td>
+            </tr>
+          `).join("");
+        } catch (error) {
+          console.error("Error load absensi guru admin:", error);
+          tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;color:#E11D48;">Gagal memuat absensi guru. Pastikan tabel <strong>absensi_guru</strong> sudah dibuat di Supabase.</td></tr>`;
+        }
+      }
+
+      function renderAbsensiSaya() {
+        const todayStr = new Date().toISOString().slice(0, 10);
+        return `
+          <div class="section">
+            <div class="section-head">
+              <h2>Kehadiran Saya</h2>
+              <span class="badge badge-muted">${currentUser?.nama || "Guru"}</span>
+            </div>
+            <div class="section-body">
+              <form id="formAbsensiSaya">
+                <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:15px;">
+                  <div class="form-group"><label>Tanggal</label><input type="date" id="guruSayaTanggal" value="${todayStr}" required></div>
+                  <div class="form-group"><label>Status</label><select id="guruSayaStatus"><option value="H">Hadir</option><option value="I">Izin</option><option value="S">Sakit</option><option value="A">Alpa</option></select></div>
+                  <div class="form-group"><label>Keterangan</label><input type="text" id="guruSayaKeterangan" placeholder="Opsional"></div>
+                </div>
+                <div style="margin-top:18px;display:flex;gap:10px;align-items:center;">
+                  <button type="submit" class="btn" id="btnSimpanAbsensiSaya">Simpan Kehadiran</button>
+                  <span style="font-size:12px;color:var(--ink-soft);">Satu catatan per tanggal.</span>
+                </div>
+              </form>
+            </div>
+          </div>
+          <div class="section">
+            <div class="section-head"><h2>Riwayat Kehadiran Saya</h2></div>
+            <div class="section-body">
+              <table>
+                <thead><tr><th>Tanggal</th><th>Status</th><th>Keterangan</th></tr></thead>
+                <tbody id="riwayatAbsensiSaya"><tr><td colspan="3" style="text-align:center;">Memuat data...</td></tr></tbody>
+              </table>
+            </div>
+          </div>
+        `;
+      }
+
+      async function loadAbsensiSaya() {
+        const tbody = document.getElementById("riwayatAbsensiSaya");
+        if (!tbody || !supabase || !currentUser) return;
+        try {
+          const { data, error } = await supabase
+            .from("absensi_guru")
+            .select("tanggal, status, keterangan")
+            .eq("guru_id", currentUser.id)
+            .order("tanggal", { ascending: false })
+            .limit(30);
+          if (error) throw error;
+          if (!data?.length) {
+            tbody.innerHTML = `<tr><td colspan="3" style="text-align:center;">Belum ada riwayat kehadiran.</td></tr>`;
+            return;
+          }
+          tbody.innerHTML = data.map(a => `
+            <tr><td>${a.tanggal || "-"}</td><td><span class="badge ${statusBadgeAbsensi(a.status)}">${labelStatusAbsensi(a.status)}</span></td><td>${a.keterangan || "-"}</td></tr>
+          `).join("");
+        } catch (error) {
+          console.error("Error load riwayat absensi saya:", error);
+          tbody.innerHTML = `<tr><td colspan="3" style="text-align:center;color:#E11D48;">Gagal memuat riwayat. Pastikan tabel <strong>absensi_guru</strong> sudah dibuat.</td></tr>`;
+        }
+
+        const form = document.getElementById("formAbsensiSaya");
+        if (form && !form.dataset.bound) {
+          form.addEventListener("submit", simpanAbsensiSaya);
+          form.dataset.bound = "1";
+        }
+      }
+
+      async function simpanAbsensiSaya(event) {
+        event.preventDefault();
+        if (!supabase || !currentUser) return;
+        const btn = document.getElementById("btnSimpanAbsensiSaya");
+        const tanggal = document.getElementById("guruSayaTanggal")?.value;
+        const status = document.getElementById("guruSayaStatus")?.value;
+        const keterangan = document.getElementById("guruSayaKeterangan")?.value.trim() || null;
+        if (!tanggal) return;
+        btn.disabled = true;
+        btn.textContent = "Menyimpan...";
+        try {
+          const { data: existing, error: findError } = await supabase
+            .from("absensi_guru")
+            .select("id")
+            .eq("guru_id", currentUser.id)
+            .eq("tanggal", tanggal)
+            .maybeSingle();
+          if (findError) throw findError;
+          if (existing) {
+            const { error } = await supabase.from("absensi_guru").update({ status, keterangan }).eq("id", existing.id);
+            if (error) throw error;
+          } else {
+            const { error } = await supabase.from("absensi_guru").insert({ guru_id: currentUser.id, tanggal, status, keterangan });
+            if (error) throw error;
+          }
+          alert("Kehadiran berhasil disimpan.");
+          document.getElementById("guruSayaKeterangan").value = "";
+          await loadAbsensiSaya();
+        } catch (error) {
+          console.error("Error simpan absensi guru:", error);
+          alert("Gagal menyimpan kehadiran:\n\n" + error.message);
+        } finally {
+          btn.disabled = false;
+          btn.textContent = "Simpan Kehadiran";
         }
       }
 
@@ -2232,6 +2536,10 @@
         tutupFormSpp,
         tandaiLunas,
         hapusSpp,
+        loadGuru,
+        loadAbsensiGuruAdmin,
+        loadAbsensiSaya,
+        simpanAbsensiSaya,
         loadFormInputAbsen,
         simpanAbsensiMassal,
         loadRekapAbsensi,
