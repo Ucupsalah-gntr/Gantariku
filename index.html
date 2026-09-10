@@ -2100,34 +2100,41 @@
       async function simpanAbsensiSaya(event) {
         if (event) event.preventDefault();
         if (!supabase || !currentUser) return;
+
+        if (currentUserRole !== "guru") {
+          alert("Hanya akun guru/pelatih yang dapat mengisi kehadiran sendiri.");
+          return;
+        }
+
         const btn = document.getElementById("btnSimpanAbsensiSaya");
         const tanggal = document.getElementById("guruSayaTanggal")?.value;
         const status = document.getElementById("guruSayaStatus")?.value;
         const keterangan = document.getElementById("guruSayaKeterangan")?.value.trim() || null;
-        if (!tanggal) return;
+        if (!tanggal || !status) return;
+
         btn.disabled = true;
         btn.textContent = "Menyimpan...";
+
         try {
-          const { data: existing, error: findError } = await supabase
+          // Gunakan UPSERT langsung. Ini menghindari race-condition dan juga
+          // menangani data lama yang sudah ada tetapi tidak terbaca oleh query
+          // pengecekan sebelumnya. Constraint unik: (guru_id, tanggal).
+          const { error } = await supabase
             .from("absensi_guru")
-            .select("id")
-            .eq("guru_id", currentUser.id)
-            .eq("tanggal", tanggal)
-            .maybeSingle();
-          if (findError) throw findError;
-          if (existing) {
-            const { error } = await supabase.from("absensi_guru").update({ status, keterangan }).eq("id", existing.id);
-            if (error) throw error;
-          } else {
-            const { error } = await supabase.from("absensi_guru").insert({ guru_id: currentUser.id, tanggal, status, keterangan });
-            if (error) throw error;
-          }
-          alert("Kehadiran berhasil disimpan.");
-          document.getElementById("guruSayaKeterangan").value = "";
+            .upsert(
+              { guru_id: currentUser.id, tanggal, status, keterangan },
+              { onConflict: "guru_id,tanggal" }
+            );
+
+          if (error) throw error;
+
+          alert("✅ Kehadiran berhasil disimpan.");
+          const ketEl = document.getElementById("guruSayaKeterangan");
+          if (ketEl) ketEl.value = "";
           await loadAbsensiSaya();
         } catch (error) {
           console.error("Error simpan absensi guru:", error);
-          alert("Gagal menyimpan kehadiran:\n\n" + error.message);
+          alert("Gagal menyimpan kehadiran:\n\n" + (error?.message || "Terjadi kesalahan."));
         } finally {
           btn.disabled = false;
           btn.textContent = "Simpan Kehadiran";
