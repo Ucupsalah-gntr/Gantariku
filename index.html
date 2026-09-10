@@ -992,6 +992,15 @@
         }
 
         if (currentNav === "absen-saya") {
+          // Pasang submit handler SEGERA setelah form dirender.
+          // Jangan menunggu loadAbsensiSaya(), karena fungsi tersebut melakukan
+          // request async terlebih dahulu. Tanpa handler, klik Simpan bisa
+          // dianggap submit HTML biasa dan menyebabkan halaman reload.
+          const formAbsensiSaya = document.getElementById("formAbsensiSaya");
+          if (formAbsensiSaya && !formAbsensiSaya.dataset.bound) {
+            formAbsensiSaya.addEventListener("submit", simpanAbsensiSaya);
+            formAbsensiSaya.dataset.bound = "1";
+          }
           loadAbsensiSaya();
         }
 
@@ -2038,7 +2047,7 @@
               <span class="badge badge-muted">${currentUser?.nama || "Guru"}</span>
             </div>
             <div class="section-body">
-              <form id="formAbsensiSaya">
+              <form id="formAbsensiSaya" onsubmit="event.preventDefault(); window.__app.simpanAbsensiSaya(event); return false;">
                 <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:15px;">
                   <div class="form-group"><label>Tanggal</label><input type="date" id="guruSayaTanggal" value="${todayStr}" required></div>
                   <div class="form-group"><label>Status</label><select id="guruSayaStatus"><option value="H">Hadir</option><option value="I">Izin</option><option value="S">Sakit</option><option value="A">Alpa</option></select></div>
@@ -2086,23 +2095,11 @@
           tbody.innerHTML = `<tr><td colspan="3" style="text-align:center;color:#E11D48;">Gagal memuat riwayat. Pastikan tabel <strong>absensi_guru</strong> sudah dibuat.</td></tr>`;
         }
 
-        const form = document.getElementById("formAbsensiSaya");
-        if (form && !form.dataset.bound) {
-          form.addEventListener("submit", simpanAbsensiSaya);
-          form.dataset.bound = "1";
-        }
       }
 
       async function simpanAbsensiSaya(event) {
-        event.preventDefault();
-        if (!supabase || !currentUser) {
-          alert("Sesi login belum siap. Silakan muat ulang halaman lalu login kembali.");
-          return;
-        }
-        if (currentUserRole !== "guru") {
-          alert("Menu Kehadiran Saya hanya dapat digunakan oleh akun Guru/Pelatih.");
-          return;
-        }
+        if (event) event.preventDefault();
+        if (!supabase || !currentUser) return;
         const btn = document.getElementById("btnSimpanAbsensiSaya");
         const tanggal = document.getElementById("guruSayaTanggal")?.value;
         const status = document.getElementById("guruSayaStatus")?.value;
