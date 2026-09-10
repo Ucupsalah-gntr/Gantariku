@@ -330,7 +330,13 @@
         white-space: nowrap;
       }
 
-      .view { padding: 6px 34px 50px; max-width: 1160px; }
+      
+      .dash-welcome{background:linear-gradient(135deg,var(--primary-soft) 0%,#fff 72%);border:1px solid var(--line);border-radius:18px;padding:20px 22px;margin-bottom:18px;display:flex;align-items:center;justify-content:space-between;gap:16px;box-shadow:0 6px 20px rgba(108,76,241,.06)}
+      .dash-welcome h2{margin:0 0 5px;font-size:20px}.dash-welcome p{margin:0;color:var(--ink-soft);line-height:1.5}.dash-welcome-mark{font-size:38px;line-height:1}
+      .dash-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px}.dash-mini{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 16px}.dash-mini-top{display:flex;justify-content:space-between;gap:10px;align-items:center}.dash-mini-label{font-size:12px;color:var(--ink-soft)}.dash-mini-num{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:21px;margin-top:5px}.dash-mini-sub{font-size:11px;color:var(--ink-soft);margin-top:4px}.dash-progress{margin-top:9px;height:7px;border-radius:20px;background:var(--muted);overflow:hidden}.dash-progress>span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--primary),var(--pink));border-radius:20px;transition:width .4s ease}
+      .dash-two-col{display:grid;grid-template-columns:1.15fr .85fr;gap:20px;align-items:start}.dash-list{display:flex;flex-direction:column;gap:9px}.dash-list-item{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 12px;border:1px solid var(--line);border-radius:12px;background:#fff}.dash-list-main{min-width:0}.dash-list-title{font-weight:600;font-size:13px}.dash-list-sub{font-size:11px;color:var(--ink-soft);margin-top:2px}.dash-pill{font-size:11px;font-weight:700;padding:5px 9px;border-radius:999px;background:var(--primary-soft);color:var(--primary-dark);white-space:nowrap}
+
+.view { padding: 6px 34px 50px; max-width: 1160px; }
 
       .stat-row {
         display: grid;
@@ -499,6 +505,11 @@
         .stat-row { grid-template-columns: repeat(2, 1fr); }
       }
 
+      @media (max-width: 900px) {
+        .dash-summary{grid-template-columns:1fr 1fr}
+        .dash-two-col{grid-template-columns:1fr}
+      }
+
       @media (max-width: 760px) {
         .app { flex-direction: column; }
 
@@ -541,6 +552,7 @@
         .view, .topbar { padding-left: 18px; padding-right: 18px; }
 
         .stat-row { grid-template-columns: 1fr 1fr; }
+        .dash-summary{grid-template-columns:1fr}.dash-welcome{padding:16px}.dash-welcome h2{font-size:18px}.dash-welcome-mark{font-size:31px}
 
         .login-box { padding: 30px 20px; max-width: calc(100% - 40px); }
       }
@@ -1016,42 +1028,65 @@
       // VIEW: DASBOR
       // ============================================================
       function renderDasbor() {
+        const nama = currentUser?.nama || "Pengelola Gantari";
         return `
+          <div class="dash-welcome">
+            <div>
+              <h2>Selamat datang, ${nama} &#128155;</h2>
+              <p>Yuk lihat kabar Gantari hari ini. Semua yang penting kami rangkum di sini.</p>
+            </div>
+            <div class="dash-welcome-mark">&#x1FA70;</div>
+          </div>
+
+          <div class="dash-summary">
+            <div class="dash-mini">
+              <div class="dash-mini-top"><div class="dash-mini-label">Siswa aktif</div><span>&#128103;</span></div>
+              <div class="dash-mini-num" id="dashTotalSiswa">&#8211;</div>
+              <div class="dash-mini-sub">data siswa saat ini</div>
+            </div>
+            <div class="dash-mini">
+              <div class="dash-mini-top"><div class="dash-mini-label">Kehadiran hari ini</div><span>&#127799;</span></div>
+              <div class="dash-mini-num" id="dashPersenHadir">&#8211;</div>
+              <div class="dash-mini-sub" id="dashHadirSub">Belum ada data</div>
+              <div class="dash-progress"><span id="dashHadirProgress"></span></div>
+            </div>
+            <div class="dash-mini">
+              <div class="dash-mini-top"><div class="dash-mini-label">Pemasukan bulan ini</div><span>&#128155;</span></div>
+              <div class="dash-mini-num" id="dashPemasukan">&#8211;</div>
+              <div class="dash-mini-sub" id="dashPemasukanSub">SPP lunas</div>
+            </div>
+          </div>
+
           <div class="stat-row">
-            <div class="stat c-teal">
-              <div class="num" id="statHadir">–</div>
-              <div class="lbl">Hadir hari ini</div>
+            <div class="stat c-teal"><div class="num" id="statHadir">&#8211;</div><div class="lbl">Hadir hari ini</div></div>
+            <div class="stat c-good"><div class="num" id="statLunas">&#8211;</div><div class="lbl" id="lblLunas">Lunas SPP</div></div>
+            <div class="stat c-bad"><div class="num" id="statBelumBayar">&#8211;</div><div class="lbl" id="lblBelumBayar">Belum bayar</div></div>
+            <div class="stat c-pink"><div class="num" id="statTunggakan">&#8211;</div><div class="lbl">Total tunggakan</div></div>
+          </div>
+
+          <div class="dash-two-col">
+            <div class="section" id="perhatianSection">
+              <div class="section-head"><h2>&#10024; Perlu Perhatian</h2><span class="badge badge-muted" id="perhatianStatus">Memuat...</span></div>
+              <div class="section-body" id="perhatianBody"><div class="empty">Memuat kondisi terbaru...</div></div>
             </div>
-            <div class="stat c-good">
-              <div class="num" id="statLunas">–</div>
-              <div class="lbl" id="lblLunas">Lunas SPP</div>
-            </div>
-            <div class="stat c-bad">
-              <div class="num" id="statBelumBayar">–</div>
-              <div class="lbl" id="lblBelumBayar">Belum bayar</div>
-            </div>
-            <div class="stat c-pink">
-              <div class="num" id="statTunggakan">–</div>
-              <div class="lbl">Total tunggakan</div>
+            <div class="section">
+              <div class="section-head"><h2>&#128140; Tentang Gantari</h2></div>
+              <div class="section-body">
+                <div class="dash-list">
+                  <div class="dash-list-item"><div class="dash-list-main"><div class="dash-list-title">Sekolah menari</div><div class="dash-list-sub">Pantau belajar, hadir, dan pembayaran dalam satu tempat.</div></div><span class="dash-pill">Gantari</span></div>
+                  <div class="dash-list-item"><div class="dash-list-main"><div class="dash-list-title">Orang tua terhubung</div><div class="dash-list-sub">Informasi anak tetap berada di akun keluarga masing-masing.</div></div><span class="dash-pill">Aman</span></div>
+                  <div class="dash-list-item"><div class="dash-list-main"><div class="dash-list-title">Perkembangan anak</div><div class="dash-list-sub">Catatan pelatih bisa dibaca orang tua tanpa harus bertanya satu per satu.</div></div><span class="dash-pill">&#127793;</span></div>
+                </div>
+              </div>
             </div>
           </div>
-          <div class="section" id="perhatianSection">
-            <div class="section-head">
-              <h2>✨ Perlu Perhatian</h2>
-              <span class="badge badge-muted" id="perhatianStatus">Memuat...</span>
-            </div>
-            <div class="section-body" id="perhatianBody">
-              <div class="empty">Memuat kondisi terbaru...</div>
-            </div>
-          </div>
+
           <div class="section">
-            <div class="section-head"><h2>Kehadiran hari ini</h2></div>
+            <div class="section-head"><h2>&#127799; Kehadiran hari ini</h2></div>
             <div class="section-body">
               <table>
                 <thead><tr><th>Nama</th><th>Kelas</th><th>Status</th></tr></thead>
-                <tbody id="tbodyKehadiranHariIni">
-                  <tr><td colspan="3" style="text-align:center;">Memuat data...</td></tr>
-                </tbody>
+                <tbody id="tbodyKehadiranHariIni"><tr><td colspan="3" style="text-align:center;">Memuat data...</td></tr></tbody>
               </table>
             </div>
           </div>
@@ -1075,6 +1110,8 @@
           const { count: totalSiswa } = await supabase
             .from("siswa")
             .select("id", { count: "exact", head: true });
+          const totalEl = document.getElementById("dashTotalSiswa");
+          if (totalEl) totalEl.textContent = totalSiswa || 0;
 
           const { data: absensiHariIni, error: absensiError } = await supabase
             .from("absensi")
@@ -1085,6 +1122,13 @@
           const hadirCount = (absensiHariIni || []).filter((a) => a.status === "H").length;
           const statHadirEl = document.getElementById("statHadir");
           if (statHadirEl) statHadirEl.textContent = `${hadirCount}/${totalSiswa || 0}`;
+          const persenHadir = totalSiswa ? Math.round((hadirCount / totalSiswa) * 100) : 0;
+          const dashPersenEl = document.getElementById("dashPersenHadir");
+          const dashHadirSub = document.getElementById("dashHadirSub");
+          const dashHadirProgress = document.getElementById("dashHadirProgress");
+          if (dashPersenEl) dashPersenEl.textContent = `${persenHadir}%`;
+          if (dashHadirSub) dashHadirSub.textContent = `${hadirCount} dari ${totalSiswa || 0} siswa tercatat hadir`;
+          if (dashHadirProgress) dashHadirProgress.style.width = `${persenHadir}%`;
 
           const tbody = document.getElementById("tbodyKehadiranHariIni");
           if (tbody) {
@@ -1119,6 +1163,11 @@
           document.getElementById("statLunas").textContent = lunas.length;
           document.getElementById("statBelumBayar").textContent = belumBayar.length;
           document.getElementById("statTunggakan").textContent = formatRupiah(totalTunggakan);
+          const totalPemasukan = lunas.reduce((sum, s) => sum + (Number(s.nominal) || 0), 0);
+          const dashPemasukan = document.getElementById("dashPemasukan");
+          const dashPemasukanSub = document.getElementById("dashPemasukanSub");
+          if (dashPemasukan) dashPemasukan.textContent = formatRupiah(totalPemasukan);
+          if (dashPemasukanSub) dashPemasukanSub.textContent = `${lunas.length} tagihan SPP lunas · ${namaBulan(bulanIni)}`;
         } catch (error) {
           console.error("Error load dasbor:", error);
         }
