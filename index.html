@@ -2095,7 +2095,14 @@
 
       async function simpanAbsensiSaya(event) {
         event.preventDefault();
-        if (!supabase || !currentUser) return;
+        if (!supabase || !currentUser) {
+          alert("Sesi login belum siap. Silakan muat ulang halaman lalu login kembali.");
+          return;
+        }
+        if (currentUserRole !== "guru") {
+          alert("Menu Kehadiran Saya hanya dapat digunakan oleh akun Guru/Pelatih.");
+          return;
+        }
         const btn = document.getElementById("btnSimpanAbsensiSaya");
         const tanggal = document.getElementById("guruSayaTanggal")?.value;
         const status = document.getElementById("guruSayaStatus")?.value;
