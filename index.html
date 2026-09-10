@@ -917,6 +917,7 @@
         // ------------------------------------------------------
         if (currentNav === "dasbor") {
           loadDasbor();
+          loadPerhatian();
         }
 
         if (currentNav === "siswa") {
@@ -1003,6 +1004,15 @@
               <div class="lbl">Total tunggakan</div>
             </div>
           </div>
+          <div class="section" id="perhatianSection">
+            <div class="section-head">
+              <h2>✨ Perlu Perhatian</h2>
+              <span class="badge badge-muted" id="perhatianStatus">Memuat...</span>
+            </div>
+            <div class="section-body" id="perhatianBody">
+              <div class="empty">Memuat kondisi terbaru...</div>
+            </div>
+          </div>
           <div class="section">
             <div class="section-head"><h2>Kehadiran hari ini</h2></div>
             <div class="section-body">
@@ -1080,6 +1090,51 @@
           document.getElementById("statTunggakan").textContent = formatRupiah(totalTunggakan);
         } catch (error) {
           console.error("Error load dasbor:", error);
+        }
+      }
+
+      async function loadPerhatian() {
+        if (!supabase || currentUserRole !== "admin") return;
+        const body = document.getElementById("perhatianBody");
+        const status = document.getElementById("perhatianStatus");
+        if (!body) return;
+
+        try {
+          const now = new Date();
+          const bulan = now.getMonth() + 1;
+          const tahun = now.getFullYear();
+          const todayStr = now.toISOString().slice(0, 10);
+
+          const [{ data: siswa }, { data: spp }, { data: absensi }, { data: guru }, { data: absensiGuru }] = await Promise.all([
+            supabase.from("siswa").select("id, nama, kelas"),
+            supabase.from("spp").select("siswa_id, status, nominal").eq("bulan", bulan).eq("tahun", tahun),
+            supabase.from("absensi").select("siswa_id, status").eq("tanggal", todayStr),
+            supabase.from("pengguna").select("id, nama").eq("role", "guru"),
+            supabase.from("absensi_guru").select("guru_id").eq("tanggal", todayStr),
+          ]);
+
+          const tagihanBelum = (spp || []).filter(x => x.status !== "Lunas").length;
+          const siswaIds = new Set((absensi || []).map(x => x.siswa_id));
+          const belumAbsenSiswa = (siswa || []).filter(x => !siswaIds.has(x.id));
+          const guruIds = new Set((absensiGuru || []).map(x => x.guru_id));
+          const belumAbsenGuru = (guru || []).filter(x => !guruIds.has(x.id));
+
+          const items = [];
+          if (tagihanBelum > 0) items.push(`<div style="padding:10px 12px;border-radius:10px;background:var(--bad-soft);margin-bottom:8px;">💳 <strong>${tagihanBelum}</strong> tagihan SPP ${namaBulan(bulan)} belum lunas.</div>`);
+          if (belumAbsenSiswa.length > 0) items.push(`<div style="padding:10px 12px;border-radius:10px;background:var(--warn-soft);margin-bottom:8px;">👧 <strong>${belumAbsenSiswa.length}</strong> siswa belum tercatat absensinya hari ini.</div>`);
+          if (belumAbsenGuru.length > 0) items.push(`<div style="padding:10px 12px;border-radius:10px;background:var(--primary-soft);margin-bottom:8px;">👩‍🏫 <strong>${belumAbsenGuru.length}</strong> guru/pelatih belum mengisi absensi hari ini.</div>`);
+
+          if (items.length === 0) {
+            body.innerHTML = `<div style="padding:12px;border-radius:10px;background:var(--good-soft);color:var(--good);font-weight:600;">🎉 Semua terlihat aman. Tidak ada hal penting yang perlu ditindaklanjuti.</div>`;
+            if (status) { status.textContent = "Aman"; status.className = "badge badge-good"; }
+          } else {
+            body.innerHTML = items.join("");
+            if (status) { status.textContent = `${items.length} perhatian`; status.className = "badge badge-warn"; }
+          }
+        } catch (error) {
+          console.error("Error load perhatian:", error);
+          body.innerHTML = `<div class="empty" style="color:#E11D48;">Belum bisa memuat ringkasan perhatian.</div>`;
+          if (status) status.textContent = "Tidak tersedia";
         }
       }
 
@@ -1403,6 +1458,7 @@
                   <option value="Belum Bayar">Belum Bayar</option>
                 </select>
                 <button class="btn secondary" onclick="window.__app.exportSppCsv()">⬇ Export CSV</button>
+                <button class="btn secondary" onclick="window.__app.buatTagihanBulanan()">⚡ Buat Tagihan Bulanan</button>
                 <button class="btn" onclick="window.__app.bukaFormSpp()">+ Tambah Tagihan</button>
               </div>
             </div>
@@ -1534,6 +1590,65 @@
         } finally {
           btn.disabled = false;
           btn.textContent = "Simpan Tagihan";
+        }
+      }
+
+      async function buatTagihanBulanan() {
+        if (!supabase) return alert("Supabase belum terhubung.");
+
+        const bulan = Number(document.getElementById("filterBulanSpp")?.value);
+        const tahun = Number(document.getElementById("filterTahunSpp")?.value);
+        const inputNominal = prompt(`Nominal SPP untuk ${namaBulan(bulan)} ${tahun}:`, "150000");
+        if (inputNominal === null) return;
+
+        const nominal = Number(String(inputNominal).replace(/[^0-9]/g, ""));
+        if (!nominal || nominal <= 0) {
+          alert("Nominal SPP tidak valid.");
+          return;
+        }
+
+        if (!confirm(`Buat tagihan SPP ${namaBulan(bulan)} ${tahun} sebesar ${formatRupiah(nominal)} untuk semua siswa yang belum memiliki tagihan pada periode tersebut?`)) return;
+
+        try {
+          const { data: siswa, error: siswaError } = await supabase
+            .from("siswa")
+            .select("id, nama, kelas")
+            .order("nama", { ascending: true });
+          if (siswaError) throw siswaError;
+
+          const { data: existing, error: existingError } = await supabase
+            .from("spp")
+            .select("siswa_id")
+            .eq("bulan", bulan)
+            .eq("tahun", tahun);
+          if (existingError) throw existingError;
+
+          const sudahAda = new Set((existing || []).map(x => x.siswa_id));
+          const belumAda = (siswa || []).filter(x => !sudahAda.has(x.id));
+
+          if (belumAda.length === 0) {
+            alert(`Semua siswa sudah memiliki tagihan SPP ${namaBulan(bulan)} ${tahun}.`);
+            return;
+          }
+
+          const payload = belumAda.map(x => ({
+            siswa_id: x.id,
+            bulan,
+            tahun,
+            nominal,
+            status: "Belum Bayar",
+            tanggal_bayar: null,
+            dicatat_oleh: currentUser ? currentUser.id : null,
+          }));
+
+          const { error: insertError } = await supabase.from("spp").insert(payload);
+          if (insertError) throw insertError;
+
+          alert(`Berhasil membuat ${payload.length} tagihan SPP untuk ${namaBulan(bulan)} ${tahun}.`);
+          await loadSpp();
+        } catch (error) {
+          console.error("Error buat tagihan bulanan:", error);
+          alert("Gagal membuat tagihan bulanan:\n\n" + error.message);
         }
       }
 
@@ -2625,6 +2740,8 @@
         loadAbsensiSaya,
         simpanAbsensiSaya,
         exportSppCsv,
+        buatTagihanBulanan,
+        loadPerhatian,
         exportAbsensiGuruCsv,
         exportRekapAbsensiCsv,
         toggleNotifikasi,
