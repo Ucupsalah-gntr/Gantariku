@@ -335,6 +335,26 @@
       .dash-welcome h2{margin:0 0 5px;font-size:20px}.dash-welcome p{margin:0;color:var(--ink-soft);line-height:1.5}.dash-welcome-mark{font-size:38px;line-height:1}
       .dash-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px}.dash-mini{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 16px}.dash-mini-top{display:flex;justify-content:space-between;gap:10px;align-items:center}.dash-mini-label{font-size:12px;color:var(--ink-soft)}.dash-mini-num{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:21px;margin-top:5px}.dash-mini-sub{font-size:11px;color:var(--ink-soft);margin-top:4px}.dash-progress{margin-top:9px;height:7px;border-radius:20px;background:var(--muted);overflow:hidden}.dash-progress>span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--primary),var(--pink));border-radius:20px;transition:width .4s ease}
       .dash-two-col{display:grid;grid-template-columns:1.15fr .85fr;gap:20px;align-items:start}.dash-list{display:flex;flex-direction:column;gap:9px}.dash-list-item{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 12px;border:1px solid var(--line);border-radius:12px;background:#fff}.dash-list-main{min-width:0}.dash-list-title{font-weight:600;font-size:13px}.dash-list-sub{font-size:11px;color:var(--ink-soft);margin-top:2px}.dash-pill{font-size:11px;font-weight:700;padding:5px 9px;border-radius:999px;background:var(--primary-soft);color:var(--primary-dark);white-space:nowrap}
+      .dash-class-table{overflow:auto}.dash-class-table table{min-width:620px}
+      .dash-class-name{font-weight:700}.dash-class-sub{font-size:11px;color:var(--ink-soft);margin-top:2px}
+      .dash-score{font-weight:700;color:var(--primary-dark)}
+      .perk-toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+      .perk-search{min-width:220px;flex:1}
+      .perk-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+      .perk-card{border:1px solid var(--line);border-radius:16px;background:#fff;padding:16px;transition:transform .15s,box-shadow .15s}
+      .perk-card:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(33,27,59,.07)}
+      .perk-card-top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:12px}
+      .perk-student{font-weight:700;font-size:15px}.perk-class{font-size:11px;color:var(--ink-soft);margin-top:3px}
+      .perk-average{font-family:'Space Grotesk',sans-serif;font-weight:700;color:var(--primary-dark);font-size:18px;white-space:nowrap}
+      .perk-aspects{display:grid;gap:7px}.perk-aspect{display:flex;justify-content:space-between;gap:8px;padding:8px 9px;border-radius:10px;background:var(--bg);font-size:12px}.perk-aspect-name{color:var(--ink-soft)}.perk-aspect-score{font-weight:700}
+      .perk-note{margin-top:12px;padding:10px 11px;border-radius:10px;background:var(--primary-soft);font-size:12px;line-height:1.5}
+      .perk-date{font-size:11px;color:var(--ink-soft);margin-top:10px}
+      .perk-empty{padding:36px 18px;text-align:center;color:var(--ink-soft)}
+      .perk-pagination{display:flex;justify-content:center;align-items:center;gap:10px;margin-top:16px}
+      .perk-parent-summary{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin-top:16px}
+      .perk-parent-aspect{padding:12px;border:1px solid var(--line);border-radius:12px;text-align:center;background:#fff}.perk-parent-aspect .score{font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:700;color:var(--primary-dark);margin-top:4px}.perk-parent-aspect .name{font-size:11px;color:var(--ink-soft);line-height:1.3}
+      .perk-history{margin-top:18px}.perk-history-item{padding:12px 0;border-bottom:1px solid var(--line)}.perk-history-item:last-child{border-bottom:none}.perk-history-head{display:flex;justify-content:space-between;gap:10px}.perk-history-date{font-weight:700;font-size:12px}.perk-history-meta{font-size:11px;color:var(--ink-soft);margin-top:3px}.perk-history-note{font-size:12px;line-height:1.5;margin-top:7px}
+
 
 .view { padding: 6px 34px 50px; max-width: 1160px; }
 
@@ -508,6 +528,8 @@
       @media (max-width: 900px) {
         .dash-summary{grid-template-columns:1fr 1fr}
         .dash-two-col{grid-template-columns:1fr}
+        .perk-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+        .perk-parent-summary{grid-template-columns:repeat(3,minmax(0,1fr))}
       }
 
       @media (max-width: 760px) {
@@ -553,6 +575,7 @@
 
         .stat-row { grid-template-columns: 1fr 1fr; }
         .dash-summary{grid-template-columns:1fr}.dash-welcome{padding:16px}.dash-welcome h2{font-size:18px}.dash-welcome-mark{font-size:31px}
+        .perk-grid{grid-template-columns:1fr}.perk-parent-summary{grid-template-columns:repeat(2,minmax(0,1fr))}.perk-search{min-width:0;width:100%}
 
         .login-box { padding: 30px 20px; max-width: calc(100% - 40px); }
       }
@@ -1000,6 +1023,8 @@
 
         if (currentNav === "perkembangan") {
           loadPerkembanganAdmin();
+          const cariPerk = document.getElementById("perkembanganAdminCari");
+          if (cariPerk) cariPerk.addEventListener("input", () => { perkembanganAdminPage = 1; renderPerkembanganAdminCards(); });
         }
 
         if (currentNav === "perkembangan-input") {
@@ -1030,147 +1055,41 @@
       function renderDasbor() {
         const nama = currentUser?.nama || "Pengelola Gantari";
         return `
-          <div class="dash-welcome">
-            <div>
-              <h2>Selamat datang, ${nama} &#128155;</h2>
-              <p>Yuk lihat kabar Gantari hari ini. Semua yang penting kami rangkum di sini.</p>
-            </div>
-            <div class="dash-welcome-mark">&#x1FA70;</div>
-          </div>
-
+          <div class="dash-welcome"><div><h2>Selamat datang, ${nama} &#128155;</h2><p>Yuk lihat kabar Gantari hari ini. Dashboard diringkas supaya tetap nyaman meski siswa sudah ratusan.</p></div><div class="dash-welcome-mark">&#x1FA70;</div></div>
           <div class="dash-summary">
-            <div class="dash-mini">
-              <div class="dash-mini-top"><div class="dash-mini-label">Siswa aktif</div><span>&#128103;</span></div>
-              <div class="dash-mini-num" id="dashTotalSiswa">&#8211;</div>
-              <div class="dash-mini-sub">data siswa saat ini</div>
-            </div>
-            <div class="dash-mini">
-              <div class="dash-mini-top"><div class="dash-mini-label">Kehadiran hari ini</div><span>&#127799;</span></div>
-              <div class="dash-mini-num" id="dashPersenHadir">&#8211;</div>
-              <div class="dash-mini-sub" id="dashHadirSub">Belum ada data</div>
-              <div class="dash-progress"><span id="dashHadirProgress"></span></div>
-            </div>
-            <div class="dash-mini">
-              <div class="dash-mini-top"><div class="dash-mini-label">Pemasukan bulan ini</div><span>&#128155;</span></div>
-              <div class="dash-mini-num" id="dashPemasukan">&#8211;</div>
-              <div class="dash-mini-sub" id="dashPemasukanSub">SPP lunas</div>
-            </div>
+            <div class="dash-mini"><div class="dash-mini-top"><div class="dash-mini-label">Siswa aktif</div><span>&#128103;</span></div><div class="dash-mini-num" id="dashTotalSiswa">&#8211;</div><div class="dash-mini-sub">semua siswa terdaftar</div></div>
+            <div class="dash-mini"><div class="dash-mini-top"><div class="dash-mini-label">Kehadiran hari ini</div><span>&#127799;</span></div><div class="dash-mini-num" id="dashPersenHadir">&#8211;</div><div class="dash-mini-sub" id="dashHadirSub">Belum ada data</div><div class="dash-progress"><span id="dashHadirProgress"></span></div></div>
+            <div class="dash-mini"><div class="dash-mini-top"><div class="dash-mini-label">Pemasukan bulan ini</div><span>&#128155;</span></div><div class="dash-mini-num" id="dashPemasukan">&#8211;</div><div class="dash-mini-sub" id="dashPemasukanSub">SPP lunas</div></div>
           </div>
-
-          <div class="stat-row">
-            <div class="stat c-teal"><div class="num" id="statHadir">&#8211;</div><div class="lbl">Hadir hari ini</div></div>
-            <div class="stat c-good"><div class="num" id="statLunas">&#8211;</div><div class="lbl" id="lblLunas">Lunas SPP</div></div>
-            <div class="stat c-bad"><div class="num" id="statBelumBayar">&#8211;</div><div class="lbl" id="lblBelumBayar">Belum bayar</div></div>
-            <div class="stat c-pink"><div class="num" id="statTunggakan">&#8211;</div><div class="lbl">Total tunggakan</div></div>
-          </div>
-
-          <div class="dash-two-col">
-            <div class="section" id="perhatianSection">
-              <div class="section-head"><h2>&#10024; Perlu Perhatian</h2><span class="badge badge-muted" id="perhatianStatus">Memuat...</span></div>
-              <div class="section-body" id="perhatianBody"><div class="empty">Memuat kondisi terbaru...</div></div>
-            </div>
-            <div class="section">
-              <div class="section-head"><h2>&#128140; Tentang Gantari</h2></div>
-              <div class="section-body">
-                <div class="dash-list">
-                  <div class="dash-list-item"><div class="dash-list-main"><div class="dash-list-title">Sekolah menari</div><div class="dash-list-sub">Pantau belajar, hadir, dan pembayaran dalam satu tempat.</div></div><span class="dash-pill">Gantari</span></div>
-                  <div class="dash-list-item"><div class="dash-list-main"><div class="dash-list-title">Orang tua terhubung</div><div class="dash-list-sub">Informasi anak tetap berada di akun keluarga masing-masing.</div></div><span class="dash-pill">Aman</span></div>
-                  <div class="dash-list-item"><div class="dash-list-main"><div class="dash-list-title">Perkembangan anak</div><div class="dash-list-sub">Catatan pelatih bisa dibaca orang tua tanpa harus bertanya satu per satu.</div></div><span class="dash-pill">&#127793;</span></div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="section">
-            <div class="section-head"><h2>&#127799; Kehadiran hari ini</h2></div>
-            <div class="section-body">
-              <table>
-                <thead><tr><th>Nama</th><th>Kelas</th><th>Status</th></tr></thead>
-                <tbody id="tbodyKehadiranHariIni"><tr><td colspan="3" style="text-align:center;">Memuat data...</td></tr></tbody>
-              </table>
-            </div>
-          </div>
-        `;
+          <div class="stat-row"><div class="stat c-teal"><div class="num" id="statHadir">&#8211;</div><div class="lbl">Hadir hari ini</div></div><div class="stat c-good"><div class="num" id="statLunas">&#8211;</div><div class="lbl" id="lblLunas">Lunas SPP</div></div><div class="stat c-bad"><div class="num" id="statBelumBayar">&#8211;</div><div class="lbl" id="lblBelumBayar">Belum bayar</div></div><div class="stat c-pink"><div class="num" id="statTunggakan">&#8211;</div><div class="lbl">Total tunggakan</div></div></div>
+          <div class="dash-two-col"><div class="section" id="perhatianSection"><div class="section-head"><h2>&#10024; Perlu Perhatian</h2><span class="badge badge-muted" id="perhatianStatus">Memuat...</span></div><div class="section-body" id="perhatianBody"><div class="empty">Memuat kondisi terbaru...</div></div></div><div class="section"><div class="section-head"><h2>&#128140; Ringkasan Hari Ini</h2></div><div class="section-body"><div class="dash-list"><div class="dash-list-item"><div class="dash-list-main"><div class="dash-list-title">Fokus utama</div><div class="dash-list-sub">Perhatikan pembayaran, absensi, dan perkembangan.</div></div><span class="dash-pill">Hari ini</span></div><div class="dash-list-item"><div class="dash-list-main"><div class="dash-list-title">Perkembangan anak</div><div class="dash-list-sub">Data disusun per siswa agar tetap ringan saat jumlah murid bertambah.</div></div><span class="dash-pill">&#127793;</span></div><div class="dash-list-item"><div class="dash-list-main"><div class="dash-list-title">Data keluarga</div><div class="dash-list-sub">Orang tua hanya melihat informasi anak yang terhubung ke akunnya.</div></div><span class="dash-pill">Aman</span></div></div></div></div></div>
+          <div class="section"><div class="section-head"><h2>&#128200; Kondisi Kelas</h2><span class="badge badge-muted" id="dashKelasCount">Memuat...</span></div><div class="section-body dash-class-table"><table><thead><tr><th>Kelas</th><th class="num">Siswa</th><th class="num">Hadir</th><th class="num">Tercatat</th><th class="num">Kehadiran</th><th class="num">SPP Lunas</th></tr></thead><tbody id="tbodyKondisiKelas"><tr><td colspan="6" style="text-align:center;">Memuat kondisi kelas...</td></tr></tbody></table></div></div>`;
       }
 
       async function loadDasbor() {
-        if (!supabase) return;
-
-        const today = new Date();
-        const todayStr = today.toISOString().slice(0, 10);
-        const bulanIni = today.getMonth() + 1;
-        const tahunIni = today.getFullYear();
-
-        const lblLunas = document.getElementById("lblLunas");
-        const lblBelumBayar = document.getElementById("lblBelumBayar");
-        if (lblLunas) lblLunas.textContent = `Lunas SPP — ${namaBulan(bulanIni)}`;
-        if (lblBelumBayar) lblBelumBayar.textContent = `Belum bayar — ${namaBulan(bulanIni)}`;
-
-        try {
-          const { count: totalSiswa } = await supabase
-            .from("siswa")
-            .select("id", { count: "exact", head: true });
-          const totalEl = document.getElementById("dashTotalSiswa");
-          if (totalEl) totalEl.textContent = totalSiswa || 0;
-
-          const { data: absensiHariIni, error: absensiError } = await supabase
-            .from("absensi")
-            .select("status, siswa:siswa_id ( nama, kelas )")
-            .eq("tanggal", todayStr);
-          if (absensiError) throw absensiError;
-
-          const hadirCount = (absensiHariIni || []).filter((a) => a.status === "H").length;
-          const statHadirEl = document.getElementById("statHadir");
-          if (statHadirEl) statHadirEl.textContent = `${hadirCount}/${totalSiswa || 0}`;
-          const persenHadir = totalSiswa ? Math.round((hadirCount / totalSiswa) * 100) : 0;
-          const dashPersenEl = document.getElementById("dashPersenHadir");
-          const dashHadirSub = document.getElementById("dashHadirSub");
-          const dashHadirProgress = document.getElementById("dashHadirProgress");
-          if (dashPersenEl) dashPersenEl.textContent = `${persenHadir}%`;
-          if (dashHadirSub) dashHadirSub.textContent = `${hadirCount} dari ${totalSiswa || 0} siswa tercatat hadir`;
-          if (dashHadirProgress) dashHadirProgress.style.width = `${persenHadir}%`;
-
-          const tbody = document.getElementById("tbodyKehadiranHariIni");
-          if (tbody) {
-            if (!absensiHariIni || absensiHariIni.length === 0) {
-              tbody.innerHTML = `<tr><td colspan="3" style="text-align:center;">Belum ada absensi hari ini.</td></tr>`;
-            } else {
-              tbody.innerHTML = absensiHariIni
-                .map(
-                  (a) => `
-                <tr>
-                  <td>${a.siswa?.nama || "-"}</td>
-                  <td>${a.siswa?.kelas || "-"}</td>
-                  <td><span class="badge ${statusBadgeAbsensi(a.status)}">${labelStatusAbsensi(a.status)}</span></td>
-                </tr>
-              `
-                )
-                .join("");
-            }
-          }
-
-          const { data: sppBulanIni, error: sppError } = await supabase
-            .from("spp")
-            .select("status, nominal")
-            .eq("bulan", bulanIni)
-            .eq("tahun", tahunIni);
-          if (sppError) throw sppError;
-
-          const lunas = (sppBulanIni || []).filter((s) => s.status === "Lunas");
-          const belumBayar = (sppBulanIni || []).filter((s) => s.status !== "Lunas");
-          const totalTunggakan = belumBayar.reduce((sum, s) => sum + (Number(s.nominal) || 0), 0);
-
-          document.getElementById("statLunas").textContent = lunas.length;
-          document.getElementById("statBelumBayar").textContent = belumBayar.length;
-          document.getElementById("statTunggakan").textContent = formatRupiah(totalTunggakan);
-          const totalPemasukan = lunas.reduce((sum, s) => sum + (Number(s.nominal) || 0), 0);
-          const dashPemasukan = document.getElementById("dashPemasukan");
-          const dashPemasukanSub = document.getElementById("dashPemasukanSub");
-          if (dashPemasukan) dashPemasukan.textContent = formatRupiah(totalPemasukan);
-          if (dashPemasukanSub) dashPemasukanSub.textContent = `${lunas.length} tagihan SPP lunas · ${namaBulan(bulanIni)}`;
-        } catch (error) {
-          console.error("Error load dasbor:", error);
-        }
+        if (!supabase || currentUserRole !== "admin") return;
+        const today=new Date(), todayStr=today.toISOString().slice(0,10), bulanIni=today.getMonth()+1, tahunIni=today.getFullYear();
+        const lblLunas=document.getElementById("lblLunas"), lblBelumBayar=document.getElementById("lblBelumBayar");
+        if(lblLunas)lblLunas.textContent=`Lunas SPP — ${namaBulan(bulanIni)}`; if(lblBelumBayar)lblBelumBayar.textContent=`Belum bayar — ${namaBulan(bulanIni)}`;
+        try{
+          const [{data:siswaData,count:totalSiswa},{data:absensiHariIni,error:absensiError},{data:sppBulanIni,error:sppError}]=await Promise.all([
+            supabase.from("siswa").select("id,nama,kelas",{count:"exact"}).order("nama"),
+            supabase.from("absensi").select("status,siswa_id,siswa:siswa_id(nama,kelas)").eq("tanggal",todayStr),
+            supabase.from("spp").select("status,nominal,siswa_id,siswa:siswa_id(kelas)").eq("bulan",bulanIni).eq("tahun",tahunIni)
+          ]); if(absensiError)throw absensiError; if(sppError)throw sppError;
+          const siswa=siswaData||[], total=totalSiswa||siswa.length, hadirCount=(absensiHariIni||[]).filter(a=>a.status==="H").length, persenHadir=total?Math.round(hadirCount/total*100):0;
+          document.getElementById("dashTotalSiswa")?.replaceChildren(document.createTextNode(String(total))); document.getElementById("statHadir")?.replaceChildren(document.createTextNode(`${hadirCount}/${total}`)); document.getElementById("dashPersenHadir")?.replaceChildren(document.createTextNode(`${persenHadir}%`));
+          const sh=document.getElementById("dashHadirSub"); if(sh)sh.textContent=`${hadirCount} dari ${total} siswa tercatat hadir`; const pr=document.getElementById("dashHadirProgress"); if(pr)pr.style.width=`${persenHadir}%`;
+          const lunas=(sppBulanIni||[]).filter(s=>s.status==="Lunas"), belumBayar=(sppBulanIni||[]).filter(s=>s.status!=="Lunas"), tunggakan=belumBayar.reduce((sum,s)=>sum+(Number(s.nominal)||0),0), pemasukan=lunas.reduce((sum,s)=>sum+(Number(s.nominal)||0),0);
+          document.getElementById("statLunas")?.replaceChildren(document.createTextNode(String(lunas.length))); document.getElementById("statBelumBayar")?.replaceChildren(document.createTextNode(String(belumBayar.length))); document.getElementById("statTunggakan")?.replaceChildren(document.createTextNode(formatRupiah(tunggakan))); document.getElementById("dashPemasukan")?.replaceChildren(document.createTextNode(formatRupiah(pemasukan)));
+          const sp=document.getElementById("dashPemasukanSub"); if(sp)sp.textContent=`${lunas.length} tagihan SPP lunas · ${namaBulan(bulanIni)}`;
+          const classMap={}; siswa.forEach(s=>{const k=s.kelas||"Tanpa Kelas"; classMap[k]??={total:0,hadir:0,tercatat:0,lunas:0}; classMap[k].total++;});
+          (absensiHariIni||[]).forEach(a=>{const k=a.siswa?.kelas||"Tanpa Kelas"; classMap[k]??={total:0,hadir:0,tercatat:0,lunas:0}; classMap[k].tercatat++; if(a.status==="H")classMap[k].hadir++;});
+          (sppBulanIni||[]).forEach(a=>{const k=a.siswa?.kelas||"Tanpa Kelas"; classMap[k]??={total:0,hadir:0,tercatat:0,lunas:0}; if(a.status==="Lunas")classMap[k].lunas++;});
+          const entries=Object.entries(classMap).sort((a,b)=>a[0].localeCompare(b[0],'id')), tbody=document.getElementById("tbodyKondisiKelas");
+          if(tbody)tbody.innerHTML=entries.length?entries.map(([k,v])=>{const pct=v.total?Math.round(v.hadir/v.total*100):0;return `<tr><td><div class="dash-class-name">${k}</div><div class="dash-class-sub">${v.total} siswa</div></td><td class="num">${v.total}</td><td class="num">${v.hadir}</td><td class="num">${v.tercatat}</td><td class="num"><span class="dash-score">${pct}%</span></td><td class="num">${v.lunas}</td></tr>`}).join(""):`<tr><td colspan="6" style="text-align:center;">Belum ada data kelas.</td></tr>`;
+          const kc=document.getElementById("dashKelasCount"); if(kc)kc.textContent=`${entries.length} kelas`;
+        }catch(error){console.error("Error load dasbor:",error);}
       }
 
       async function loadPerhatian() {
@@ -2329,101 +2248,18 @@
       // ============================================================
       const PERKEMBANGAN_ASPEK = ["Teknik", "Hafalan Koreografi", "Ekspresi", "Disiplin", "Kepercayaan Diri"];
 
-      function renderPerkembanganAdmin() {
-        const todayStr = new Date().toISOString().slice(0,10);
-        return `
-          <div class="section">
-            <div class="section-head">
-              <h2>Catatan Perkembangan</h2>
-              <div class="controls">
-                <select id="perkembanganAdminKelas"><option value="">Semua kelas</option></select>
-                <input type="date" id="perkembanganAdminTanggal" value="${todayStr}">
-                <button class="btn secondary" onclick="window.__app.loadPerkembanganAdmin()">Tampilkan</button>
-                <button class="btn secondary" onclick="window.__app.exportPerkembanganCsv()">⬇ Export CSV</button>
-              </div>
-            </div>
-            <div class="section-body">
-              <table>
-                <thead><tr><th>Tanggal</th><th>Siswa</th><th>Kelas</th><th>Aspek</th><th>Nilai</th><th>Pelatih</th><th>Catatan</th></tr></thead>
-                <tbody id="daftarPerkembanganAdmin"><tr><td colspan="7" style="text-align:center;">Memuat data...</td></tr></tbody>
-              </table>
-            </div>
-          </div>`;
-      }
-
-      async function loadPerkembanganAdmin() {
-        const tbody=document.getElementById("daftarPerkembanganAdmin");
-        const sel=document.getElementById("perkembanganAdminKelas");
-        if(!tbody || !supabase || currentUserRole!=="admin") return;
-        try {
-          const {data:kelasData,error:ke}=await supabase.from("siswa").select("kelas");
-          if(ke) throw ke;
-          const kelasUnik=[...new Set((kelasData||[]).map(x=>x.kelas).filter(Boolean))].sort();
-          const old=sel?.value||"";
-          if(sel) sel.innerHTML=`<option value="">Semua kelas</option>`+kelasUnik.map(k=>`<option value="${k}">${k}</option>`).join("");
-          if(sel) sel.value=old;
-          const tanggal=document.getElementById("perkembanganAdminTanggal")?.value;
-          let q=supabase.from("perkembangan").select("id,tanggal,aspek,nilai,catatan,siswa:siswa_id(nama,kelas),guru:guru_id(nama)").order("tanggal",{ascending:false}).order("created_at",{ascending:false});
-          if(tanggal) q=q.eq("tanggal",tanggal);
-          const {data,error}=await q; if(error) throw error;
-          let rows=data||[];
-          const kelas=sel?.value||""; if(kelas) rows=rows.filter(x=>x.siswa?.kelas===kelas);
-          tbody.innerHTML=rows.length?rows.map(x=>`<tr><td>${x.tanggal||"-"}</td><td>${x.siswa?.nama||"-"}</td><td>${x.siswa?.kelas||"-"}</td><td>${x.aspek||"-"}</td><td>${x.nilai||"-"}/5</td><td>${x.guru?.nama||"-"}</td><td>${x.catatan||"-"}</td></tr>`).join(""):`<tr><td colspan="7" style="text-align:center;">Belum ada catatan perkembangan.</td></tr>`;
-        } catch(e){ tbody.innerHTML=`<tr><td colspan="7" style="text-align:center; color:#E11D48;">Tabel perkembangan belum tersedia atau gagal dimuat.</td></tr>`; console.error(e); }
-      }
-
-      function renderPerkembanganInput(){
-        const todayStr=new Date().toISOString().slice(0,10);
-        return `<div class="section"><div class="section-head"><h2>Catat Perkembangan Siswa</h2></div><div class="section-body">
-          <form id="formPerkembangan" onsubmit="window.__app.simpanPerkembangan(event)">
-            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:15px;">
-              <div class="form-group"><label>Kelas</label><select id="perkembanganKelas" required onchange="window.__app.loadSiswaPerkembangan()"><option value="">Pilih kelas...</option></select></div>
-              <div class="form-group"><label>Siswa</label><select id="perkembanganSiswaId" required><option value="">Pilih kelas terlebih dahulu</option></select></div>
-              <div class="form-group"><label>Tanggal</label><input type="date" id="perkembanganTanggal" value="${todayStr}" required></div>
-              <div class="form-group"><label>Aspek</label><select id="perkembanganAspek" required>${PERKEMBANGAN_ASPEK.map(x=>`<option value="${x}">${x}</option>`).join("")}</select></div>
-              <div class="form-group"><label>Nilai</label><select id="perkembanganNilai" required><option value="5">5 — Sangat Baik</option><option value="4">4 — Baik</option><option value="3">3 — Cukup</option><option value="2">2 — Perlu Latihan</option><option value="1">1 — Perlu Pendampingan</option></select></div>
-            </div>
-            <div class="form-group" style="margin-top:15px;"><label>Catatan Pelatih</label><input type="text" id="perkembanganCatatan" placeholder="Contoh: sudah semakin percaya diri saat tampil"></div>
-            <div style="margin-top:18px;"><button type="submit" class="btn" id="btnSimpanPerkembangan">Simpan Catatan</button></div>
-          </form>
-        </div></div>
-        <div class="section"><div class="section-head"><h2>Catatan Terakhir</h2></div><div class="section-body"><table><thead><tr><th>Tanggal</th><th>Siswa</th><th>Aspek</th><th>Nilai</th><th>Catatan</th></tr></thead><tbody id="daftarPerkembanganGuru"><tr><td colspan="5" style="text-align:center;">Memuat data...</td></tr></tbody></table></div></div>`;
-      }
-
-      async function loadSiswaPerkembangan(){
-        const kelas=document.getElementById("perkembanganKelas")?.value, sel=document.getElementById("perkembanganSiswaId");
-        if(!sel||!supabase||!kelas) return;
-        const {data,error}=await supabase.from("siswa").select("id,nama,nis").eq("kelas",kelas).order("nama");
-        if(error){sel.innerHTML=`<option value="">Gagal memuat siswa</option>`;return;}
-        sel.innerHTML=(data||[]).map(s=>`<option value="${s.id}">${s.nama} — ${s.nis||"-"}</option>`).join("")||`<option value="">Belum ada siswa</option>`;
-      }
-
-      async function simpanPerkembangan(e){
-        e.preventDefault(); if(!supabase||currentUserRole!=="guru") return;
-        const btn=document.getElementById("btnSimpanPerkembangan"); btn.disabled=true; btn.textContent="Menyimpan...";
-        try{
-          const payload={siswa_id:document.getElementById("perkembanganSiswaId").value,guru_id:currentUser.id,tanggal:document.getElementById("perkembanganTanggal").value,aspek:document.getElementById("perkembanganAspek").value,nilai:Number(document.getElementById("perkembanganNilai").value),catatan:document.getElementById("perkembanganCatatan").value.trim()||null};
-          const {error}=await supabase.from("perkembangan").insert(payload); if(error) throw error;
-          alert("Catatan perkembangan berhasil disimpan."); document.getElementById("perkembanganCatatan").value=""; loadPerkembanganGuru();
-        }catch(e){alert("Gagal menyimpan: "+e.message);}
-        finally{btn.disabled=false;btn.textContent="Simpan Catatan";}
-      }
-
-      async function loadPerkembanganGuru(){
-        const tbody=document.getElementById("daftarPerkembanganGuru"); if(!tbody||!supabase||currentUserRole!=="guru") return;
-        try{const {data,error}=await supabase.from("perkembangan").select("tanggal,aspek,nilai,catatan,siswa:siswa_id(nama)").eq("guru_id",currentUser.id).order("tanggal",{ascending:false}).order("created_at",{ascending:false}).limit(20);if(error)throw error;tbody.innerHTML=(data||[]).length?(data||[]).map(x=>`<tr><td>${x.tanggal||"-"}</td><td>${x.siswa?.nama||"-"}</td><td>${x.aspek||"-"}</td><td>${x.nilai||"-"}/5</td><td>${x.catatan||"-"}</td></tr>`).join(""):`<tr><td colspan="5" style="text-align:center;">Belum ada catatan.</td></tr>`;}catch(e){tbody.innerHTML=`<tr><td colspan="5" style="text-align:center; color:#E11D48;">Tabel perkembangan belum tersedia.</td></tr>`;}
-      }
-
-      function renderPerkembanganAnak(){return `<div id="pilihAnakWrap"></div><div class="section"><div class="section-head"><h2>Perkembangan Anak</h2></div><div class="section-body"><div id="ringkasanPerkembangan"><div class="empty">Memuat data...</div></div></div></div>`;}
-
-      async function loadPerkembanganAnak(){
-        const wrap=document.getElementById("pilihAnakWrap"), body=document.getElementById("ringkasanPerkembangan"); if(!body||!supabase) return;
-        await pastikanAnakOrangTuaDimuat(); if(wrap)wrap.innerHTML=renderPilihAnakHtml();
-        const anak=anakYangDipilih(); if(!anak){body.innerHTML=`<div class="empty">Belum ada siswa yang terhubung dengan akun ini.</div>`;return;}
-        try{const {data,error}=await supabase.from("perkembangan").select("tanggal,aspek,nilai,catatan,guru:guru_id(nama)").eq("siswa_id",anak.id).order("tanggal",{ascending:false}).order("created_at",{ascending:false}).limit(50);if(error)throw error;
-          body.innerHTML=(data||[]).length?(data||[]).map(x=>`<div style="border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:10px;"><div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;"><strong>${x.aspek||"Perkembangan"}</strong><span class="badge badge-good">${x.nilai||"-"}/5</span></div><div style="font-size:12px;color:var(--ink-soft);margin-top:4px;">${x.tanggal||"-"} · ${x.guru?.nama||"Pelatih"}</div><div style="margin-top:9px;line-height:1.5;">${x.catatan||"Tidak ada catatan tambahan."}</div></div>`).join(""):`<div class="empty">Belum ada catatan perkembangan untuk anak ini.</div>`;
-        }catch(e){body.innerHTML=`<div class="empty" style="color:#E11D48;">Tabel perkembangan belum tersedia.</div>`;}
-      }
+      let perkembanganAdminData=[]; let perkembanganAdminPage=1; const PERK_PAGE_SIZE=12;
+      function opsiBulanPerkembangan(){const n=new Date();return ["Semua bulan","Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"].map((m,i)=>`<option value="${i===0?0:i}" ${i===n.getMonth()+1?'selected':''}>${m}</option>`).join("");}
+      function renderPerkembanganAdmin(){const tahun=new Date().getFullYear();return `<div class="section"><div class="section-head"><div><h2>Perkembangan Anak</h2><div style="font-size:12px;color:var(--ink-soft);margin-top:4px;">Satu kartu mewakili satu anak agar tetap nyaman saat jumlah siswa bertambah.</div></div><div class="perk-toolbar"><input class="perk-search" type="text" id="perkembanganAdminCari" placeholder="Cari nama siswa..."><select id="perkembanganAdminKelas"><option value="">Semua kelas</option></select><select id="perkembanganAdminBulan">${opsiBulanPerkembangan()}</select><select id="perkembanganAdminTahun"><option value="${tahun}">${tahun}</option><option value="${tahun-1}">${tahun-1}</option></select><button class="btn secondary" onclick="window.__app.loadPerkembanganAdmin()">Tampilkan</button><button class="btn secondary" onclick="window.__app.exportPerkembanganCsv()">&#8595; Export CSV</button></div></div><div class="section-body"><div id="perkembanganAdminGrid"><div class="perk-empty">Memuat data perkembangan...</div></div><div class="perk-pagination" id="perkembanganPagination"></div></div></div>`;}
+      function renderPerkembanganAdminCards(){const grid=document.getElementById("perkembanganAdminGrid"),pag=document.getElementById("perkembanganPagination");if(!grid)return;const search=(document.getElementById("perkembanganAdminCari")?.value||"").toLowerCase().trim(),kelas=document.getElementById("perkembanganAdminKelas")?.value||"";const items=perkembanganAdminData.filter(x=>(!kelas||x.kelas===kelas)&&(!search||x.nama.toLowerCase().includes(search)));const pages=Math.max(1,Math.ceil(items.length/PERK_PAGE_SIZE));if(perkembanganAdminPage>pages)perkembanganAdminPage=pages;const slice=items.slice((perkembanganAdminPage-1)*PERK_PAGE_SIZE,perkembanganAdminPage*PERK_PAGE_SIZE);grid.innerHTML=slice.length?`<div class="perk-grid">${slice.map(item=>{const vals=PERKEMBANGAN_ASPEK.map(a=>item.aspekMap[a]?.nilai).filter(v=>Number(v)>0),avg=vals.length?(vals.reduce((a,b)=>a+b,0)/vals.length).toFixed(1):"-";return `<div class="perk-card"><div class="perk-card-top"><div><div class="perk-student">${item.nama}</div><div class="perk-class">${item.kelas||"Tanpa kelas"} · ${item.latestDate||"-"}</div></div><div class="perk-average">${avg}${avg!=="-"?"/5":""}</div></div><div class="perk-aspects">${PERKEMBANGAN_ASPEK.map(a=>`<div class="perk-aspect"><span class="perk-aspect-name">${a}</span><span class="perk-aspect-score">${item.aspekMap[a]?`${item.aspekMap[a].nilai}/5`:'—'}</span></div>`).join("")}</div><div class="perk-note">${item.latestNote||"Belum ada catatan tambahan."}</div><div class="perk-date">Pelatih: ${item.latestGuru||"-"}</div></div>`}).join("")}</div>`:`<div class="perk-empty">Belum ada data perkembangan untuk filter ini.</div>`;if(pag)pag.innerHTML=pages>1?`<button class="btn ghost small" ${perkembanganAdminPage===1?'disabled':''} onclick="window.__app.changePerkPage(-1)">&#8592; Sebelumnya</button><span style="font-size:12px;color:var(--ink-soft);">Halaman ${perkembanganAdminPage} / ${pages}</span><button class="btn ghost small" ${perkembanganAdminPage===pages?'disabled':''} onclick="window.__app.changePerkPage(1)">Berikutnya &#8594;</button>`:"";}
+      function changePerkPage(delta){perkembanganAdminPage+=delta;renderPerkembanganAdminCards();}
+      async function loadPerkembanganAdmin(){const grid=document.getElementById("perkembanganAdminGrid");if(!grid||!supabase||currentUserRole!=="admin")return;try{const sel=document.getElementById("perkembanganAdminKelas"),{data:kd,error:ke}=await supabase.from("siswa").select("kelas");if(ke)throw ke;const ku=[...new Set((kd||[]).map(x=>x.kelas).filter(Boolean))].sort(),old=sel?.value||"";if(sel)sel.innerHTML=`<option value="">Semua kelas</option>`+ku.map(k=>`<option value="${k}">${k}</option>`).join("");if(sel)sel.value=old;const bulan=Number(document.getElementById("perkembanganAdminBulan")?.value||0),tahun=Number(document.getElementById("perkembanganAdminTahun")?.value||new Date().getFullYear());let q=supabase.from("perkembangan").select("tanggal,aspek,nilai,catatan,created_at,siswa:siswa_id(id,nama,nis,kelas),guru:guru_id(nama)").order("tanggal",{ascending:false}).order("created_at",{ascending:false});if(bulan){const awal=`${tahun}-${String(bulan).padStart(2,'0')}-01`,akhirD=new Date(tahun,bulan,0).getDate(),akhir=`${tahun}-${String(bulan).padStart(2,'0')}-${String(akhirD).padStart(2,'0')}`;q=q.gte("tanggal",awal).lte("tanggal",akhir);}else q=q.gte("tanggal",`${tahun}-01-01`).lte("tanggal",`${tahun}-12-31`);const {data,error}=await q;if(error)throw error;const grouped=new Map();for(const row of(data||[])){const sid=row.siswa?.id;if(!sid)continue;if(!grouped.has(sid))grouped.set(sid,{id:sid,nama:row.siswa?.nama||"-",kelas:row.siswa?.kelas||"",aspekMap:{},latestDate:row.tanggal||"",latestGuru:row.guru?.nama||"-",latestNote:row.catatan||""});const item=grouped.get(sid);if(!item.aspekMap[row.aspek])item.aspekMap[row.aspek]={nilai:row.nilai,catatan:row.catatan,tanggal:row.tanggal,guru:row.guru?.nama||"-"};if(!item.latestNote&&row.catatan)item.latestNote=row.catatan;}perkembanganAdminData=[...grouped.values()].sort((a,b)=>a.nama.localeCompare(b.nama,'id'));perkembanganAdminPage=1;renderPerkembanganAdminCards();}catch(e){grid.innerHTML=`<div class="perk-empty" style="color:#E11D48;">Tabel perkembangan belum tersedia atau gagal dimuat.</div>`;console.error(e);}}
+      function renderPerkembanganInput(){const todayStr=new Date().toISOString().slice(0,10),opt=id=>`<select id="${id}" required><option value="5">5 — Sangat Baik</option><option value="4">4 — Baik</option><option value="3">3 — Cukup</option><option value="2">2 — Perlu Latihan</option><option value="1">1 — Perlu Pendampingan</option></select>`;return `<div class="section"><div class="section-head"><div><h2>Catat Perkembangan Siswa</h2><div style="font-size:12px;color:var(--ink-soft);margin-top:4px;">Pilih satu anak lalu isi semua aspek sekaligus.</div></div></div><div class="section-body"><form id="formPerkembangan" onsubmit="window.__app.simpanPerkembangan(event)"><div style="display:grid;grid-template-columns:repeat(3,minmax(180px,1fr));gap:15px;"><div class="form-group"><label>Kelas</label><select id="perkembanganKelas" required onchange="window.__app.loadSiswaPerkembangan()"><option value="">Pilih kelas...</option></select></div><div class="form-group"><label>Siswa</label><select id="perkembanganSiswaId" required><option value="">Pilih kelas terlebih dahulu</option></select></div><div class="form-group"><label>Tanggal Penilaian</label><input type="date" id="perkembanganTanggal" value="${todayStr}" required></div></div><div style="display:grid;grid-template-columns:repeat(2,minmax(220px,1fr));gap:12px;margin-top:16px;"><div class="form-group"><label>Teknik</label>${opt('perkNilaiTeknik')}</div><div class="form-group"><label>Hafalan Koreografi</label>${opt('perkNilaiHafalan')}</div><div class="form-group"><label>Ekspresi</label>${opt('perkNilaiEkspresi')}</div><div class="form-group"><label>Disiplin</label>${opt('perkNilaiDisiplin')}</div><div class="form-group"><label>Kepercayaan Diri</label>${opt('perkNilaiPercaya')}</div></div><div class="form-group" style="margin-top:15px;"><label>Catatan Pelatih</label><input type="text" id="perkembanganCatatan" placeholder="Contoh: sudah semakin percaya diri saat tampil"></div><div style="margin-top:18px;"><button type="submit" class="btn" id="btnSimpanPerkembangan">Simpan Penilaian Anak</button></div></form></div></div><div class="section"><div class="section-head"><h2>Penilaian Terakhir Saya</h2></div><div class="section-body"><table><thead><tr><th>Tanggal</th><th>Siswa</th><th>Ringkasan</th><th>Catatan</th></tr></thead><tbody id="daftarPerkembanganGuru"><tr><td colspan="4" style="text-align:center;">Memuat data...</td></tr></tbody></table></div></div>`;}
+      async function loadSiswaPerkembangan(){const kelas=document.getElementById("perkembanganKelas")?.value,sel=document.getElementById("perkembanganSiswaId");if(!sel||!supabase)return;if(!kelas){sel.innerHTML=`<option value="">Pilih kelas terlebih dahulu</option>`;return;}const {data,error}=await supabase.from("siswa").select("id,nama,nis").eq("kelas",kelas).order("nama");if(error){sel.innerHTML=`<option value="">Gagal memuat siswa</option>`;return;}sel.innerHTML=(data||[]).map(s=>`<option value="${s.id}">${s.nama} — ${s.nis||"-"}</option>`).join("")||`<option value="">Belum ada siswa</option>`;}
+      async function simpanPerkembangan(e){e.preventDefault();if(!supabase||currentUserRole!=="guru")return;const btn=document.getElementById("btnSimpanPerkembangan");btn.disabled=true;btn.textContent="Menyimpan...";try{const siswa_id=document.getElementById("perkembanganSiswaId")?.value,tanggal=document.getElementById("perkembanganTanggal")?.value,catatan=document.getElementById("perkembanganCatatan")?.value.trim()||null;if(!siswa_id||!tanggal)throw new Error("Siswa dan tanggal wajib dipilih.");const map={"Teknik":Number(document.getElementById("perkNilaiTeknik").value),"Hafalan Koreografi":Number(document.getElementById("perkNilaiHafalan").value),"Ekspresi":Number(document.getElementById("perkNilaiEkspresi").value),"Disiplin":Number(document.getElementById("perkNilaiDisiplin").value),"Kepercayaan Diri":Number(document.getElementById("perkNilaiPercaya").value)},payloads=Object.entries(map).map(([aspek,nilai])=>({siswa_id,guru_id:currentUser.id,tanggal,aspek,nilai,catatan}));const {error}=await supabase.from("perkembangan").insert(payloads);if(error)throw error;alert("Penilaian lengkap untuk anak berhasil disimpan.");document.getElementById("perkembanganCatatan").value="";loadPerkembanganGuru();}catch(e){alert("Gagal menyimpan: "+e.message)}finally{btn.disabled=false;btn.textContent="Simpan Penilaian Anak";}}
+      async function loadPerkembanganGuru(){const tbody=document.getElementById("daftarPerkembanganGuru");if(!tbody||!supabase||currentUserRole!=="guru")return;try{const {data,error}=await supabase.from("perkembangan").select("tanggal,aspek,nilai,catatan,siswa:siswa_id(nama)").eq("guru_id",currentUser.id).order("tanggal",{ascending:false}).order("created_at",{ascending:false}).limit(100);if(error)throw error;const g=new Map();for(const r of(data||[])){const k=`${r.tanggal}|${r.siswa?.nama||"-"}`;if(!g.has(k))g.set(k,{tanggal:r.tanggal,nama:r.siswa?.nama||"-",scores:{},catatan:r.catatan||""});const x=g.get(k);x.scores[r.aspek]=r.nilai;if(!x.catatan&&r.catatan)x.catatan=r.catatan;}const rows=[...g.values()].slice(0,20);tbody.innerHTML=rows.length?rows.map(x=>`<tr><td>${x.tanggal||"-"}</td><td>${x.nama}</td><td>${PERKEMBANGAN_ASPEK.map(a=>`${a}: ${x.scores[a]||'-'}`).join(' · ')}</td><td>${x.catatan||"-"}</td></tr>`).join(""):`<tr><td colspan="4" style="text-align:center;">Belum ada penilaian.</td></tr>`;}catch(e){tbody.innerHTML=`<tr><td colspan="4" style="text-align:center;color:#E11D48;">Tabel perkembangan belum tersedia.</td></tr>`;}}
+      function renderPerkembanganAnak(){return `<div id="pilihAnakWrap"></div><div class="section"><div class="section-head"><div><h2>Perkembangan Anak</h2><div style="font-size:12px;color:var(--ink-soft);margin-top:4px;">Ringkasan dibuat per anak agar mudah dibaca.</div></div></div><div class="section-body"><div id="ringkasanPerkembangan"><div class="empty">Memuat data...</div></div></div></div>`;}
+      async function loadPerkembanganAnak(){const wrap=document.getElementById("pilihAnakWrap"),body=document.getElementById("ringkasanPerkembangan");if(!body||!supabase)return;await pastikanAnakOrangTuaDimuat();if(wrap)wrap.innerHTML=renderPilihAnakHtml();const anak=anakYangDipilih();if(!anak){body.innerHTML=`<div class="empty">Belum ada siswa yang terhubung dengan akun ini.</div>`;return;}try{const now=new Date(),bulan=now.getMonth()+1,tahun=now.getFullYear(),awal=`${tahun}-${String(bulan).padStart(2,'0')}-01`,akhirD=new Date(tahun,bulan,0).getDate(),akhir=`${tahun}-${String(bulan).padStart(2,'0')}-${String(akhirD).padStart(2,'0')}`;const {data,error}=await supabase.from("perkembangan").select("tanggal,aspek,nilai,catatan,guru:guru_id(nama),created_at").eq("siswa_id",anak.id).order("tanggal",{ascending:false}).order("created_at",{ascending:false}).limit(100);if(error)throw error;const month=(data||[]).filter(x=>x.tanggal>=awal&&x.tanggal<=akhir),latest={};let note="",date="",guru="";for(const x of month){if(!latest[x.aspek])latest[x.aspek]=x;if(!date){date=x.tanggal;guru=x.guru?.nama||"Pelatih"}if(!note&&x.catatan)note=x.catatan;}const vals=PERKEMBANGAN_ASPEK.map(a=>latest[a]?.nilai).filter(v=>Number(v)>0),avg=vals.length?(vals.reduce((a,b)=>a+b,0)/vals.length).toFixed(1):"-";const historyMap=new Map();for(const x of(data||[])){if(!historyMap.has(x.tanggal))historyMap.set(x.tanggal,[]);historyMap.get(x.tanggal).push(x);}const hist=[...historyMap.entries()].slice(0,8);body.innerHTML=`<div style="display:flex;justify-content:space-between;gap:14px;align-items:flex-start;flex-wrap:wrap;"><div><h3 style="margin:0 0 5px;">${anak.nama}</h3><div style="font-size:12px;color:var(--ink-soft);">${anak.kelas||"Tanpa kelas"} · ${namaBulan(bulan)} ${tahun}</div></div><div class="badge badge-good">Rata-rata ${avg}${avg!=="-"?" / 5":""}</div></div><div class="perk-parent-summary">${PERKEMBANGAN_ASPEK.map(a=>`<div class="perk-parent-aspect"><div class="name">${a}</div><div class="score">${latest[a]?.nilai?`${latest[a].nilai}/5`:'—'}</div></div>`).join("")}</div><div class="perk-note"><strong>Catatan pelatih</strong><div style="margin-top:5px;">${note||"Belum ada catatan perkembangan untuk bulan ini."}</div>${date?`<div class="perk-date">${date} · ${guru}</div>`:""}</div><div class="perk-history"><h3 style="margin:0 0 8px;">Riwayat penilaian</h3>${hist.length?hist.map(([tgl,rows])=>{const vs=rows.map(r=>Number(r.nilai)||0).filter(Boolean),av=vs.length?(vs.reduce((a,b)=>a+b,0)/vs.length).toFixed(1):"-",nt=rows.find(r=>r.catatan)?.catatan||"Tidak ada catatan tambahan.";return `<div class="perk-history-item"><div class="perk-history-head"><div class="perk-history-date">${tgl}</div><span class="badge badge-good">${av}/5</span></div><div class="perk-history-meta">${rows.length} aspek dinilai · ${rows[0]?.guru?.nama||"Pelatih"}</div><div class="perk-history-note">${nt}</div></div>`}).join(""):"<div class='empty'>Belum ada riwayat penilaian.</div>"}</div>`;}catch(e){body.innerHTML=`<div class="empty" style="color:#E11D48;">Tabel perkembangan belum tersedia.</div>`;}}
 
       async function exportPerkembanganCsv(){
         if(!supabase||currentUserRole!=="admin") return;
@@ -2933,6 +2769,7 @@
         exportRekapAbsensiCsv,
         exportPerkembanganCsv,
         loadPerkembanganAdmin,
+        changePerkPage,
         loadSiswaPerkembangan,
         simpanPerkembangan,
         loadPerkembanganGuru,
