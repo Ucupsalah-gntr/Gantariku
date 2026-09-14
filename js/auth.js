@@ -1,443 +1,668 @@
-// ============================================================
-// GANTARIKU — AUTH
-// LOGIN + DAFTAR ORANG TUA
-// ============================================================
+/* =========================================================
+   GANTARIKU - AUTH.JS
+   Login + Register Orang Tua
+   ========================================================= */
 
-// ============================================================
-// LOAD PROFILE
-// ============================================================
+let currentUser = null;
+let currentUserProfile = null;
+let currentUserRole = null;
+
+/* =========================================================
+   LOAD PROFILE PENGGUNA
+   ========================================================= */
 
 async function loadUserProfile(userId) {
-  if (!supabase) {
-    throw new Error(
-      "Supabase belum terhubung."
-    );
+  if (!userId) return null;
+
+  try {
+    const { data, error } = await supabase
+      .from("pengguna")
+      .select(`
+        id,
+        user_id,
+        nama,
+        email,
+        role,
+        nomor_hp,
+        alamat
+      `)
+      .eq("user_id", userId)
+      .maybeSingle();
+
+    if (error) {
+      console.error("Gagal mengambil profil pengguna:", error);
+      return null;
+    }
+
+    return data || null;
+  } catch (err) {
+    console.error("loadUserProfile error:", err);
+    return null;
   }
-
-  const {
-    data,
-    error,
-  } = await supabase
-    .from("pengguna")
-    .select(
-      "id,user_id,nama,email,role"
-    )
-    .eq(
-      "user_id",
-      userId
-    )
-    .single();
-
-  if (error) {
-    console.error(
-      "Profile error:",
-      error
-    );
-
-    throw new Error(
-      "Profil pengguna tidak ditemukan atau tidak dapat diakses."
-    );
-  }
-
-  if (!data) {
-    throw new Error(
-      "Profil pengguna tidak ditemukan."
-    );
-  }
-
-  return data;
 }
 
-// ============================================================
-// LOGIN PAGE
-// ============================================================
+
+/* =========================================================
+   TOGGLE PASSWORD
+   ========================================================= */
+
+function togglePassword(inputId, button) {
+  const input = document.getElementById(inputId);
+
+  if (!input) return;
+
+  if (input.type === "password") {
+    input.type = "text";
+    button.textContent = "🙈";
+    button.setAttribute("aria-label", "Sembunyikan password");
+  } else {
+    input.type = "password";
+    button.textContent = "👁";
+    button.setAttribute("aria-label", "Tampilkan password");
+  }
+}
+
+
+/* =========================================================
+   STYLE AUTH
+   ========================================================= */
+
+function injectAuthStyles() {
+  if (document.getElementById("gantariku-auth-style")) return;
+
+  const style = document.createElement("style");
+
+  style.id = "gantariku-auth-style";
+
+  style.textContent = `
+    .auth-page {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      box-sizing: border-box;
+      background:
+        radial-gradient(circle at top left, rgba(245, 193, 66, 0.20), transparent 35%),
+        radial-gradient(circle at bottom right, rgba(92, 124, 74, 0.18), transparent 35%),
+        linear-gradient(135deg, #3f3835 0%, #5a4840 48%, #8b674c 100%);
+    }
+
+    .auth-card {
+      width: 100%;
+      max-width: 430px;
+      background: #fffaf0;
+      border-radius: 28px;
+      padding: 32px;
+      box-sizing: border-box;
+      box-shadow: 0 20px 60px rgba(0,0,0,.20);
+    }
+
+    .auth-logo-wrap {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 18px;
+    }
+
+    .auth-logo {
+      width: 170px;
+      max-width: 75%;
+      height: auto;
+      object-fit: contain;
+    }
+
+    .auth-title {
+      text-align: center;
+      margin: 4px 0 5px;
+      color: #433934;
+      font-size: 25px;
+      font-weight: 800;
+    }
+
+    .auth-subtitle {
+      text-align: center;
+      margin: 0 0 24px;
+      color: #806f65;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .auth-form {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .auth-field {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .auth-field label {
+      font-size: 13px;
+      font-weight: 700;
+      color: #574940;
+    }
+
+    .auth-input-wrap {
+      position: relative;
+      width: 100%;
+    }
+
+    .auth-input {
+      width: 100%;
+      box-sizing: border-box;
+      border: 1px solid #ddcfbf;
+      background: #fff;
+      color: #3f3631;
+      border-radius: 13px;
+      padding: 13px 15px;
+      font-size: 14px;
+      outline: none;
+      transition: .2s ease;
+    }
+
+    .auth-input.password-input {
+      padding-right: 50px;
+    }
+
+    .auth-input:focus {
+      border-color: #c58b4a;
+      box-shadow: 0 0 0 3px rgba(197,139,74,.12);
+    }
+
+    .auth-password-toggle {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 34px;
+      height: 34px;
+      border: 0;
+      background: transparent;
+      border-radius: 9px;
+      cursor: pointer;
+      font-size: 17px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #715d4f;
+    }
+
+    .auth-password-toggle:hover {
+      background: rgba(197,139,74,.10);
+    }
+
+    .auth-button {
+      width: 100%;
+      border: 0;
+      border-radius: 13px;
+      padding: 13px 16px;
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: .2s ease;
+      margin-top: 4px;
+    }
+
+    .auth-button.primary {
+      background: #b97d48;
+      color: white;
+    }
+
+    .auth-button.primary:hover {
+      filter: brightness(.96);
+      transform: translateY(-1px);
+    }
+
+    .auth-button.secondary {
+      background: transparent;
+      color: #986737;
+      border: 1px solid #d9b58e;
+    }
+
+    .auth-button.secondary:hover {
+      background: #fff2df;
+    }
+
+    .auth-message {
+      display: none;
+      border-radius: 12px;
+      padding: 11px 13px;
+      font-size: 13px;
+      line-height: 1.45;
+      margin-bottom: 4px;
+    }
+
+    .auth-message.show {
+      display: block;
+    }
+
+    .auth-message.error {
+      background: #fff0ee;
+      border: 1px solid #f0c1ba;
+      color: #9d4337;
+    }
+
+    .auth-message.success {
+      background: #eef8ea;
+      border: 1px solid #c3ddb8;
+      color: #4e773d;
+    }
+
+    .auth-divider {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 18px 0;
+      color: #a08f82;
+      font-size: 12px;
+    }
+
+    .auth-divider::before,
+    .auth-divider::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: #e3d7ca;
+    }
+
+    .auth-back {
+      text-align: center;
+      margin-top: 14px;
+      font-size: 13px;
+      color: #806f65;
+    }
+
+    .auth-link {
+      border: 0;
+      background: none;
+      padding: 0;
+      margin: 0;
+      color: #a66d38;
+      font-weight: 800;
+      cursor: pointer;
+      font-size: inherit;
+    }
+
+    .auth-link:hover {
+      text-decoration: underline;
+    }
+
+    .auth-note {
+      margin-top: 5px;
+      font-size: 11px;
+      line-height: 1.45;
+      color: #9b8b7f;
+    }
+
+    .auth-loading {
+      opacity: .7;
+      pointer-events: none;
+    }
+
+    @media (max-width: 520px) {
+      .auth-page {
+        padding: 14px;
+      }
+
+      .auth-card {
+        padding: 24px 18px;
+        border-radius: 22px;
+      }
+    }
+  `;
+
+  document.head.appendChild(style);
+}
+
+
+/* =========================================================
+   HELPERS
+   ========================================================= */
+
+function authEscapeHtml(value) {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+
+function setAuthMessage(message, type = "error") {
+  const box = document.getElementById("authMessage");
+
+  if (!box) return;
+
+  box.textContent = message || "";
+  box.className = `auth-message show ${type}`;
+}
+
+
+function clearAuthMessage() {
+  const box = document.getElementById("authMessage");
+
+  if (!box) return;
+
+  box.textContent = "";
+  box.className = "auth-message";
+}
+
+
+/* =========================================================
+   LOGIN PAGE
+   ========================================================= */
 
 function renderLoginPage() {
-  return `
-    <div class="login-container">
+  injectAuthStyles();
 
-      <div class="login-box">
+  const app = document.getElementById("app");
 
-        <div class="login-header">
+  if (!app) {
+    console.error("Element #app tidak ditemukan.");
+    return;
+  }
 
-          <div class="login-brand">
+  app.innerHTML = `
+    <div class="auth-page">
+      <div class="auth-card">
 
-            <h1>Gantariku</h1>
-
-            <p>
-              Rumah Belajar Inklusi
-            </p>
-
-          </div>
-
+        <div class="auth-logo-wrap">
+          <img
+            src="logo-gantari.png"
+            alt="Gantari"
+            class="auth-logo"
+            onerror="this.style.display='none'"
+          >
         </div>
 
-        <div
-          class="error-msg"
-          id="loginError"
-        ></div>
+        <div class="auth-title">
+          Selamat Datang di Gantariku
+        </div>
 
-        <form
-          class="login-form"
-          id="loginForm"
-        >
+        <div class="auth-subtitle">
+          Rumah Belajar Inklusi
+        </div>
 
-          <div class="form-group">
+        <form id="loginForm" class="auth-form">
 
-            <label for="email">
+          <div id="authMessage" class="auth-message"></div>
+
+          <div class="auth-field">
+            <label for="loginEmail">
               Email
             </label>
 
             <input
+              id="loginEmail"
               type="email"
-              id="email"
-              placeholder="nama@email.com"
+              class="auth-input"
+              placeholder="Masukkan email"
               autocomplete="email"
               required
             >
-
           </div>
 
-          <div class="form-group">
+          <div class="auth-field">
 
-            <label for="password">
+            <label for="loginPassword">
               Password
             </label>
 
-            <input
-              type="password"
-              id="password"
-              placeholder="Masukkan password"
-              autocomplete="current-password"
-              required
-            >
+            <div class="auth-input-wrap">
+
+              <input
+                id="loginPassword"
+                type="password"
+                class="auth-input password-input"
+                placeholder="Masukkan password"
+                autocomplete="current-password"
+                required
+              >
+
+              <button
+                type="button"
+                class="auth-password-toggle"
+                onclick="togglePassword('loginPassword', this)"
+                aria-label="Tampilkan password"
+              >👁</button>
+
+            </div>
 
           </div>
 
           <button
             type="submit"
-            class="login-btn"
-            id="loginBtn"
+            id="loginButton"
+            class="auth-button primary"
           >
-            <span id="loginBtnText">
-              Masuk
-            </span>
+            Masuk
           </button>
 
         </form>
 
-        <div
-          style="
-            margin-top:18px;
-            padding-top:17px;
-            border-top:1px solid rgba(100,80,60,.12);
-            text-align:center;
-          "
+        <div class="auth-divider">
+          atau
+        </div>
+
+        <button
+          type="button"
+          class="auth-button secondary"
+          onclick="renderRegister()"
         >
+          Daftar sebagai Orang Tua
+        </button>
 
-          <div
-            style="
-              color:#776d63;
-              font-size:12px;
-              margin-bottom:7px;
-            "
-          >
-            Belum punya akun?
-          </div>
-
-          <button
-            type="button"
-            id="btnRegisterOrtu"
-            class="login-register-link"
-            style="
-              border:0;
-              background:none;
-              cursor:pointer;
-            "
-          >
-            Daftar sebagai Orang Tua
-          </button>
-
+        <div class="auth-note">
+          Akun orang tua dapat digunakan untuk menghubungkan
+          anak menggunakan kode akses dari sekolah.
         </div>
 
       </div>
-
     </div>
   `;
-}
 
-// ============================================================
-// RENDER LOGIN
-// ============================================================
-
-function renderLogin() {
-
-  const app =
-    document.getElementById(
-      "app"
-    );
-
-  if (!app) return;
-
-  app.innerHTML =
-    renderLoginPage();
-
-  const form =
-    document.getElementById(
-      "loginForm"
-    );
+  const form = document.getElementById("loginForm");
 
   if (form) {
-    form.addEventListener(
-      "submit",
-      handleLogin
-    );
+    form.addEventListener("submit", handleLogin);
   }
-
-  document
-    .getElementById(
-      "btnRegisterOrtu"
-    )
-    ?.addEventListener(
-      "click",
-      renderRegister
-    );
 }
 
-// ============================================================
-// LOGIN
-// ============================================================
 
-async function handleLogin(
-  e
-) {
+/* =========================================================
+   LOGIN
+   ========================================================= */
 
-  e.preventDefault();
+async function handleLogin(event) {
+  event.preventDefault();
 
-  const email =
-    document.getElementById(
-      "email"
-    )?.value
-      ?.trim();
+  clearAuthMessage();
 
-  const password =
-    document.getElementById(
-      "password"
-    )?.value || "";
+  const emailInput = document.getElementById("loginEmail");
+  const passwordInput = document.getElementById("loginPassword");
+  const loginButton = document.getElementById("loginButton");
 
-  const errorEl =
-    document.getElementById(
-      "loginError"
-    );
-
-  const btnEl =
-    document.getElementById(
-      "loginBtn"
-    );
-
-  const btnText =
-    document.getElementById(
-      "loginBtnText"
-    );
-
-  if (errorEl) {
-    errorEl.textContent = "";
-    errorEl.classList.remove(
-      "show"
-    );
-  }
-
-  if (
-    !email ||
-    !password
-  ) {
-
-    if (errorEl) {
-      errorEl.textContent =
-        "Email dan password harus diisi.";
-
-      errorEl.classList.add(
-        "show"
-      );
-    }
-
+  if (!emailInput || !passwordInput || !loginButton) {
     return;
   }
 
-  if (btnEl) {
-    btnEl.disabled = true;
+  const email = emailInput.value.trim().toLowerCase();
+  const password = passwordInput.value;
+
+  if (!email || !password) {
+    setAuthMessage("Email dan password wajib diisi.");
+    return;
   }
 
-  if (btnText) {
-    btnText.innerHTML =
-      '<span class="loading-spinner"></span>Memproses...';
-  }
+  loginButton.disabled = true;
+  loginButton.textContent = "Memproses...";
+  loginButton.classList.add("auth-loading");
 
   try {
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password
+    });
 
-    if (!supabase) {
-      throw new Error(
-        "Tidak dapat terhubung ke server."
-      );
+    if (error) {
+      throw error;
     }
 
-    const {
-      data: authData,
-      error: authError,
-    } =
-      await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
-
-    if (authError) {
-      throw new Error(
-        "Email atau password salah."
-      );
+    if (!data?.user) {
+      throw new Error("Akun tidak ditemukan.");
     }
 
-    if (!authData?.user) {
-      throw new Error(
-        "User tidak ditemukan."
-      );
-    }
+    currentUser = data.user;
 
-    const profile =
-      await loadUserProfile(
-        authData.user.id
-      );
+    const profile = await loadUserProfile(data.user.id);
 
-    currentUser =
-      profile;
-
-    currentUserRole =
-      profile.role;
-
-    const menuRole =
-      NAV_CONFIG[
-        currentUserRole
-      ];
-
-    if (
-      !menuRole ||
-      !menuRole.length
-    ) {
-
+    if (!profile) {
       await supabase.auth.signOut();
 
+      currentUser = null;
+      currentUserProfile = null;
+      currentUserRole = null;
+
       throw new Error(
-        "Role akun tidak dikenali."
+        "Profil pengguna belum ditemukan. Silakan hubungi admin sekolah."
       );
     }
 
-    currentNav =
-      menuRole[0].id;
+    currentUserProfile = profile;
+    currentUserRole = profile.role;
 
-    renderApp();
+    /*
+     * Pastikan role tersedia di NAV_CONFIG.
+     */
+    if (
+      typeof NAV_CONFIG !== "undefined" &&
+      NAV_CONFIG &&
+      !NAV_CONFIG[currentUserRole]
+    ) {
+      await supabase.auth.signOut();
 
-  } catch (error) {
+      currentUser = null;
+      currentUserProfile = null;
+      currentUserRole = null;
 
-    console.error(
-      "Login error:",
-      error
+      throw new Error(
+        "Role akun tidak dikenali oleh aplikasi."
+      );
+    }
+
+    /*
+     * Tentukan halaman awal berdasarkan role.
+     */
+
+    if (currentUserRole === "admin") {
+      currentNav =
+        typeof NAV_CONFIG !== "undefined" &&
+        NAV_CONFIG.admin?.[0]?.id
+          ? NAV_CONFIG.admin[0].id
+          : "dashboard";
+
+    } else if (currentUserRole === "guru") {
+      currentNav =
+        typeof NAV_CONFIG !== "undefined" &&
+        NAV_CONFIG.guru?.[0]?.id
+          ? NAV_CONFIG.guru[0].id
+          : "inputAbsensi";
+
+    } else if (currentUserRole === "ortu") {
+      currentNav =
+        typeof NAV_CONFIG !== "undefined" &&
+        NAV_CONFIG.ortu?.[0]?.id
+          ? NAV_CONFIG.ortu[0].id
+          : "ringkasan";
+
+    } else {
+      currentNav = "dashboard";
+    }
+
+    /*
+     * Render aplikasi utama.
+     */
+    if (typeof renderApp === "function") {
+      renderApp();
+    } else {
+      throw new Error(
+        "Fungsi renderApp tidak ditemukan."
+      );
+    }
+
+  } catch (err) {
+    console.error("Login error:", err);
+
+    currentUser = null;
+    currentUserProfile = null;
+    currentUserRole = null;
+
+    setAuthMessage(
+      err?.message || "Login gagal. Periksa email dan password."
     );
 
-    if (supabase) {
-      try {
-        await supabase.auth.signOut();
-      } catch (_) {}
-    }
-
-    if (errorEl) {
-
-      errorEl.textContent =
-        error?.message ||
-        "Terjadi kesalahan saat login.";
-
-      errorEl.classList.add(
-        "show"
-      );
-    }
-
   } finally {
-
-    if (btnEl) {
-      btnEl.disabled = false;
-    }
-
-    if (btnText) {
-      btnText.textContent =
-        "Masuk";
-    }
+    loginButton.disabled = false;
+    loginButton.textContent = "Masuk";
+    loginButton.classList.remove("auth-loading");
   }
 }
 
-// ============================================================
-// REGISTER ORANG TUA
-// ============================================================
+
+/* =========================================================
+   REGISTER PAGE ORANG TUA
+   ========================================================= */
 
 function renderRegister() {
+  injectAuthStyles();
 
-  const app =
-    document.getElementById(
-      "app"
-    );
+  const app = document.getElementById("app");
 
-  if (!app) return;
+  if (!app) {
+    console.error("Element #app tidak ditemukan.");
+    return;
+  }
 
   app.innerHTML = `
+    <div class="auth-page">
+      <div class="auth-card">
 
-    <div class="login-container">
-
-      <div class="login-box">
-
-        <div class="login-header">
-
-          <div class="login-brand">
-
-            <h1>Daftar Akun</h1>
-
-            <p>
-              Orang Tua · Gantariku
-            </p>
-
-          </div>
-
+        <div class="auth-logo-wrap">
+          <img
+            src="logo-gantari.png"
+            alt="Gantari"
+            class="auth-logo"
+            onerror="this.style.display='none'"
+          >
         </div>
 
-        <div
-          id="registerError"
-          class="error-msg"
-        ></div>
+        <div class="auth-title">
+          Daftar Akun Orang Tua
+        </div>
 
-        <div
-          id="registerSuccess"
-          style="
-            display:none;
-            margin-bottom:14px;
-            padding:11px 12px;
-            border-radius:10px;
-            background:#EAF7E9;
-            color:#2D8B43;
-            font-size:12px;
-            line-height:1.5;
-          "
-        ></div>
+        <div class="auth-subtitle">
+          Buat akun untuk memantau perkembangan dan
+          pembayaran anak di Gantariku.
+        </div>
 
-        <form
-          id="registerForm"
-          class="login-form"
-        >
+        <form id="registerForm" class="auth-form">
 
-          <div class="form-group">
+          <div id="authMessage" class="auth-message"></div>
+
+          <div class="auth-field">
 
             <label for="registerNama">
               Nama Orang Tua
             </label>
 
             <input
-              type="text"
               id="registerNama"
+              type="text"
+              class="auth-input"
               placeholder="Nama lengkap"
               autocomplete="name"
               required
@@ -445,268 +670,194 @@ function renderRegister() {
 
           </div>
 
-          <div class="form-group">
+          <div class="auth-field">
 
             <label for="registerEmail">
               Email
             </label>
 
             <input
-              type="email"
               id="registerEmail"
-              placeholder="nama@email.com"
+              type="email"
+              class="auth-input"
+              placeholder="Email aktif"
               autocomplete="email"
               required
             >
 
           </div>
 
-          <div class="form-group">
+          <div class="auth-field">
 
             <label for="registerPassword">
               Password
             </label>
 
-            <input
-              type="password"
-              id="registerPassword"
-              placeholder="Minimal 8 karakter"
-              autocomplete="new-password"
-              minlength="8"
-              required
-            >
+            <div class="auth-input-wrap">
+
+              <input
+                id="registerPassword"
+                type="password"
+                class="auth-input password-input"
+                placeholder="Minimal 8 karakter"
+                autocomplete="new-password"
+                minlength="8"
+                required
+              >
+
+              <button
+                type="button"
+                class="auth-password-toggle"
+                onclick="togglePassword('registerPassword', this)"
+                aria-label="Tampilkan password"
+              >👁</button>
+
+            </div>
 
           </div>
 
-          <div class="form-group">
+          <div class="auth-field">
 
             <label for="registerPassword2">
               Ulangi Password
             </label>
 
-            <input
-              type="password"
-              id="registerPassword2"
-              placeholder="Ulangi password"
-              autocomplete="new-password"
-              minlength="8"
-              required
-            >
+            <div class="auth-input-wrap">
+
+              <input
+                id="registerPassword2"
+                type="password"
+                class="auth-input password-input"
+                placeholder="Ketik ulang password"
+                autocomplete="new-password"
+                minlength="8"
+                required
+              >
+
+              <button
+                type="button"
+                class="auth-password-toggle"
+                onclick="togglePassword('registerPassword2', this)"
+                aria-label="Tampilkan password"
+              >👁</button>
+
+            </div>
 
           </div>
 
           <button
             type="submit"
-            class="login-btn"
-            id="registerBtn"
+            id="registerButton"
+            class="auth-button primary"
           >
-            <span id="registerBtnText">
-              Buat Akun
-            </span>
+            Buat Akun
           </button>
 
         </form>
 
-        <div
-          style="
-            margin-top:18px;
-            text-align:center;
-          "
-        >
-
+        <div class="auth-back">
+          Sudah punya akun?
           <button
             type="button"
-            class="login-register-link"
-            id="btnBackLogin"
-            style="
-              border:0;
-              background:none;
-              cursor:pointer;
-            "
+            class="auth-link"
+            onclick="renderLogin()"
           >
-            ← Kembali ke Login
+            Kembali ke Login
           </button>
-
         </div>
 
       </div>
-
     </div>
   `;
 
-  document
-    .getElementById(
-      "registerForm"
-    )
-    ?.addEventListener(
-      "submit",
-      handleRegister
-    );
+  const form = document.getElementById("registerForm");
 
-  document
-    .getElementById(
-      "btnBackLogin"
-    )
-    ?.addEventListener(
-      "click",
-      renderLogin
-    );
+  if (form) {
+    form.addEventListener("submit", handleRegister);
+  }
 }
 
-// ============================================================
-// REGISTER HANDLER
-// ============================================================
 
-async function handleRegister(
-  e
-) {
+/* =========================================================
+   REGISTER ORANG TUA
+   ========================================================= */
 
-  e.preventDefault();
+async function handleRegister(event) {
+  event.preventDefault();
 
-  const nama =
-    document.getElementById(
-      "registerNama"
-    )?.value
-      ?.trim();
+  clearAuthMessage();
 
-  const email =
-    document.getElementById(
-      "registerEmail"
-    )?.value
-      ?.trim();
+  const namaInput = document.getElementById("registerNama");
+  const emailInput = document.getElementById("registerEmail");
+  const passwordInput = document.getElementById("registerPassword");
+  const password2Input = document.getElementById("registerPassword2");
+  const registerButton = document.getElementById("registerButton");
 
-  const password =
-    document.getElementById(
-      "registerPassword"
-    )?.value || "";
-
-  const password2 =
-    document.getElementById(
-      "registerPassword2"
-    )?.value || "";
-
-  const errorEl =
-    document.getElementById(
-      "registerError"
-    );
-
-  const successEl =
-    document.getElementById(
-      "registerSuccess"
-    );
-
-  const btn =
-    document.getElementById(
-      "registerBtn"
-    );
-
-  const btnText =
-    document.getElementById(
-      "registerBtnText"
-    );
-
-  if (errorEl) {
-    errorEl.textContent = "";
-    errorEl.classList.remove(
-      "show"
-    );
+  if (
+    !namaInput ||
+    !emailInput ||
+    !passwordInput ||
+    !password2Input ||
+    !registerButton
+  ) {
+    return;
   }
 
-  if (successEl) {
-    successEl.style.display =
-      "none";
-
-    successEl.textContent =
-      "";
-  }
+  const nama = namaInput.value.trim();
+  const email = emailInput.value.trim().toLowerCase();
+  const password = passwordInput.value;
+  const password2 = password2Input.value;
 
   if (!nama) {
-    tampilkanErrorRegister(
-      "Nama orang tua wajib diisi."
-    );
+    setAuthMessage("Nama orang tua wajib diisi.");
     return;
   }
 
   if (!email) {
-    tampilkanErrorRegister(
-      "Email wajib diisi."
-    );
+    setAuthMessage("Email wajib diisi.");
     return;
   }
 
-  if (
-    password.length < 8
-  ) {
-    tampilkanErrorRegister(
+  if (password.length < 8) {
+    setAuthMessage(
       "Password minimal 8 karakter."
     );
     return;
   }
 
-  if (
-    password !== password2
-  ) {
-    tampilkanErrorRegister(
+  if (password !== password2) {
+    setAuthMessage(
       "Konfirmasi password tidak sama."
     );
     return;
   }
 
-  if (!supabase) {
-    tampilkanErrorRegister(
-      "Supabase belum terhubung."
-    );
-    return;
-  }
-
-  if (btn) {
-    btn.disabled = true;
-  }
-
-  if (btnText) {
-    btnText.innerHTML =
-      '<span class="loading-spinner"></span>Membuat akun...';
-  }
+  registerButton.disabled = true;
+  registerButton.textContent = "Membuat akun...";
+  registerButton.classList.add("auth-loading");
 
   try {
 
-    const redirectUrl =
-      window.location.origin;
+    /*
+     * registration_type = ortu
+     * akan dibaca oleh trigger Supabase:
+     * handle_new_ortu_user()
+     *
+     * Trigger tersebut membuat:
+     * public.pengguna.role = 'ortu'
+     */
 
-    const {
-      data,
-      error,
-    } =
-      await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
 
-        email,
-
-        password,
-
-        options: {
-
-          data: {
-
-            nama,
-
-            /*
-             * Penting:
-             * database hanya membuat profile
-             * otomatis sebagai "ortu"
-             * bila registration_type = "ortu".
-             */
-
-            registration_type:
-              "ortu",
-
-          },
-
-          emailRedirectTo:
-            redirectUrl,
-
-        },
-
-      });
+      options: {
+        data: {
+          nama,
+          registration_type: "ortu"
+        }
+      }
+    });
 
     if (error) {
       throw error;
@@ -719,176 +870,524 @@ async function handleRegister(
     }
 
     /*
-     * Bila email confirmation aktif,
-     * session biasanya belum tersedia.
+     * Kita sengaja TIDAK menunggu verifikasi email.
+     *
+     * Dengan Confirm Email OFF di Supabase,
+     * signup akan langsung mendapatkan session.
      */
 
     if (!data.session) {
+      throw new Error(
+        "Akun berhasil dibuat, tetapi belum bisa langsung masuk. Pastikan Confirm Email di Supabase sudah OFF."
+      );
+    }
 
-      if (successEl) {
+    currentUser = data.user;
 
-        successEl.innerHTML =
-          `
-            ✅ Akun berhasil dibuat.<br>
-            Silakan buka email Anda dan
-            klik tautan verifikasi.
-            Setelah itu kembali ke Gantariku
-            dan login.
-          `;
+    /*
+     * Beri sedikit waktu agar trigger database selesai
+     * membuat profil pengguna.
+     */
 
-        successEl.style.display =
-          "block";
-      }
+    let profile = null;
 
-      return;
+    for (let i = 0; i < 5; i++) {
+      profile = await loadUserProfile(data.user.id);
+
+      if (profile) break;
+
+      await new Promise(resolve =>
+        setTimeout(resolve, 500)
+      );
+    }
+
+    if (!profile) {
+
+      /*
+       * Jangan langsung signOut.
+       * Bisa saja trigger membutuhkan waktu sedikit lebih lama.
+       */
+
+      throw new Error(
+        "Akun berhasil dibuat, tetapi profil orang tua belum ditemukan. Silakan coba masuk kembali beberapa saat lagi."
+      );
     }
 
     /*
-     * Autoconfirm aktif:
-     * langsung login.
+     * Pastikan role memang orang tua.
      */
 
-    const profile =
-      await loadUserProfile(
-        data.user.id
+    if (profile.role !== "ortu") {
+
+      await supabase.auth.signOut();
+
+      currentUser = null;
+      currentUserProfile = null;
+      currentUserRole = null;
+
+      throw new Error(
+        "Akun berhasil dibuat tetapi role akun tidak sesuai."
       );
+    }
 
-    currentUser =
-      profile;
+    currentUserProfile = profile;
+    currentUserRole = "ortu";
 
-    currentUserRole =
-      profile.role;
+    /*
+     * Halaman awal orang tua.
+     */
 
     currentNav =
-      NAV_CONFIG.ortu?.[0]?.id ||
-      "ringkasan";
+      typeof NAV_CONFIG !== "undefined" &&
+      NAV_CONFIG.ortu?.[0]?.id
+        ? NAV_CONFIG.ortu[0].id
+        : "ringkasan";
 
-    renderApp();
+    /*
+     * Masuk ke aplikasi.
+     */
 
-  } catch (error) {
+    if (typeof renderApp === "function") {
+
+      renderApp();
+
+      /*
+       * Setelah masuk, tampilkan sedikit notifikasi
+       * bila tersedia.
+       */
+
+      setTimeout(() => {
+
+        if (
+          typeof showToast === "function"
+        ) {
+          showToast(
+            "Akun orang tua berhasil dibuat."
+          );
+        }
+
+      }, 400);
+
+    } else {
+
+      throw new Error(
+        "Fungsi renderApp tidak ditemukan."
+      );
+
+    }
+
+  } catch (err) {
 
     console.error(
-      "Register error:",
-      error
+      "Register orang tua error:",
+      err
     );
 
-    tampilkanErrorRegister(
-      error?.message ||
-      "Gagal membuat akun."
+    currentUser = null;
+    currentUserProfile = null;
+    currentUserRole = null;
+
+    setAuthMessage(
+      err?.message ||
+      "Pendaftaran gagal. Silakan coba lagi."
     );
 
   } finally {
 
-    if (btn) {
-      btn.disabled = false;
-    }
+    registerButton.disabled = false;
+    registerButton.textContent = "Buat Akun";
+    registerButton.classList.remove("auth-loading");
 
-    if (btnText) {
-      btnText.textContent =
-        "Buat Akun";
-    }
   }
 }
 
-// ============================================================
-// ERROR REGISTER
-// ============================================================
 
-function tampilkanErrorRegister(
-  message
-) {
-
-  const el =
-    document.getElementById(
-      "registerError"
-    );
-
-  if (!el) return;
-
-  el.textContent =
-    message;
-
-  el.classList.add(
-    "show"
-  );
-}
-
-// ============================================================
-// LOGOUT
-// ============================================================
+/* =========================================================
+   LOGOUT
+   ========================================================= */
 
 async function logout() {
 
   try {
 
+    /*
+     * Matikan realtime terlebih dahulu
+     * supaya tidak ada subscription tertinggal.
+     */
+
     if (
-      typeof stopRealtimeNotifications ===
-      "function"
+      typeof stopRealtimeNotifications === "function"
     ) {
-      stopRealtimeNotifications();
-    }
-
-  } catch (error) {
-
-    console.error(
-      "Stop realtime error:",
-      error
-    );
-
-  }
-
-  try {
-
-    if (supabase) {
-
-      const {
-        error,
-      } =
-        await supabase.auth.signOut();
-
-      if (error) {
-        console.error(
-          "Logout error:",
-          error
+      try {
+        await stopRealtimeNotifications();
+      } catch (err) {
+        console.warn(
+          "Gagal menghentikan realtime notifications:",
+          err
         );
       }
     }
 
-  } catch (error) {
+    /*
+     * Sign out Supabase.
+     */
+
+    const { error } =
+      await supabase.auth.signOut();
+
+    if (error) {
+      console.error(
+        "Supabase logout error:",
+        error
+      );
+    }
+
+  } catch (err) {
 
     console.error(
       "Logout error:",
-      error
+      err
     );
 
   } finally {
 
+    /*
+     * Bersihkan seluruh state user.
+     */
+
     currentUser = null;
+    currentUserProfile = null;
     currentUserRole = null;
-    currentNav = "dasbor";
 
-    anakOrangTuaList = [];
-    anakTerpilihId = null;
+    if (typeof anakOrangTuaList !== "undefined") {
+      try {
+        anakOrangTuaList = [];
+      } catch (e) {}
+    }
 
-    renderLogin();
+    if (typeof anakTerpilihId !== "undefined") {
+      try {
+        anakTerpilihId = null;
+      } catch (e) {}
+    }
+
+    /*
+     * Kembali ke login.
+     */
+
+    renderLoginPage();
+
   }
 }
 
-// ============================================================
-// GLOBAL
-// ============================================================
 
-window.renderLogin =
-  renderLogin;
+/* =========================================================
+   SESSION CHECK SAAT HALAMAN DIBUKA
+   ========================================================= */
 
-window.renderRegister =
-  renderRegister;
+async function checkExistingSession() {
 
-window.handleLogin =
-  handleLogin;
+  try {
 
-window.handleRegister =
-  handleRegister;
+    const {
+      data: {
+        session
+      }
+    } = await supabase.auth.getSession();
 
-window.logout =
-  logout;
+    if (!session?.user) {
+      renderLoginPage();
+      return;
+    }
+
+    currentUser = session.user;
+
+    const profile =
+      await loadUserProfile(
+        session.user.id
+      );
+
+    if (!profile) {
+
+      await supabase.auth.signOut();
+
+      currentUser = null;
+      currentUserProfile = null;
+      currentUserRole = null;
+
+      renderLoginPage();
+
+      setTimeout(() => {
+
+        setAuthMessage(
+          "Profil pengguna tidak ditemukan. Silakan hubungi admin sekolah."
+        );
+
+      }, 100);
+
+      return;
+    }
+
+    currentUserProfile = profile;
+    currentUserRole = profile.role;
+
+    /*
+     * Tentukan halaman awal.
+     */
+
+    if (currentUserRole === "admin") {
+
+      currentNav =
+        typeof NAV_CONFIG !== "undefined" &&
+        NAV_CONFIG.admin?.[0]?.id
+          ? NAV_CONFIG.admin[0].id
+          : "dashboard";
+
+    } else if (currentUserRole === "guru") {
+
+      currentNav =
+        typeof NAV_CONFIG !== "undefined" &&
+        NAV_CONFIG.guru?.[0]?.id
+          ? NAV_CONFIG.guru[0].id
+          : "inputAbsensi";
+
+    } else if (currentUserRole === "ortu") {
+
+      currentNav =
+        typeof NAV_CONFIG !== "undefined" &&
+        NAV_CONFIG.ortu?.[0]?.id
+          ? NAV_CONFIG.ortu[0].id
+          : "ringkasan";
+
+    } else {
+
+      await supabase.auth.signOut();
+
+      currentUser = null;
+      currentUserProfile = null;
+      currentUserRole = null;
+
+      renderLoginPage();
+
+      setTimeout(() => {
+
+        setAuthMessage(
+          "Role akun tidak dikenali oleh aplikasi."
+        );
+
+      }, 100);
+
+      return;
+    }
+
+    /*
+     * Tampilkan aplikasi.
+     */
+
+    if (typeof renderApp === "function") {
+      renderApp();
+    } else {
+      renderLoginPage();
+
+      setTimeout(() => {
+        setAuthMessage(
+          "Aplikasi belum siap dimuat. Periksa fungsi renderApp()."
+        );
+      }, 100);
+    }
+
+  } catch (err) {
+
+    console.error(
+      "Session check error:",
+      err
+    );
+
+    currentUser = null;
+    currentUserProfile = null;
+    currentUserRole = null;
+
+    renderLoginPage();
+  }
+}
+
+
+/* =========================================================
+   AUTH STATE LISTENER
+   ========================================================= */
+
+function initAuthListener() {
+
+  if (
+    typeof supabase === "undefined" ||
+    !supabase?.auth
+  ) {
+    console.error(
+      "Supabase belum tersedia."
+    );
+    return;
+  }
+
+  /*
+   * Listener hanya untuk menjaga state session.
+   *
+   * Tidak melakukan render berulang ketika
+   * SIGNED_IN dipicu setelah login karena
+   * handleLogin sendiri sudah melakukan renderApp().
+   */
+
+  supabase.auth.onAuthStateChange(
+    async (event, session) => {
+
+      console.log(
+        "Auth state:",
+        event
+      );
+
+      if (event === "SIGNED_OUT") {
+
+        currentUser = null;
+        currentUserProfile = null;
+        currentUserRole = null;
+
+        return;
+      }
+
+      /*
+       * INITIAL_SESSION hanya perlu memastikan
+       * session awal terbaca.
+       */
+
+      if (
+        event === "INITIAL_SESSION" &&
+        !currentUser &&
+        session?.user
+      ) {
+
+        try {
+
+          currentUser = session.user;
+
+          const profile =
+            await loadUserProfile(
+              session.user.id
+            );
+
+          if (profile) {
+
+            currentUserProfile = profile;
+            currentUserRole = profile.role;
+
+            if (
+              typeof renderApp === "function"
+            ) {
+              currentNav =
+                currentUserRole === "ortu"
+                  ? (
+                      typeof NAV_CONFIG !== "undefined" &&
+                      NAV_CONFIG.ortu?.[0]?.id
+                        ? NAV_CONFIG.ortu[0].id
+                        : "ringkasan"
+                    )
+                  : (
+                      typeof NAV_CONFIG !== "undefined" &&
+                      NAV_CONFIG[currentUserRole]?.[0]?.id
+                        ? NAV_CONFIG[currentUserRole][0].id
+                        : "dashboard"
+                    );
+
+              renderApp();
+
+            } else {
+
+              renderLoginPage();
+
+            }
+
+          } else {
+
+            await supabase.auth.signOut();
+
+            currentUser = null;
+            currentUserProfile = null;
+            currentUserRole = null;
+
+            renderLoginPage();
+
+          }
+
+        } catch (err) {
+
+          console.error(
+            "INITIAL_SESSION error:",
+            err
+          );
+
+          renderLoginPage();
+        }
+      }
+    }
+  );
+}
+
+
+/* =========================================================
+   GLOBAL WINDOW EXPORT
+   Supaya bisa dipanggil dari HTML / inline onclick
+   ========================================================= */
+
+window.renderLogin = renderLoginPage;
+window.renderLoginPage = renderLoginPage;
+window.renderRegister = renderRegister;
+window.handleLogin = handleLogin;
+window.handleRegister = handleRegister;
+window.togglePassword = togglePassword;
+window.logout = logout;
+window.loadUserProfile = loadUserProfile;
+window.checkExistingSession = checkExistingSession;
+
+
+/* =========================================================
+   INIT
+   ========================================================= */
+
+(function initAuth() {
+
+  /*
+   * Tunggu DOM jika diperlukan.
+   */
+
+  const start = () => {
+
+    /*
+     * Pastikan fungsi tidak dijalankan sebelum Supabase siap.
+     */
+
+    if (
+      typeof supabase === "undefined" ||
+      !supabase?.auth
+    ) {
+      console.error(
+        "Supabase client belum tersedia saat auth.js dijalankan."
+      );
+      return;
+    }
+
+    injectAuthStyles();
+
+    initAuthListener();
+
+    checkExistingSession();
+  };
+
+  if (document.readyState === "loading") {
+    document.addEventListener(
+      "DOMContentLoaded",
+      start,
+      { once: true }
+    );
+  } else {
+    start();
+  }
+
+})();
