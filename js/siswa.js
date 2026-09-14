@@ -1146,146 +1146,676 @@ async function hapusSiswa(
     return null;
   }
 
+// ============================================================
+// MAP BARIS EXCEL → DATA SISWA
+// MENGIKUTI POSISI KOLOM ASLI
+// ============================================================
+
+function mapImportRow(
+  row,
+  index
+) {
+
   // ----------------------------------------------------------
-  // KONVERSI 1 BARIS EXCEL → DATA SISWA
+  // POSISI KOLOM
   // ----------------------------------------------------------
 
-  function mapImportRow(row, index) {
-    const nama =
-      String(
-        findValue(row, [
-          "Nama Siswa",
-          "Nama",
-          "Nama Anak",
-          "Siswa",
-        ])
-      ).trim();
+  const nomor =
+    row[0] ?? "";
 
-    const nis =
-      String(
-        findValue(row, [
-          "NIS",
-          "Nomor Induk",
-          "Nomor Induk Siswa",
-          "NISN",
-        ])
-      ).trim();
+  const nama =
+    String(
+      row[1] ?? ""
+    ).trim();
 
-    const kelas =
-      String(
-        findValue(row, [
-          "Kelas",
-          "Class",
-          "Program",
-        ])
-      ).trim();
+  const nis =
+    String(
+      row[2] ?? ""
+    ).trim();
 
-    const tahunAjaran =
-      String(
-        findValue(row, [
-          "Tahun Ajaran",
-          "Tahunajaran",
-          "Tahun",
-        ])
-      ).trim();
+  const ttl =
+    String(
+      row[3] ?? ""
+    ).trim();
 
-    const tanggalLahir =
-      parseDateValue(
-        findValue(row, [
-          "Tanggal Lahir",
-          "Tgl Lahir",
-          "Tanggal_lahir",
-        ])
-      );
+  const alamat =
+    String(
+      row[4] ?? ""
+    ).trim();
 
-    let jenisKelamin =
-      String(
-        findValue(row, [
-          "Jenis Kelamin",
-          "JK",
-          "Gender",
-        ])
-      )
-        .trim()
-        .toUpperCase();
+  const namaWali =
+    String(
+      row[5] ?? ""
+    ).trim();
+
+  const nomorHpOrtu =
+    normalizePhone(
+      row[6] ?? ""
+    );
+
+  const kelas =
+    String(
+      row[7] ?? ""
+    ).trim();
+
+  const mulaiBergabung =
+    row[8] ?? "";
+
+  const errors = [];
+
+  // ----------------------------------------------------------
+  // NAMA
+  // ----------------------------------------------------------
+
+  if (!nama) {
+    errors.push(
+      "Nama siswa kosong"
+    );
+  }
+
+  // ----------------------------------------------------------
+  // NIS
+  // ----------------------------------------------------------
+
+  if (!nis) {
+    errors.push(
+      "NIS kosong"
+    );
+  }
+
+  // ----------------------------------------------------------
+  // KELAS
+  // ----------------------------------------------------------
+
+  if (!kelas) {
+    errors.push(
+      "Kelas kosong"
+    );
+  }
+
+  // ----------------------------------------------------------
+  // TTL
+  // Contoh:
+  // Semarang, 01 Mei 2020
+  // ----------------------------------------------------------
+
+  let tempatLahir = "";
+  let tanggalLahir = null;
+
+  if (ttl) {
+
+    const parts =
+      ttl.split(",");
+
+    if (parts.length >= 2) {
+
+      tempatLahir =
+        parts
+          .slice(
+            0,
+            parts.length - 1
+          )
+          .join(",")
+          .trim();
+
+      tanggalLahir =
+        parseFlexibleDate(
+          parts[
+            parts.length - 1
+          ]
+        );
+
+    } else {
+
+      tanggalLahir =
+        parseFlexibleDate(
+          ttl
+        );
+
+    }
+
+  }
+
+  // ----------------------------------------------------------
+  // MULAI BERGABUNG
+  // Excel date serial → bulan + tahun
+  // ----------------------------------------------------------
+
+  const mulai =
+    parseBulanTahunExcel(
+      mulaiBergabung
+    );
+
+  if (
+    mulaiBergabung !== "" &&
+    (
+      mulai.bulan === null ||
+      mulai.tahun === null
+    )
+  ) {
+    errors.push(
+      "Format Mulai bergabung tidak dapat dibaca"
+    );
+  }
+
+  return {
+
+    rowNumber:
+      index + 1,
+
+    nomor:
+
+      nomor,
+
+    nama:
+
+      nama,
+
+    nis:
+
+      nis,
+
+    tempat_lahir:
+
+      tempatLahir ||
+      null,
+
+    tanggal_lahir:
+
+      tanggalLahir ||
+      null,
+
+    alamat:
+
+      alamat ||
+      null,
+
+    nama_wali:
+
+      namaWali ||
+      null,
+
+    nomor_hp_ortu:
+
+      nomorHpOrtu ||
+      null,
+
+    kelas:
+
+      kelas,
+
+    tahun_ajaran:
+
+      null,
+
+    jenis_kelamin:
+
+      null,
+
+    mulai_bulan:
+
+      mulai.bulan,
+
+    mulai_tahun:
+
+      mulai.tahun,
+
+    orang_tua_id:
+
+      null,
+
+    kode_akses:
+
+      null,
+
+    errors:
+
+      errors
+  };
+}
+// ============================================================
+// PARSE TANGGAL LEBIH FLEKSIBEL
+// Mendukung:
+// 01 Mei 2020
+// 1 Juni 2018
+// 05 September 2019
+// 2020-05-01
+// 01/05/2020
+// ============================================================
+
+function parseFlexibleDate(
+  value
+) {
+
+  if (
+    value === null ||
+    value === undefined ||
+    value === ""
+  ) {
+    return null;
+  }
+
+  if (
+    value instanceof Date
+  ) {
 
     if (
-      jenisKelamin ===
-        "LAKI-LAKI" ||
-      jenisKelamin === "LAKI LAKI" ||
-      jenisKelamin === "L"
+      Number.isNaN(
+        value.getTime()
+      )
     ) {
-      jenisKelamin = "L";
-    } else if (
-      jenisKelamin ===
-        "PEREMPUAN" ||
-      jenisKelamin === "P"
+      return null;
+    }
+
+    return formatDateISO(
+      value
+    );
+
+  }
+
+  const text =
+    String(
+      value
+    ).trim();
+
+  if (!text) {
+    return null;
+  }
+
+  // yyyy-mm-dd
+  if (
+    /^\d{4}-\d{1,2}-\d{1,2}$/
+      .test(text)
+  ) {
+
+    const [
+      tahun,
+      bulan,
+      tanggal
+    ] =
+      text.split("-");
+
+    return `${tahun}-${String(
+      bulan
+    ).padStart(
+      2,
+      "0"
+    )}-${String(
+      tanggal
+    ).padStart(
+      2,
+      "0"
+    )}`;
+
+  }
+
+  // dd/mm/yyyy
+  if (
+    /^\d{1,2}\/\d{1,2}\/\d{4}$/
+      .test(text)
+  ) {
+
+    const [
+      tanggal,
+      bulan,
+      tahun
+    ] =
+      text.split("/");
+
+    return `${tahun}-${String(
+      bulan
+    ).padStart(
+      2,
+      "0"
+    )}-${String(
+      tanggal
+    ).padStart(
+      2,
+      "0"
+    )}`;
+
+  }
+
+  // ----------------------------------------------------------
+  // Nama bulan Indonesia
+  // ----------------------------------------------------------
+
+  const bulanMap = {
+
+    januari: 1,
+    jan: 1,
+
+    februari: 2,
+    feb: 2,
+
+    maret: 3,
+    mar: 3,
+
+    april: 4,
+    apr: 4,
+
+    mei: 5,
+
+    juni: 6,
+    jun: 6,
+
+    juli: 7,
+    jul: 7,
+
+    agustus: 8,
+    agu: 8,
+
+    september: 9,
+    sep: 9,
+
+    oktober: 10,
+    okt: 10,
+
+    november: 11,
+    nov: 11,
+
+    desember: 12,
+    des: 12
+
+  };
+
+  const match =
+    text.match(
+      /^(\d{1,2})\s+([A-Za-z]+)\s+(\d{4})$/i
+    );
+
+  if (match) {
+
+    const tanggal =
+      Number(
+        match[1]
+      );
+
+    const namaBulan =
+      match[2]
+        .toLowerCase();
+
+    const tahun =
+      Number(
+        match[3]
+      );
+
+    const bulan =
+      bulanMap[
+        namaBulan
+      ];
+
+    if (
+      bulan &&
+      tanggal >= 1 &&
+      tanggal <= 31
     ) {
-      jenisKelamin = "P";
-    } else {
-      jenisKelamin = "";
+
+      return `${tahun}-${String(
+        bulan
+      ).padStart(
+        2,
+        "0"
+      )}-${String(
+        tanggal
+      ).padStart(
+        2,
+        "0"
+      )}`;
+
     }
 
-    const nomorHpOrtu =
-      normalizePhone(
-        findValue(row, [
-          "Nomor HP Orang Tua",
-          "No HP Orang Tua",
-          "No HP Ortu",
-          "Nomor HP Ortu",
-          "HP Orang Tua",
-          "Telepon Orang Tua",
-        ])
-      );
+  }
 
-    const alamat =
-      String(
-        findValue(row, [
-          "Alamat",
-          "Alamat Siswa",
-        ])
-      ).trim();
+  return null;
+}
+// ============================================================
+// PARSE MULAI BERGABUNG
+// Hasil:
+// {
+//   bulan: 7,
+//   tahun: 2024
+// }
+// ============================================================
 
-    const errors = [];
+function parseBulanTahunExcel(
+  value
+) {
 
-    if (!nama) {
-      errors.push(
-        "Nama siswa kosong"
-      );
-    }
-
-    if (!nis) {
-      errors.push(
-        "NIS kosong"
-      );
-    }
-
-    if (!kelas) {
-      errors.push(
-        "Kelas kosong"
-      );
-    }
-
+  if (
+    value === null ||
+    value === undefined ||
+    value === ""
+  ) {
     return {
-      rowNumber: index + 2,
-      nama,
-      nis,
-      kelas,
-      tahun_ajaran:
-        tahunAjaran || null,
-      tanggal_lahir:
-        tanggalLahir || null,
-      jenis_kelamin:
-        jenisKelamin || null,
-      nomor_hp_ortu:
-        nomorHpOrtu || null,
-      orang_tua_id: null,
-      alamat:
-        alamat || null,
-      errors,
+      bulan: null,
+      tahun: null
     };
   }
 
+  let date = null;
+
+  // ----------------------------------------------------------
+  // Date object
+  // ----------------------------------------------------------
+
+  if (
+    value instanceof Date
+  ) {
+
+    date =
+      value;
+
+  }
+
+  // ----------------------------------------------------------
+  // Excel serial number
+  // ----------------------------------------------------------
+
+  else if (
+    typeof value === "number"
+  ) {
+
+    /*
+     * Excel menggunakan sistem 1900-date.
+     */
+
+    const utcDate =
+      new Date(
+        Math.round(
+          (
+            value -
+            25569
+          ) *
+          86400 *
+          1000
+        )
+      );
+
+    if (
+      !Number.isNaN(
+        utcDate.getTime()
+      )
+    ) {
+
+      date =
+        utcDate;
+
+    }
+
+  }
+
+  // ----------------------------------------------------------
+  // String
+  // ----------------------------------------------------------
+
+  else {
+
+    const text =
+      String(
+        value
+      ).trim();
+
+    if (!text) {
+      return {
+        bulan: null,
+        tahun: null
+      };
+    }
+
+    /*
+     * Coba dd/mm/yyyy
+     */
+
+    const slash =
+      text.match(
+        /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/
+      );
+
+    if (slash) {
+
+      const d =
+        Number(
+          slash[1]
+        );
+
+      const m =
+        Number(
+          slash[2]
+        );
+
+      const y =
+        Number(
+          slash[3]
+        );
+
+      return {
+        bulan:
+          m >= 1 &&
+          m <= 12
+            ? m
+            : null,
+
+        tahun:
+          y >= 2000 &&
+          y <= 2100
+            ? y
+            : null
+      };
+
+    }
+
+    /*
+     * Coba yyyy-mm-dd
+     */
+
+    const iso =
+      text.match(
+        /^(\d{4})-(\d{1,2})-(\d{1,2})$/
+      );
+
+    if (iso) {
+
+      const y =
+        Number(
+          iso[1]
+        );
+
+      const m =
+        Number(
+          iso[2]
+        );
+
+      return {
+        bulan:
+          m >= 1 &&
+          m <= 12
+            ? m
+            : null,
+
+        tahun:
+          y >= 2000 &&
+          y <= 2100
+            ? y
+            : null
+      };
+
+    }
+
+    const parsed =
+      parseFlexibleDate(
+        text
+      );
+
+    if (parsed) {
+
+      const [
+        y,
+        m
+      ] =
+        parsed.split("-");
+
+      return {
+        bulan:
+          Number(m),
+
+        tahun:
+          Number(y)
+      };
+
+    }
+
+  }
+
+  if (date) {
+
+    return {
+      bulan:
+        date.getUTCMonth() +
+        1,
+
+      tahun:
+        date.getUTCFullYear()
+    };
+
+  }
+
+  return {
+    bulan: null,
+    tahun: null
+  };
+}
+
+
+// ============================================================
+// DATE → YYYY-MM-DD
+// ============================================================
+
+function formatDateISO(
+  date
+) {
+
+  const y =
+    date.getFullYear();
+
+  const m =
+    String(
+      date.getMonth() + 1
+    ).padStart(
+      2,
+      "0"
+    );
+
+  const d =
+    String(
+      date.getDate()
+    ).padStart(
+      2,
+      "0"
+    );
+
+  return `${y}-${m}-${d}`;
+}
 // ============================================================
 // BACA FILE IMPORT GANTARIKU
 // FORMAT SESUAI EXCEL ASLI:
@@ -2120,29 +2650,53 @@ async function bacaFileImport(file) {
           );
 
         const payload =
-          chunk.map(
-            row => ({
-              nama:
-                row.nama,
-              nis:
-                row.nis,
-              kelas:
-                row.kelas,
-              tahun_ajaran:
-                row.tahun_ajaran,
-              tanggal_lahir:
-                row.tanggal_lahir,
-              jenis_kelamin:
-                row.jenis_kelamin,
-              nomor_hp_ortu:
-                row.nomor_hp_ortu,
-              orang_tua_id:
-                null,
-              alamat:
-                row.alamat,
-            })
-          );
+  chunk.map(
+    row => ({
 
+      nama:
+        row.nama,
+
+      nis:
+        row.nis,
+
+      tempat_lahir:
+        row.tempat_lahir,
+
+      tanggal_lahir:
+        row.tanggal_lahir,
+
+      alamat:
+        row.alamat,
+
+      nama_wali:
+        row.nama_wali,
+
+      nomor_hp_ortu:
+        row.nomor_hp_ortu,
+
+      kelas:
+        row.kelas,
+
+      tahun_ajaran:
+        row.tahun_ajaran,
+
+      jenis_kelamin:
+        row.jenis_kelamin,
+
+      mulai_bulan:
+        row.mulai_bulan,
+
+      mulai_tahun:
+        row.mulai_tahun,
+
+      orang_tua_id:
+        null
+
+      // kode_akses tidak perlu dikirim.
+      // Trigger database akan membuat otomatis.
+
+    })
+  );
         const {
           error,
         } =
