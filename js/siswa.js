@@ -1298,82 +1298,68 @@ function mapImportRow(
     );
   }
 
-  return {
+ return {
+  rowNumber:
+    index + 1,
 
-    rowNumber:
-      index + 1,
+  nomor:
+    nomor,
 
-    nomor:
+  nama:
+    nama,
 
-      nomor,
+  nis:
+    nis,
 
-    nama:
+  tempat_lahir:
+    tempatLahir ||
+    null,
 
-      nama,
+  tanggal_lahir:
+    tanggalLahir ||
+    null,
 
-    nis:
+  alamat:
+    alamat ||
+    null,
 
-      nis,
+  nama_wali:
+    namaWali ||
+    null,
 
-    tempat_lahir:
+  nomor_hp_ortu:
+    nomorHpOrtu ||
+    null,
 
-      tempatLahir ||
-      null,
+  kelas:
+    kelas,
 
-    tanggal_lahir:
-
-      tanggalLahir ||
-      null,
-
-    alamat:
-
-      alamat ||
-      null,
-
-    nama_wali:
-
-      namaWali ||
-      null,
-
-    nomor_hp_ortu:
-
-      nomorHpOrtu ||
-      null,
-
-    kelas:
-
-      kelas,
-
-    tahun_ajaran:
-
-      null,
-
-    jenis_kelamin:
-
-      null,
-
-    mulai_bulan:
-
+  // Otomatis dihitung dari Mulai Bergabung
+  tahun_ajaran:
+    hitungTahunAjaran(
       mulai.bulan,
+      mulai.tahun
+    ),
 
-    mulai_tahun:
+  jenis_kelamin:
+    null,
 
-      mulai.tahun,
+  mulai_bulan:
+    mulai.bulan,
 
-    orang_tua_id:
+  mulai_tahun:
+    mulai.tahun,
 
-      null,
+  orang_tua_id:
+    null,
 
-    kode_akses:
+  kode_akses:
+    null,
 
-      null,
-
-    errors:
-
-      errors
-  };
-}
-// ============================================================
+  errors:
+    errors
+};
+  // ============================================================
 // PARSE TANGGAL LEBIH FLEKSIBEL
 // Mendukung:
 // 01 Mei 2020
