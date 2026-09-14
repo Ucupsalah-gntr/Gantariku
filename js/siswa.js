@@ -1,11 +1,6 @@
-```javascript
 // ============================================================
 // GANTARIKU — DATA SISWA
 // FULL REPLACEMENT
-// Tambahan:
-// - Menampilkan Kode Akses
-// - Tombol salin Kode Akses
-// - Kode Akses dibaca langsung dari Supabase
 // ============================================================
 
 // ============================================================
@@ -46,7 +41,6 @@ async function loadOrangTuaUntukForm(selectedId = "") {
         .join("");
   } catch (error) {
     console.error("Error load akun orang tua:", error);
-
     select.innerHTML =
       `<option value="">Gagal memuat akun orang tua</option>`;
   }
@@ -314,7 +308,6 @@ function renderSiswa() {
                 <th>Kelas</th>
                 <th>Tahun Ajaran</th>
                 <th>Orang Tua</th>
-                <th>Kode Akses</th>
                 <th>Nomor HP</th>
                 <th>Bergabung</th>
                 <th>Aksi</th>
@@ -324,7 +317,7 @@ function renderSiswa() {
             <tbody id="daftarSiswa">
 
               <tr>
-                <td colspan="9" style="text-align:center;">
+                <td colspan="8" style="text-align:center;">
                   Memuat data siswa...
                 </td>
               </tr>
@@ -585,7 +578,6 @@ async function simpanSiswa(event) {
     const dataSiswa = {
       nama,
       nis,
-
       kelas,
 
       tahun_ajaran:
@@ -649,9 +641,7 @@ async function simpanSiswa(event) {
     tutupFormSiswa();
 
     await loadSiswa();
-
   } catch (error) {
-
     console.error(
       "Error simpan siswa:",
       error
@@ -664,15 +654,12 @@ async function simpanSiswa(event) {
           "Terjadi kesalahan."
         )
     );
-
   } finally {
-
     if (btn) {
       btn.disabled = false;
       btn.textContent =
         "Simpan Siswa";
     }
-
   }
 }
 
@@ -690,14 +677,13 @@ async function loadSiswa() {
 
   tbody.innerHTML = `
     <tr>
-      <td colspan="9" style="text-align:center;">
+      <td colspan="8" style="text-align:center;">
         Memuat data siswa...
       </td>
     </tr>
   `;
 
   try {
-
     if (!supabase) {
       throw new Error(
         "Supabase belum terhubung."
@@ -747,10 +733,9 @@ async function loadSiswa() {
       data || [];
 
     if (!semuaSiswa.length) {
-
       tbody.innerHTML = `
         <tr>
-          <td colspan="9" style="text-align:center;">
+          <td colspan="8" style="text-align:center;">
             Belum ada data siswa.
           </td>
         </tr>
@@ -762,9 +747,7 @@ async function loadSiswa() {
     renderDaftarSiswa(
       semuaSiswa
     );
-
   } catch (error) {
-
     console.error(
       "Error load siswa:",
       error
@@ -773,7 +756,7 @@ async function loadSiswa() {
     tbody.innerHTML = `
       <tr>
         <td
-          colspan="9"
+          colspan="8"
           style="text-align:center;color:#E11D48;"
         >
           Gagal memuat data siswa.
@@ -790,7 +773,6 @@ async function loadSiswa() {
 function renderDaftarSiswa(
   dataSiswa
 ) {
-
   const tbody =
     document.getElementById(
       "daftarSiswa"
@@ -802,10 +784,9 @@ function renderDaftarSiswa(
     !dataSiswa ||
     !dataSiswa.length
   ) {
-
     tbody.innerHTML = `
       <tr>
-        <td colspan="9" style="text-align:center;">
+        <td colspan="8" style="text-align:center;">
           Data siswa tidak ditemukan.
         </td>
       </tr>
@@ -824,11 +805,6 @@ function renderDaftarSiswa(
             siswa.orang_tua?.email ||
             siswa.nama_wali ||
             "Belum ditautkan";
-
-          const kodeAkses =
-            siswa.kode_akses
-              ? String(siswa.kode_akses)
-              : "";
 
           return `
             <tr>
@@ -862,67 +838,6 @@ function renderDaftarSiswa(
                 ${escapeHtml(
                   orangTuaNama
                 )}
-              </td>
-
-              <td>
-                ${
-                  kodeAkses
-                    ? `
-                      <div style="
-                        display:flex;
-                        align-items:center;
-                        gap:6px;
-                        flex-wrap:wrap;
-                      ">
-
-                        <span
-                          style="
-                            display:inline-flex;
-                            align-items:center;
-                            padding:5px 8px;
-                            border-radius:8px;
-                            background:#f3e8ff;
-                            color:#6d28d9;
-                            font-family:monospace;
-                            font-size:12px;
-                            font-weight:800;
-                            letter-spacing:.7px;
-                            white-space:nowrap;
-                          "
-                        >
-                          ${escapeHtml(
-                            kodeAkses
-                          )}
-                        </span>
-
-                        <button
-                          type="button"
-                          class="btn ghost small"
-                          onclick="window.salinKodeAkses('${escapeJs(
-                            kodeAkses
-                          )}')"
-                          title="Salin kode akses"
-                          style="
-                            padding:5px 8px;
-                            min-height:32px;
-                          "
-                        >
-                          📋
-                        </button>
-
-                      </div>
-                    `
-                    : `
-                      <span
-                        style="
-                          color:#999;
-                          font-size:12px;
-                        "
-                      >
-                        Belum tersedia
-                      </span>
-                    `
-                }
               </td>
 
               <td>
@@ -994,96 +909,10 @@ function renderDaftarSiswa(
 }
 
 // ============================================================
-// SALIN KODE AKSES
-// ============================================================
-
-async function salinKodeAkses(kode) {
-
-  if (!kode) {
-    alert("Kode akses tidak tersedia.");
-    return;
-  }
-
-  try {
-
-    if (
-      navigator.clipboard &&
-      window.isSecureContext
-    ) {
-
-      await navigator.clipboard.writeText(
-        kode
-      );
-
-      alert(
-        `Kode akses ${kode} berhasil disalin.`
-      );
-
-      return;
-    }
-
-    // Fallback browser lama
-    const textarea =
-      document.createElement(
-        "textarea"
-      );
-
-    textarea.value =
-      kode;
-
-    textarea.style.position =
-      "fixed";
-
-    textarea.style.left =
-      "-9999px";
-
-    document.body.appendChild(
-      textarea
-    );
-
-    textarea.focus();
-    textarea.select();
-
-    const berhasil =
-      document.execCommand(
-        "copy"
-      );
-
-    textarea.remove();
-
-    if (berhasil) {
-
-      alert(
-        `Kode akses ${kode} berhasil disalin.`
-      );
-
-    } else {
-
-      alert(
-        `Kode akses:\n\n${kode}\n\nSilakan salin secara manual.`
-      );
-
-    }
-
-  } catch (error) {
-
-    console.error(
-      "Gagal menyalin kode akses:",
-      error
-    );
-
-    alert(
-      `Kode akses:\n\n${kode}\n\nSilakan salin secara manual.`
-    );
-  }
-}
-
-// ============================================================
 // CARI SISWA
 // ============================================================
 
 function cariSiswa() {
-
   const input =
     document.getElementById(
       "cariSiswa"
@@ -1108,7 +937,6 @@ function cariSiswa() {
             siswa.tahun_ajaran,
             siswa.nama_wali,
             siswa.nomor_hp_ortu,
-            siswa.kode_akses,
           ]
             .map(
               (x) =>
@@ -1137,9 +965,7 @@ async function hapusSiswa(
   id,
   nama
 ) {
-
   if (!supabase) {
-
     alert(
       "Supabase belum terhubung."
     );
@@ -1159,7 +985,6 @@ async function hapusSiswa(
   }
 
   try {
-
     const {
       error,
     } =
@@ -1177,9 +1002,7 @@ async function hapusSiswa(
     );
 
     await loadSiswa();
-
   } catch (error) {
-
     console.error(
       "Error hapus siswa:",
       error
@@ -1221,7 +1044,6 @@ let importInvalidRows = [];
 // ============================================================
 
 async function ensureXLSX() {
-
   if (window.XLSX) {
     return window.XLSX;
   }
@@ -1287,19 +1109,15 @@ async function ensureXLSX() {
         () => {
 
           if (window.XLSX) {
-
             resolve(
               window.XLSX
             );
-
           } else {
-
             reject(
               new Error(
                 "Library Excel tidak tersedia."
               )
             );
-
           }
 
         };
@@ -1330,7 +1148,6 @@ async function ensureXLSX() {
 async function bacaFileImport(
   file
 ) {
-
   if (!file) {
     throw new Error(
       "File belum dipilih."
@@ -1409,10 +1226,10 @@ async function bacaFileImport(
   for (
     let i = 0;
     i <
-    Math.min(
-      rows.length,
-      20
-    );
+      Math.min(
+        rows.length,
+        20
+      );
     i++
   ) {
 
@@ -1500,7 +1317,6 @@ function mapImportRow(
   row,
   index
 ) {
-
   const nama =
     String(
       row?.[1] ?? ""
@@ -1608,7 +1424,6 @@ function mapImportRow(
   }
 
   return {
-
     rowNumber:
       index + 2,
 
@@ -1664,14 +1479,11 @@ function mapImportRow(
 function parseTTL(
   ttl
 ) {
-
   if (!ttl) {
-
     return {
       tempatLahir: "",
       tanggalLahir: null,
     };
-
   }
 
   const parts =
@@ -1686,9 +1498,7 @@ function parseTTL(
   if (
     parts.length >= 2
   ) {
-
     return {
-
       tempatLahir:
         parts
           .slice(
@@ -1706,20 +1516,15 @@ function parseTTL(
               1
           ]
         ),
-
     };
-
   }
 
   return {
-
     tempatLahir: "",
-
     tanggalLahir:
       parseFlexibleDate(
         ttl
       ),
-
   };
 }
 
@@ -1730,35 +1535,28 @@ function parseTTL(
 function parseFlexibleDate(
   value
 ) {
-
   if (
     value === null ||
     value === undefined ||
     value === ""
   ) {
-
     return null;
-
   }
 
   if (
     value instanceof Date
   ) {
-
     if (
       Number.isNaN(
         value.getTime()
       )
     ) {
-
       return null;
-
     }
 
     return formatDateISO(
       value
     );
-
   }
 
   const text =
@@ -1775,7 +1573,6 @@ function parseFlexibleDate(
     );
 
   if (match) {
-
     return `${match[1]}-${String(
       match[2]
     ).padStart(
@@ -1787,7 +1584,6 @@ function parseFlexibleDate(
       2,
       "0"
     )}`;
-
   }
 
   match =
@@ -1796,7 +1592,6 @@ function parseFlexibleDate(
     );
 
   if (match) {
-
     return `${match[3]}-${String(
       match[2]
     ).padStart(
@@ -1808,11 +1603,9 @@ function parseFlexibleDate(
       2,
       "0"
     )}`;
-
   }
 
   const bulanMap = {
-
     januari: 1,
     jan: 1,
 
@@ -1849,7 +1642,6 @@ function parseFlexibleDate(
 
     desember: 12,
     des: 12,
-
   };
 
   match =
@@ -1858,7 +1650,6 @@ function parseFlexibleDate(
     );
 
   if (match) {
-
     const tanggal =
       Number(
         match[1]
@@ -1879,7 +1670,6 @@ function parseFlexibleDate(
       tanggal >= 1 &&
       tanggal <= 31
     ) {
-
       return `${tahun}-${String(
         bulan
       ).padStart(
@@ -1891,9 +1681,7 @@ function parseFlexibleDate(
         2,
         "0"
       )}`;
-
     }
-
   }
 
   return null;
@@ -1906,55 +1694,45 @@ function parseFlexibleDate(
 function parseBulanTahunExcel(
   value
 ) {
-
   if (
     value === null ||
     value === undefined ||
     value === ""
   ) {
-
     return {
       bulan: null,
       tahun: null,
     };
-
   }
 
   if (
     value instanceof Date
   ) {
-
     if (
       Number.isNaN(
         value.getTime()
       )
     ) {
-
       return {
         bulan: null,
         tahun: null,
       };
-
     }
 
     return {
-
       bulan:
         value.getMonth() +
         1,
 
       tahun:
         value.getFullYear(),
-
     };
-
   }
 
   if (
     typeof value ===
     "number"
   ) {
-
     if (
       window.XLSX?.SSF &&
       typeof
@@ -1963,16 +1741,13 @@ function parseBulanTahunExcel(
           .parse_date_code ===
         "function"
     ) {
-
       const parsed =
         window.XLSX.SSF.parse_date_code(
           value
         );
 
       if (parsed) {
-
         return {
-
           bulan:
             Number(
               parsed.m
@@ -1982,11 +1757,8 @@ function parseBulanTahunExcel(
             Number(
               parsed.y
             ),
-
         };
-
       }
-
     }
 
     const date =
@@ -2006,25 +1778,20 @@ function parseBulanTahunExcel(
         date.getTime()
       )
     ) {
-
       return {
-
         bulan:
           date.getUTCMonth() +
           1,
 
         tahun:
           date.getUTCFullYear(),
-
       };
-
     }
 
     return {
       bulan: null,
       tahun: null,
     };
-
   }
 
   const text =
@@ -2037,9 +1804,7 @@ function parseBulanTahunExcel(
     );
 
   if (match) {
-
     return {
-
       tahun:
         Number(
           match[1]
@@ -2049,9 +1814,7 @@ function parseBulanTahunExcel(
         Number(
           match[2]
         ),
-
     };
-
   }
 
   match =
@@ -2060,9 +1823,7 @@ function parseBulanTahunExcel(
     );
 
   if (match) {
-
     return {
-
       bulan:
         Number(
           match[2]
@@ -2072,9 +1833,7 @@ function parseBulanTahunExcel(
         Number(
           match[3]
         ),
-
     };
-
   }
 
   const parsed =
@@ -2083,7 +1842,6 @@ function parseBulanTahunExcel(
     );
 
   if (parsed) {
-
     const [
       tahun,
       bulan,
@@ -2091,7 +1849,6 @@ function parseBulanTahunExcel(
       parsed.split("-");
 
     return {
-
       bulan:
         Number(
           bulan
@@ -2101,9 +1858,7 @@ function parseBulanTahunExcel(
         Number(
           tahun
         ),
-
     };
-
   }
 
   return {
@@ -2115,14 +1870,11 @@ function parseBulanTahunExcel(
 function parseMonthInput(
   value
 ) {
-
   if (!value) {
-
     return {
       bulan: null,
       tahun: null,
     };
-
   }
 
   const match =
@@ -2131,16 +1883,13 @@ function parseMonthInput(
     );
 
   if (!match) {
-
     return {
       bulan: null,
       tahun: null,
     };
-
   }
 
   return {
-
     tahun:
       Number(
         match[1]
@@ -2150,7 +1899,6 @@ function parseMonthInput(
       Number(
         match[2]
       ),
-
   };
 }
 
@@ -2158,7 +1906,6 @@ function hitungTahunAjaranMulai(
   bulan,
   tahun
 ) {
-
   if (
     !bulan ||
     !tahun
@@ -2184,9 +1931,7 @@ function hitungTahunAjaranMulai(
       y
     )
   ) {
-
     return null;
-
   }
 
   if (
@@ -2195,9 +1940,7 @@ function hitungTahunAjaranMulai(
     y < 2000 ||
     y > 2100
   ) {
-
     return null;
-
   }
 
   return b >= 7
@@ -2208,7 +1951,6 @@ function hitungTahunAjaranMulai(
 function formatDateISO(
   date
 ) {
-
   return `${date.getFullYear()}-${String(
     date.getMonth() + 1
   ).padStart(
@@ -2220,7 +1962,6 @@ function formatDateISO(
     2,
     "0"
   )}`;
-
 }
 
 // ============================================================
@@ -2230,7 +1971,6 @@ function formatDateISO(
 function cekDuplikatDalamFile(
   rows
 ) {
-
   const seen =
     new Map();
 
@@ -2248,18 +1988,15 @@ function cekDuplikatDalamFile(
       if (!key) return;
 
       if (!seen.has(key)) {
-
         seen.set(
           key,
           []
         );
-
       }
 
       seen
         .get(key)
         .push(row);
-
     }
   );
 
@@ -2270,7 +2007,6 @@ function cekDuplikatDalamFile(
         list.length >
         1
       ) {
-
         list.forEach(
           (row) => {
 
@@ -2279,16 +2015,13 @@ function cekDuplikatDalamFile(
                 "NIS duplikat di dalam file"
               )
             ) {
-
               row.errors.push(
                 "NIS duplikat di dalam file"
               );
-
             }
 
           }
         );
-
       }
 
     }
@@ -2298,13 +2031,10 @@ function cekDuplikatDalamFile(
 async function cekDatabase(
   rows
 ) {
-
   if (!supabase) {
-
     throw new Error(
       "Supabase belum terhubung."
     );
-
   }
 
   const nisList =
@@ -2327,9 +2057,7 @@ async function cekDatabase(
   if (
     !nisList.length
   ) {
-
     return [];
-
   }
 
   const existing = [];
@@ -2337,7 +2065,7 @@ async function cekDatabase(
   for (
     let i = 0;
     i <
-    nisList.length;
+      nisList.length;
     i += 200
   ) {
 
@@ -2368,7 +2096,6 @@ async function cekDatabase(
     existing.push(
       ...(data || [])
     );
-
   }
 
   return existing;
@@ -2379,15 +2106,12 @@ async function cekDatabase(
 // ============================================================
 
 function injectImportStyles() {
-
   if (
     document.getElementById(
       "gtr-import-styles"
     )
   ) {
-
     return;
-
   }
 
   const style =
@@ -2399,475 +2123,284 @@ function injectImportStyles() {
     "gtr-import-styles";
 
   style.textContent = `
-
     .gtr-import-backdrop {
-
       position: fixed;
-
       inset: 0;
-
       z-index: 99999;
-
       display: flex;
-
       align-items: center;
-
       justify-content: center;
-
       padding: 18px;
-
       background: rgba(47,43,42,.55);
-
       backdrop-filter: blur(4px);
-
     }
 
     .gtr-import-modal {
-
       width: min(1100px, 100%);
-
       max-height: 92vh;
-
       overflow: hidden;
-
       background: #fffdf9;
-
       border: 1px solid #e7ddd0;
-
       border-radius: 20px;
-
       box-shadow: 0 25px 80px rgba(45,35,28,.25);
-
     }
 
     .gtr-import-header {
-
       display: flex;
-
       align-items: flex-start;
-
       justify-content: space-between;
-
       gap: 16px;
-
       padding: 20px 22px;
-
       border-bottom: 1px solid #eee5d9;
-
     }
 
     .gtr-import-header h2 {
-
       margin: 0 0 5px;
-
       color: #393536;
-
       font-size: 20px;
-
     }
 
     .gtr-import-header p {
-
       margin: 0;
-
       color: #776d63;
-
       font-size: 13px;
-
     }
 
     .gtr-import-close {
-
       width: 36px;
-
       height: 36px;
-
       border: 0;
-
       border-radius: 10px;
-
       background: #f3ece3;
-
       color: #5f5750;
-
       font-size: 24px;
-
       cursor: pointer;
-
     }
 
     .gtr-import-content {
-
       padding: 20px;
-
       max-height: calc(92vh - 90px);
-
       overflow: auto;
-
     }
 
     .gtr-import-upload {
-
       display: flex;
-
       flex-direction: column;
-
       align-items: center;
-
       justify-content: center;
-
       gap: 6px;
-
       padding: 26px 18px;
-
       margin-bottom: 16px;
-
       text-align: center;
-
       background: linear-gradient(
         180deg,
         #fff7dc,
         #fffdf9
       );
-
       border: 1px dashed #dcc79c;
-
       border-radius: 16px;
-
     }
 
     .gtr-import-icon {
-
       width: 50px;
-
       height: 50px;
-
       display: grid;
-
       place-items: center;
-
       margin-bottom: 4px;
-
       background: #fff0c3;
-
       border-radius: 15px;
-
       font-size: 25px;
-
     }
 
     .gtr-import-upload strong {
-
       color: #413b38;
-
       font-size: 14px;
-
     }
 
     .gtr-import-upload span {
-
       color: #7a7066;
-
       font-size: 12px;
-
     }
 
     .gtr-import-upload input {
-
       display: none;
-
     }
 
     .gtr-import-upload label {
-
       margin-top: 9px;
-
       cursor: pointer;
-
     }
 
     .gtr-import-upload small {
-
       max-width: 800px;
-
       margin-top: 5px;
-
       color: #81766b;
-
       font-size: 11px;
-
       line-height: 1.5;
-
     }
 
     .gtr-import-summary {
-
       display: grid;
-
       grid-template-columns: repeat(3,minmax(0,1fr));
-
       gap: 10px;
-
       margin-bottom: 10px;
-
     }
 
     .gtr-import-stat {
-
       padding: 12px;
-
       background: #f5efe7;
-
       border-radius: 12px;
-
       text-align: center;
-
     }
 
     .gtr-import-stat strong {
-
       display: block;
-
       font-size: 20px;
-
       color: #403a37;
-
     }
 
     .gtr-import-stat span {
-
       font-size: 11px;
-
       color: #7c7268;
-
     }
 
     .gtr-import-stat.good {
-
       background: #eaf7e9;
-
     }
 
     .gtr-import-stat.good strong {
-
       color: #2d9143;
-
     }
 
     .gtr-import-stat.bad {
-
       background: #fff0ec;
-
     }
 
     .gtr-import-stat.bad strong {
-
       color: #c44945;
-
     }
 
     .gtr-import-file {
-
       margin-bottom: 14px;
-
       color: #766c62;
-
       font-size: 12px;
-
     }
 
     .gtr-import-preview-title {
-
       display: flex;
-
       align-items: center;
-
       justify-content: space-between;
-
       gap: 12px;
-
       margin: 15px 0 9px;
-
     }
 
     .gtr-import-preview-title strong {
-
       color: #403a37;
-
     }
 
     .gtr-import-preview-title span {
-
       color: #877c71;
-
       font-size: 11px;
-
     }
 
     .gtr-import-table-wrap {
-
       overflow: auto;
-
       max-height: 390px;
-
       border: 1px solid #e8ded2;
-
       border-radius: 12px;
-
     }
 
     .gtr-import-table {
-
       width: 100%;
-
       min-width: 900px;
-
       border-collapse: collapse;
-
       font-size: 12px;
-
     }
 
     .gtr-import-table th {
-
       position: sticky;
-
       top: 0;
-
       z-index: 1;
-
       padding: 10px;
-
       background: #f4ecde;
-
       color: #62594f;
-
       text-align: left;
-
       white-space: nowrap;
-
     }
 
     .gtr-import-table td {
-
       padding: 9px 10px;
-
       border-top: 1px solid #eee7de;
-
       color: #514b46;
-
       vertical-align: top;
-
     }
 
     .gtr-import-table tr.is-invalid {
-
       background: #fff7f4;
-
     }
 
     .gtr-import-ok,
-
     .gtr-import-invalid {
-
       display: inline-block;
-
       padding: 4px 7px;
-
       border-radius: 999px;
-
       font-size: 10px;
-
       font-weight: 700;
-
       white-space: nowrap;
-
     }
 
     .gtr-import-ok {
-
       background: #e8f6ea;
-
       color: #2c9144;
-
     }
 
     .gtr-import-invalid {
-
       background: #fbe8e5;
-
       color: #c44843;
-
     }
 
     .gtr-import-muted {
-
       color: #aaa098;
-
     }
 
     .gtr-import-actions {
-
       display: flex;
-
       justify-content: flex-end;
-
       gap: 10px;
-
       margin-top: 15px;
-
     }
 
     @media (max-width:700px) {
-
       .gtr-import-backdrop {
-
         padding: 8px;
-
       }
 
       .gtr-import-modal {
-
         max-height: 95vh;
-
         border-radius: 17px;
-
       }
 
       .gtr-import-content {
-
         max-height: calc(95vh - 88px);
-
         padding: 14px;
-
       }
 
       .gtr-import-header {
-
         padding: 16px;
-
       }
 
       .gtr-import-summary {
-
         grid-template-columns: 1fr;
-
       }
 
       .gtr-import-actions {
-
         flex-direction: column;
-
       }
 
       .gtr-import-actions .btn {
-
         width: 100%;
-
       }
-
     }
-
   `;
 
   document.head.appendChild(
@@ -2880,18 +2413,14 @@ function injectImportStyles() {
 // ============================================================
 
 function bukaImportSiswa() {
-
   if (
     currentUserRole !==
     "admin"
   ) {
-
     alert(
       "Fitur import hanya tersedia untuk admin."
     );
-
     return;
-
   }
 
   injectImportStyles();
@@ -2914,7 +2443,6 @@ function bukaImportSiswa() {
     "modalImportSiswa";
 
   modal.innerHTML = `
-
     <div class="gtr-import-backdrop">
 
       <div class="gtr-import-modal">
@@ -2922,7 +2450,6 @@ function bukaImportSiswa() {
         <div class="gtr-import-header">
 
           <div>
-
             <h2>
               Import Data Siswa
             </h2>
@@ -2930,7 +2457,6 @@ function bukaImportSiswa() {
             <p>
               Gunakan file Excel siswa yang biasa dipakai sekolah.
             </p>
-
           </div>
 
           <button
@@ -2989,7 +2515,6 @@ function bukaImportSiswa() {
       </div>
 
     </div>
-
   `;
 
   document.body.appendChild(
@@ -3018,9 +2543,7 @@ function bukaImportSiswa() {
             "gtr-import-backdrop"
           )
         ) {
-
           tutupImportSiswa();
-
         }
 
       }
@@ -3043,7 +2566,6 @@ function bukaImportSiswa() {
 async function handleImportFile(
   event
 ) {
-
   const file =
     event.target.files?.[0];
 
@@ -3060,9 +2582,7 @@ async function handleImportFile(
     );
 
   if (status) {
-
     status.innerHTML = `
-
       <div
         class="gtr-import-loading"
         style="
@@ -3072,13 +2592,9 @@ async function handleImportFile(
           color:#6f665d;
         "
       >
-
         ⏳ Membaca dan memeriksa file...
-
       </div>
-
     `;
-
   }
 
   if (preview) {
@@ -3087,7 +2603,6 @@ async function handleImportFile(
   }
 
   try {
-
     const rawRows =
       await bacaFileImport(
         file
@@ -3144,11 +2659,9 @@ async function handleImportFile(
         if (
           existingStudent
         ) {
-
           row.errors.push(
             `NIS sudah terdaftar (${existingStudent.nama || "siswa lain"})`
           );
-
         }
 
       }
@@ -3183,9 +2696,7 @@ async function handleImportFile(
     );
 
     if (status) {
-
       status.innerHTML = `
-
         <div
           style="
             padding:12px;
@@ -3195,18 +2706,13 @@ async function handleImportFile(
             font-size:13px;
           "
         >
-
           ❌ ${escapeHtml(
             error?.message ||
               "Gagal membaca file."
           )}
-
         </div>
-
       `;
-
     }
-
   }
 }
 
@@ -3217,7 +2723,6 @@ async function handleImportFile(
 function renderImportPreview(
   fileName
 ) {
-
   const status =
     document.getElementById(
       "gtrImportStatus"
@@ -3233,11 +2738,9 @@ function renderImportPreview(
   }
 
   status.innerHTML = `
-
     <div class="gtr-import-summary">
 
       <div class="gtr-import-stat">
-
         <strong>
           ${importRows.length}
         </strong>
@@ -3245,11 +2748,9 @@ function renderImportPreview(
         <span>
           Total baris
         </span>
-
       </div>
 
       <div class="gtr-import-stat good">
-
         <strong>
           ${importValidRows.length}
         </strong>
@@ -3257,11 +2758,9 @@ function renderImportPreview(
         <span>
           Siap diimport
         </span>
-
       </div>
 
       <div class="gtr-import-stat bad">
-
         <strong>
           ${importInvalidRows.length}
         </strong>
@@ -3269,19 +2768,15 @@ function renderImportPreview(
         <span>
           Perlu diperbaiki
         </span>
-
       </div>
 
     </div>
 
     <div class="gtr-import-file">
-
       📄 ${escapeHtml(
         fileName
       )}
-
     </div>
-
   `;
 
   const previewRows =
@@ -3314,9 +2809,7 @@ function renderImportPreview(
       <table class="gtr-import-table">
 
         <thead>
-
           <tr>
-
             <th>Baris</th>
             <th>Nama</th>
             <th>NIS</th>
@@ -3325,9 +2818,7 @@ function renderImportPreview(
             <th>Bergabung</th>
             <th>Status</th>
             <th>Masalah</th>
-
           </tr>
-
         </thead>
 
         <tbody>
@@ -3342,7 +2833,6 @@ function renderImportPreview(
                   0;
 
                 return `
-
                   <tr
                     class="${
                       valid
@@ -3389,29 +2879,22 @@ function renderImportPreview(
                     </td>
 
                     <td>
-
                       ${
                         valid
                           ? `
-
                             <span class="gtr-import-ok">
                               ✓ Valid
                             </span>
-
                           `
                           : `
-
                             <span class="gtr-import-invalid">
                               ! Perlu diperbaiki
                             </span>
-
                           `
                       }
-
                     </td>
 
                     <td>
-
                       ${
                         row.errors
                           .length
@@ -3424,20 +2907,15 @@ function renderImportPreview(
                               )
                               .join("")
                           : `
-
                             <span class="gtr-import-muted">
                               —
                             </span>
-
                           `
                       }
-
                     </td>
 
                   </tr>
-
                 `;
-
               }
             )
             .join("")}
@@ -3474,7 +2952,6 @@ function renderImportPreview(
       </button>
 
     </div>
-
   `;
 
   document
@@ -3501,40 +2978,30 @@ function renderImportPreview(
 // ============================================================
 
 async function importSekarang() {
-
   if (
     currentUserRole !==
     "admin"
   ) {
-
     alert(
       "Hanya admin yang dapat melakukan import data siswa."
     );
-
     return;
-
   }
 
   if (!supabase) {
-
     alert(
       "Supabase belum terhubung."
     );
-
     return;
-
   }
 
   if (
     !importValidRows.length
   ) {
-
     alert(
       "Tidak ada data valid untuk diimport."
     );
-
     return;
-
   }
 
   const btn =
@@ -3546,16 +3013,13 @@ async function importSekarang() {
     importValidRows.length;
 
   if (btn) {
-
     btn.disabled = true;
 
     btn.textContent =
       `Mengimport 0/${total}...`;
-
   }
 
   try {
-
     let berhasil = 0;
 
     for (
@@ -3635,12 +3099,9 @@ async function importSekarang() {
         chunk.length;
 
       if (btn) {
-
         btn.textContent =
           `Mengimport ${berhasil}/${total}...`;
-
       }
-
     }
 
     alert(
@@ -3674,7 +3135,6 @@ async function importSekarang() {
         `Import ${total} Data`;
 
     }
-
   }
 }
 
@@ -3683,7 +3143,6 @@ async function importSekarang() {
 // ============================================================
 
 function tutupImportSiswa() {
-
   document
     .getElementById(
       "modalImportSiswa"
@@ -3691,9 +3150,7 @@ function tutupImportSiswa() {
     ?.remove();
 
   importRows = [];
-
   importValidRows = [];
-
   importInvalidRows = [];
 }
 
@@ -3704,14 +3161,11 @@ function tutupImportSiswa() {
 function normalizePhone(
   value
 ) {
-
   if (
     value === null ||
     value === undefined
   ) {
-
     return "";
-
   }
 
   let phone =
@@ -3727,7 +3181,6 @@ function normalizePhone(
       "+62"
     )
   ) {
-
     phone =
       "0" +
       phone.slice(3);
@@ -3737,11 +3190,9 @@ function normalizePhone(
       "62"
     )
   ) {
-
     phone =
       "0" +
       phone.slice(2);
-
   }
 
   return phone;
@@ -3750,7 +3201,6 @@ function normalizePhone(
 function formatBergabungSiswa(
   siswa
 ) {
-
   const bulan =
     Number(
       siswa?.mulai_bulan ||
@@ -3774,13 +3224,10 @@ function formatBergabungSiswa(
     ) ||
     tahun < 2000
   ) {
-
     return "-";
-
   }
 
   const names = [
-
     "Januari",
     "Februari",
     "Maret",
@@ -3793,7 +3240,6 @@ function formatBergabungSiswa(
     "Oktober",
     "November",
     "Desember",
-
   ];
 
   return `${
@@ -3807,24 +3253,20 @@ function setValue(
   id,
   value
 ) {
-
   const el =
     document.getElementById(
       id
     );
 
   if (el) {
-
     el.value =
       value ?? "";
-
   }
 }
 
 function getValue(
   id
 ) {
-
   return (
     document.getElementById(
       id
@@ -3836,7 +3278,6 @@ function getValue(
 function escapeHtml(
   value
 ) {
-
   return String(
     value ?? ""
   )
@@ -3865,7 +3306,6 @@ function escapeHtml(
 function escapeJs(
   value
 ) {
-
   return String(
     value ?? ""
   )
@@ -3896,7 +3336,3 @@ window.bukaImportSiswa =
 
 window.tutupImportSiswa =
   tutupImportSiswa;
-
-window.salinKodeAkses =
-  salinKodeAkses;
-```
