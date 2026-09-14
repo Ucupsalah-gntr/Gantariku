@@ -427,23 +427,43 @@ function renderAbsenAnak() {
 
     <div class="section">
 
-      <div class="section-head">
+      <div class="section-head ortu-kehadiran-head">
 
-        <h2>Kehadiran Anak</h2>
+        <div>
+          <h2>Kehadiran Anak</h2>
 
-        <div class="controls">
-
-          <input
-            type="date"
-            id="absenAnakDari"
-            value="${awalBulanStr}"
+          <div
+            style="
+              margin-top:4px;
+              font-size:12px;
+              color:var(--ink-soft);
+            "
           >
+            Ringkasan dan riwayat kehadiran anak.
+          </div>
+        </div>
 
-          <input
-            type="date"
-            id="absenAnakSampai"
-            value="${todayStr}"
-          >
+        <div class="ortu-absen-controls">
+
+          <div class="ortu-date-field">
+            <label>Dari</label>
+
+            <input
+              type="date"
+              id="absenAnakDari"
+              value="${awalBulanStr}"
+            >
+          </div>
+
+          <div class="ortu-date-field">
+            <label>Sampai</label>
+
+            <input
+              type="date"
+              id="absenAnakSampai"
+              value="${todayStr}"
+            >
+          </div>
 
           <button
             class="btn secondary"
@@ -458,35 +478,563 @@ function renderAbsenAnak() {
 
       <div class="section-body">
 
-        <table>
+        <div
+          id="ringkasanAbsenAnak"
+          class="ortu-absen-summary"
+        >
+          <div class="empty">
+            Memuat ringkasan kehadiran...
+          </div>
+        </div>
 
-          <thead>
-            <tr>
-              <th>Tanggal</th>
-              <th>Status</th>
-              <th>Keterangan</th>
-            </tr>
-          </thead>
+        <div
+          style="
+            margin-top:24px;
+          "
+        >
 
-          <tbody id="daftarAbsenAnak">
+          <div
+            style="
+              display:flex;
+              align-items:center;
+              justify-content:space-between;
+              gap:12px;
+              flex-wrap:wrap;
+              margin-bottom:12px;
+            "
+          >
 
-            <tr>
-              <td
-                colspan="3"
-                style="text-align:center;"
+            <div>
+
+              <h3
+                style="
+                  margin:0;
+                  font-size:16px;
+                "
               >
-                Memuat data...
-              </td>
-            </tr>
+                Riwayat Kehadiran
+              </h3>
 
-          </tbody>
+              <div
+                style="
+                  margin-top:3px;
+                  font-size:12px;
+                  color:var(--ink-soft);
+                "
+              >
+                Riwayat absensi sesuai periode yang dipilih.
+              </div>
 
-        </table>
+            </div>
+
+            <div
+              id="absenAnakJumlah"
+              style="
+                font-size:12px;
+                color:var(--ink-soft);
+              "
+            >
+            </div>
+
+          </div>
+
+          <div
+            id="daftarAbsenAnak"
+            class="ortu-absen-list"
+          >
+            <div class="empty">
+              Memuat data...
+            </div>
+          </div>
+
+        </div>
 
       </div>
 
     </div>
   `;
+}
+
+
+// ============================================================
+// LOAD KEHADIRAN ANAK
+// ============================================================
+
+async function loadAbsenAnak() {
+
+  const wrap =
+    document.getElementById(
+      "pilihAnakWrap"
+    );
+
+  const list =
+    document.getElementById(
+      "daftarAbsenAnak"
+    );
+
+  const summary =
+    document.getElementById(
+      "ringkasanAbsenAnak"
+    );
+
+  const jumlah =
+    document.getElementById(
+      "absenAnakJumlah"
+    );
+
+  if (
+    !list ||
+    !summary ||
+    !supabase
+  ) {
+    return;
+  }
+
+  await pastikanAnakOrangTuaDimuat();
+
+  if (wrap) {
+    wrap.innerHTML =
+      renderPilihAnakHtml();
+  }
+
+  if (
+    anakOrangTuaList.length === 0
+  ) {
+
+    summary.innerHTML = `
+      <div class="empty">
+        Belum ada data siswa yang
+        terhubung dengan akun ini.
+      </div>
+    `;
+
+    list.innerHTML = "";
+
+    return;
+  }
+
+  const anak =
+    anakYangDipilih();
+
+  const dari =
+    document.getElementById(
+      "absenAnakDari"
+    )?.value;
+
+  const sampai =
+    document.getElementById(
+      "absenAnakSampai"
+    )?.value;
+
+  if (!dari || !sampai) {
+
+    summary.innerHTML = `
+      <div class="empty">
+        Pilih rentang tanggal terlebih dahulu.
+      </div>
+    `;
+
+    list.innerHTML = "";
+
+    return;
+  }
+
+  if (dari > sampai) {
+
+    summary.innerHTML = `
+      <div
+        class="empty"
+        style="color:#E11D48;"
+      >
+        Tanggal awal tidak boleh
+        lebih besar dari tanggal akhir.
+      </div>
+    `;
+
+    list.innerHTML = "";
+
+    return;
+  }
+
+  summary.innerHTML = `
+    <div class="empty">
+      Memuat ringkasan kehadiran...
+    </div>
+  `;
+
+  list.innerHTML = `
+    <div class="empty">
+      Memuat riwayat kehadiran...
+    </div>
+  `;
+
+  if (jumlah) {
+    jumlah.textContent = "";
+  }
+
+  try {
+
+    const {
+      data,
+      error
+    } = await supabase
+      .from("absensi")
+      .select(
+        "tanggal, status, keterangan"
+      )
+      .eq(
+        "siswa_id",
+        anak.id
+      )
+      .gte(
+        "tanggal",
+        dari
+      )
+      .lte(
+        "tanggal",
+        sampai
+      )
+      .order(
+        "tanggal",
+        {
+          ascending: false
+        }
+      );
+
+    if (error) {
+      throw error;
+    }
+
+    const rows =
+      data || [];
+
+    const hitung = {
+      H: 0,
+      I: 0,
+      S: 0,
+      A: 0
+    };
+
+    rows.forEach(
+      (item) => {
+
+        const status =
+          String(
+            item.status || ""
+          ).toUpperCase();
+
+        if (
+          hitung[status] !==
+          undefined
+        ) {
+          hitung[status]++;
+        }
+
+      }
+    );
+
+    const total =
+      rows.length;
+
+    const hadir =
+      hitung.H;
+
+    const persentase =
+      total > 0
+        ? Math.round(
+            (hadir / total) *
+            100
+          )
+        : 0;
+
+    summary.innerHTML = `
+
+      <div class="ortu-absen-student">
+
+        <div>
+
+          <div
+            style="
+              font-weight:800;
+              font-size:16px;
+              color:var(--ink);
+            "
+          >
+            ${anak.nama}
+          </div>
+
+          <div
+            style="
+              margin-top:3px;
+              font-size:12px;
+              color:var(--ink-soft);
+            "
+          >
+            ${anak.kelas || "Tanpa kelas"}
+            ${anak.nis
+              ? ` · NIS ${anak.nis}`
+              : ""
+            }
+          </div>
+
+        </div>
+
+        <div
+          class="ortu-kehadiran-percent"
+        >
+
+          <div class="num">
+            ${persentase}%
+          </div>
+
+          <div class="lbl">
+            Kehadiran
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <div
+        class="ortu-absen-stats"
+      >
+
+        <div
+          class="ortu-absen-stat hadir"
+        >
+
+          <div class="num">
+            ${hitung.H}
+          </div>
+
+          <div class="lbl">
+            Hadir
+          </div>
+
+        </div>
+
+
+        <div
+          class="ortu-absen-stat izin"
+        >
+
+          <div class="num">
+            ${hitung.I}
+          </div>
+
+          <div class="lbl">
+            Izin
+          </div>
+
+        </div>
+
+
+        <div
+          class="ortu-absen-stat sakit"
+        >
+
+          <div class="num">
+            ${hitung.S}
+          </div>
+
+          <div class="lbl">
+            Sakit
+          </div>
+
+        </div>
+
+
+        <div
+          class="ortu-absen-stat alfa"
+        >
+
+          <div class="num">
+            ${hitung.A}
+          </div>
+
+          <div class="lbl">
+            Alfa
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <div
+        class="ortu-absen-progress"
+      >
+
+        <div
+          class="ortu-absen-progress-bar"
+        >
+
+          <div
+            class="ortu-absen-progress-fill"
+            style="
+              width:${persentase}%;
+            "
+          ></div>
+
+        </div>
+
+        <div
+          style="
+            margin-top:7px;
+            font-size:12px;
+            color:var(--ink-soft);
+          "
+        >
+          ${hadir}
+          dari
+          ${total}
+          catatan absensi adalah hadir.
+        </div>
+
+      </div>
+
+    `;
+
+    if (jumlah) {
+
+      jumlah.textContent =
+        total > 0
+          ? `${total} catatan`
+          : "Belum ada catatan";
+
+    }
+
+    if (
+      rows.length === 0
+    ) {
+
+      list.innerHTML = `
+        <div
+          class="empty"
+          style="
+            padding:28px 16px;
+          "
+        >
+          Belum ada data kehadiran
+          pada periode ini.
+        </div>
+      `;
+
+      return;
+    }
+
+    list.innerHTML =
+      rows
+        .map(
+          (item) => {
+
+            const status =
+              String(
+                item.status || ""
+              ).toUpperCase();
+
+            const label =
+              labelStatusAbsensi(
+                status
+              );
+
+            const badge =
+              statusBadgeAbsensi(
+                status
+              );
+
+            const tanggal =
+              item.tanggal
+                ? new Date(
+                    item.tanggal +
+                    "T00:00:00"
+                  ).toLocaleDateString(
+                    "id-ID",
+                    {
+                      weekday:
+                        "short",
+                      day:
+                        "numeric",
+                      month:
+                        "short",
+                      year:
+                        "numeric"
+                    }
+                  )
+                : "-";
+
+            return `
+
+              <div
+                class="ortu-absen-card"
+              >
+
+                <div
+                  class="ortu-absen-card-main"
+                >
+
+                  <div>
+
+                    <div
+                      class="ortu-absen-date"
+                    >
+                      ${tanggal}
+                    </div>
+
+                    <div
+                      class="ortu-absen-note"
+                    >
+                      ${
+                        item.keterangan ||
+                        "Tidak ada keterangan tambahan."
+                      }
+                    </div>
+
+                  </div>
+
+                  <span
+                    class="badge ${badge}"
+                  >
+                    ${label}
+                  </span>
+
+                </div>
+
+              </div>
+
+            `;
+
+          }
+        )
+        .join("");
+
+  } catch (error) {
+
+    console.error(
+      "Error load absen anak:",
+      error
+    );
+
+    summary.innerHTML = `
+      <div
+        class="empty"
+        style="color:#E11D48;"
+      >
+        Gagal memuat ringkasan
+        kehadiran anak.
+      </div>
+    `;
+
+    list.innerHTML = `
+      <div
+        class="empty"
+        style="color:#E11D48;"
+      >
+        Gagal memuat data absensi.
+      </div>
+    `;
+  }
 }
 
 
