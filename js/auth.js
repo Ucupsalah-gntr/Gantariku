@@ -1,6 +1,8 @@
 /* ============================================================
    GANTARIKU - AUTH.JS
-   Cocok dengan app.js yang sekarang
+   Login + Register Orang Tua
+   Cocok dengan app.js saat ini
+   Logo tidak memakai file eksternal
    ============================================================ */
 
 
@@ -9,9 +11,11 @@
    ============================================================ */
 
 async function loadUserProfile(userId) {
+
   if (!userId) return null;
 
   try {
+
     const { data, error } = await supabase
       .from("pengguna")
       .select(`
@@ -27,14 +31,24 @@ async function loadUserProfile(userId) {
       .maybeSingle();
 
     if (error) {
-      console.error("Profile error:", error);
+
+      console.error(
+        "Profile error:",
+        error
+      );
+
       return null;
     }
 
     return data || null;
 
   } catch (error) {
-    console.error("loadUserProfile error:", error);
+
+    console.error(
+      "loadUserProfile error:",
+      error
+    );
+
     return null;
   }
 }
@@ -45,41 +59,57 @@ async function loadUserProfile(userId) {
    ============================================================ */
 
 function togglePassword(inputId, button) {
-  const input = document.getElementById(inputId);
 
-  if (!input) return;
+  const input =
+    document.getElementById(inputId);
+
+  if (!input || !button) return;
 
   if (input.type === "password") {
+
     input.type = "text";
+
     button.textContent = "🙈";
+
     button.setAttribute(
       "aria-label",
       "Sembunyikan password"
     );
+
   } else {
+
     input.type = "password";
+
     button.textContent = "👁";
+
     button.setAttribute(
       "aria-label",
       "Tampilkan password"
     );
+
   }
 }
 
 
 /* ============================================================
-   STYLE AUTH
+   STYLE
    ============================================================ */
 
 function injectAuthStyles() {
 
-  if (document.getElementById("gantariku-auth-style")) {
+  if (
+    document.getElementById(
+      "gantariku-auth-style"
+    )
+  ) {
     return;
   }
 
-  const style = document.createElement("style");
+  const style =
+    document.createElement("style");
 
-  style.id = "gantariku-auth-style";
+  style.id =
+    "gantariku-auth-style";
 
   style.textContent = `
 
@@ -91,253 +121,562 @@ function injectAuthStyles() {
       justify-content: center;
       box-sizing: border-box;
       padding: 24px;
+
       background:
         radial-gradient(
-          circle at top left,
-          rgba(242, 193, 78, .20),
-          transparent 32%
+          circle at 10% 10%,
+          rgba(238, 184, 77, .18),
+          transparent 30%
         ),
+
         radial-gradient(
-          circle at bottom right,
-          rgba(95, 125, 76, .18),
-          transparent 32%
+          circle at 90% 90%,
+          rgba(101, 133, 81, .18),
+          transparent 30%
         ),
+
         linear-gradient(
           135deg,
-          #403936 0%,
-          #5c4a41 50%,
-          #8c684e 100%
+          #413a37 0%,
+          #594941 50%,
+          #89684f 100%
         );
     }
 
+
     .gtr-auth-card {
+
       width: 100%;
-      max-width: 430px;
+      max-width: 470px;
+
       box-sizing: border-box;
+
       background: #fffaf1;
-      border-radius: 28px;
-      padding: 32px;
+
+      border-radius: 30px;
+
+      padding: 34px;
+
       box-shadow:
-        0 24px 70px rgba(0,0,0,.22);
+        0 25px 70px
+        rgba(0,0,0,.22);
     }
 
-    .gtr-auth-logo {
+
+    /* ========================================================
+       LOGO
+       ======================================================== */
+
+    .gtr-brand {
+
       display: flex;
+
+      flex-direction: column;
+
       align-items: center;
+
       justify-content: center;
-      margin-bottom: 18px;
+
+      margin-bottom: 25px;
     }
 
-    .gtr-auth-logo img {
-      width: 175px;
-      max-width: 75%;
-      height: auto;
-      object-fit: contain;
+
+    .gtr-logo-box {
+
+      display: flex;
+
+      align-items: center;
+
+      justify-content: center;
+
+      background: #fff;
+
+      border-radius: 18px;
+
+      padding: 12px 22px;
+
+      box-shadow:
+        0 8px 22px
+        rgba(0,0,0,.08);
+
+      margin-bottom: 16px;
     }
+
+
+    .gtr-logo-icon {
+
+      width: 54px;
+
+      height: 54px;
+
+      border-radius: 15px;
+
+      display: flex;
+
+      align-items: center;
+
+      justify-content: center;
+
+      background:
+        linear-gradient(
+          135deg,
+          #f0c24f,
+          #d49a42
+        );
+
+      font-size: 28px;
+
+      margin-right: 12px;
+
+      box-shadow:
+        0 5px 12px
+        rgba(182,133,50,.20);
+    }
+
+
+    .gtr-logo-text {
+
+      display: flex;
+
+      flex-direction: column;
+
+      line-height: 1;
+    }
+
+
+    .gtr-logo-name {
+
+      font-family:
+        "Space Grotesk",
+        Inter,
+        sans-serif;
+
+      font-size: 28px;
+
+      font-weight: 800;
+
+      color: #403935;
+
+      letter-spacing: -.7px;
+    }
+
+
+    .gtr-logo-sub {
+
+      margin-top: 5px;
+
+      font-size: 10px;
+
+      font-weight: 600;
+
+      color: #887466;
+
+      letter-spacing: .1px;
+    }
+
+
+    /* ========================================================
+       TITLE
+       ======================================================== */
 
     .gtr-auth-title {
+
+      margin: 0;
+
       text-align: center;
-      color: #463a35;
-      font-size: 25px;
-      line-height: 1.2;
+
+      font-size: 24px;
+
+      line-height: 1.25;
+
       font-weight: 800;
-      margin: 0 0 6px;
+
+      color: #463a35;
     }
+
 
     .gtr-auth-subtitle {
+
+      margin: 7px 0 24px;
+
       text-align: center;
-      color: #826f63;
+
       font-size: 14px;
+
       line-height: 1.5;
-      margin: 0 0 24px;
+
+      color: #826f64;
     }
 
+
+    /* ========================================================
+       FORM
+       ======================================================== */
+
     .gtr-auth-form {
+
       display: flex;
+
       flex-direction: column;
+
       gap: 14px;
     }
 
+
     .gtr-auth-field {
+
       display: flex;
+
       flex-direction: column;
+
       gap: 7px;
     }
 
+
     .gtr-auth-field label {
-      color: #594940;
+
       font-size: 13px;
+
       font-weight: 700;
+
+      color: #5b4b42;
     }
+
 
     .gtr-auth-input-wrap {
+
       position: relative;
+
       width: 100%;
     }
+
 
     .gtr-auth-input {
+
       width: 100%;
+
+      height: 46px;
+
       box-sizing: border-box;
-      border: 1px solid #ddcfbf;
-      background: #ffffff;
-      color: #413833;
+
+      border: 1px solid #dfd0bf;
+
       border-radius: 13px;
-      padding: 13px 15px;
+
+      background: #fff;
+
+      color: #403833;
+
+      padding: 0 14px;
+
       font-size: 14px;
+
       outline: none;
+
       transition: .2s ease;
     }
+
 
     .gtr-auth-input.password-input {
-      padding-right: 52px;
+
+      padding-right: 48px;
     }
+
 
     .gtr-auth-input:focus {
-      border-color: #ba8049;
+
+      border-color: #bd8249;
+
       box-shadow:
-        0 0 0 3px rgba(186,128,73,.12);
+        0 0 0 3px
+        rgba(189,130,73,.12);
     }
+
+
+    /* ========================================================
+       PASSWORD BUTTON
+       ======================================================== */
 
     .gtr-auth-eye {
+
       position: absolute;
+
+      right: 7px;
+
       top: 50%;
-      right: 8px;
-      transform: translateY(-50%);
-      width: 36px;
-      height: 36px;
-      border: 0;
-      border-radius: 10px;
-      background: transparent;
-      cursor: pointer;
-      font-size: 17px;
+
+      transform:
+        translateY(-50%);
+
+      width: 34px;
+
+      height: 34px;
+
       display: flex;
+
       align-items: center;
+
       justify-content: center;
-      color: #705d51;
+
+      border: none;
+
+      border-radius: 9px;
+
+      background: transparent;
+
+      color: #756258;
+
+      font-size: 17px;
+
+      cursor: pointer;
     }
+
 
     .gtr-auth-eye:hover {
-      background: #f8eddf;
+
+      background: #f8eee1;
     }
 
+
+    /* ========================================================
+       BUTTON
+       ======================================================== */
+
     .gtr-auth-button {
+
       width: 100%;
+
+      height: 46px;
+
       box-sizing: border-box;
+
       border-radius: 13px;
-      padding: 13px 16px;
+
       font-size: 14px;
+
       font-weight: 800;
+
       cursor: pointer;
+
       transition: .2s ease;
     }
 
+
     .gtr-auth-primary {
+
       border: none;
-      background: #b97e49;
-      color: white;
+
+      background: #bd8249;
+
+      color: #fff;
+
       margin-top: 4px;
     }
 
+
     .gtr-auth-primary:hover {
-      filter: brightness(.97);
-      transform: translateY(-1px);
+
+      transform:
+        translateY(-1px);
+
+      filter:
+        brightness(.97);
     }
+
 
     .gtr-auth-secondary {
-      border: 1px solid #d8b58f;
+
+      border: 1px solid #d9b58f;
+
       background: transparent;
-      color: #9b6638;
+
+      color: #9d6838;
     }
 
+
     .gtr-auth-secondary:hover {
+
       background: #fff1df;
     }
 
+
+    /* ========================================================
+       MESSAGE
+       ======================================================== */
+
     .gtr-auth-message {
+
       display: none;
-      box-sizing: border-box;
-      border-radius: 12px;
+
       padding: 11px 13px;
+
+      border-radius: 12px;
+
       font-size: 13px;
+
       line-height: 1.45;
+
+      margin-bottom: 2px;
     }
 
+
     .gtr-auth-message.show {
+
       display: block;
     }
 
+
     .gtr-auth-error {
+
       background: #fff0ed;
-      border: 1px solid #efc4bd;
-      color: #9c4438;
+
+      border:
+        1px solid #efc5bd;
+
+      color: #9d473b;
     }
+
 
     .gtr-auth-success {
+
       background: #edf8e9;
-      border: 1px solid #c7dfbc;
-      color: #4f763f;
+
+      border:
+        1px solid #c5ddbb;
+
+      color: #4e753f;
     }
 
+
+    /* ========================================================
+       DIVIDER
+       ======================================================== */
+
     .gtr-auth-divider {
+
       display: flex;
+
       align-items: center;
+
       gap: 10px;
-      margin: 18px 0;
-      color: #a08c7e;
+
+      margin: 20px 0;
+
+      color: #a08e80;
+
       font-size: 12px;
     }
 
+
     .gtr-auth-divider::before,
     .gtr-auth-divider::after {
+
       content: "";
+
       flex: 1;
+
       height: 1px;
-      background: #e4d7ca;
+
+      background: #e2d7cc;
     }
 
-    .gtr-auth-back {
-      margin-top: 15px;
+
+    /* ========================================================
+       BOTTOM NOTE
+       ======================================================== */
+
+    .gtr-auth-note {
+
+      margin-top: 10px;
+
       text-align: center;
-      color: #806f64;
+
+      color: #9c8d80;
+
+      font-size: 11px;
+
+      line-height: 1.5;
+    }
+
+
+    .gtr-auth-back {
+
+      margin-top: 15px;
+
+      text-align: center;
+
+      color: #827267;
+
       font-size: 13px;
     }
 
+
     .gtr-auth-link {
+
       border: none;
+
       background: none;
-      padding: 0;
-      color: #a66d39;
+
+      color: #a76c38;
+
       font-size: inherit;
+
       font-weight: 800;
+
       cursor: pointer;
+
+      padding: 0;
     }
+
 
     .gtr-auth-link:hover {
-      text-decoration: underline;
+
+      text-decoration:
+        underline;
     }
 
-    .gtr-auth-note {
-      margin-top: 9px;
-      text-align: center;
-      color: #9c8c80;
-      font-size: 11px;
-      line-height: 1.45;
-    }
 
     .gtr-auth-loading {
+
       opacity: .65;
+
       pointer-events: none;
     }
+
+
+    /* ========================================================
+       MOBILE
+       ======================================================== */
 
     @media (max-width: 520px) {
 
       .gtr-auth-page {
+
         padding: 14px;
       }
 
+
       .gtr-auth-card {
+
         padding: 24px 18px;
-        border-radius: 22px;
+
+        border-radius: 24px;
+      }
+
+
+      .gtr-logo-name {
+
+        font-size: 24px;
+      }
+
+
+      .gtr-logo-icon {
+
+        width: 48px;
+
+        height: 48px;
+
+        font-size: 24px;
       }
 
     }
@@ -349,38 +688,88 @@ function injectAuthStyles() {
 
 
 /* ============================================================
-   MESSAGE
+   MESSAGE HELPER
    ============================================================ */
 
-function setAuthMessage(message, type = "error") {
+function setAuthMessage(
+  message,
+  type = "error"
+) {
 
-  const box = document.getElementById("authMessage");
+  const box =
+    document.getElementById(
+      "authMessage"
+    );
 
   if (!box) return;
 
-  box.textContent = message || "";
+  box.textContent =
+    message || "";
 
   box.className =
     "gtr-auth-message show " +
-    (type === "success"
-      ? "gtr-auth-success"
-      : "gtr-auth-error");
+    (
+      type === "success"
+        ? "gtr-auth-success"
+        : "gtr-auth-error"
+    );
 }
 
 
 function clearAuthMessage() {
 
-  const box = document.getElementById("authMessage");
+  const box =
+    document.getElementById(
+      "authMessage"
+    );
 
   if (!box) return;
 
   box.textContent = "";
-  box.className = "gtr-auth-message";
+
+  box.className =
+    "gtr-auth-message";
 }
 
 
 /* ============================================================
-   LOGIN UI
+   BRAND HTML
+   ============================================================ */
+
+function renderGantariBrand() {
+
+  return `
+
+    <div class="gtr-brand">
+
+      <div class="gtr-logo-box">
+
+        <div class="gtr-logo-icon">
+          🎒
+        </div>
+
+        <div class="gtr-logo-text">
+
+          <div class="gtr-logo-name">
+            Gantari
+          </div>
+
+          <div class="gtr-logo-sub">
+            Rumah Belajar Inklusi
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  `;
+}
+
+
+/* ============================================================
+   LOGIN PAGE HTML
    ============================================================ */
 
 function renderLoginPage() {
@@ -388,29 +777,29 @@ function renderLoginPage() {
   injectAuthStyles();
 
   return `
+
     <div class="gtr-auth-page">
 
       <div class="gtr-auth-card">
 
-        <div class="gtr-auth-logo">
+        ${renderGantariBrand()}
 
-          <img
-            src="logo-gantari.png"
-            alt="Gantari"
-            onerror="this.style.display='none'"
-          >
-
-        </div>
 
         <h1 class="gtr-auth-title">
           Selamat Datang di Gantariku
         </h1>
 
+
         <p class="gtr-auth-subtitle">
           Rumah Belajar Inklusi
         </p>
 
-        <div id="authMessage" class="gtr-auth-message"></div>
+
+        <div
+          id="authMessage"
+          class="gtr-auth-message"
+        ></div>
+
 
         <form
           id="loginForm"
@@ -455,7 +844,12 @@ function renderLoginPage() {
               <button
                 type="button"
                 class="gtr-auth-eye"
-                onclick="togglePassword('loginPassword', this)"
+                onclick="
+                  togglePassword(
+                    'loginPassword',
+                    this
+                  )
+                "
                 aria-label="Tampilkan password"
               >
                 👁
@@ -493,12 +887,13 @@ function renderLoginPage() {
 
         <div class="gtr-auth-note">
           Orang tua dapat membuat akun sendiri,
-          lalu menghubungkan anak menggunakan kode akses.
+          kemudian menghubungkan anak dengan kode akses.
         </div>
 
       </div>
 
     </div>
+
   `;
 }
 
@@ -511,20 +906,29 @@ function renderLogin() {
 
   injectAuthStyles();
 
-  const app = document.getElementById("app");
+  const app =
+    document.getElementById(
+      "app"
+    );
 
   if (!app) return;
 
-  app.innerHTML = renderLoginPage();
+  app.innerHTML =
+    renderLoginPage();
+
 
   const form =
-    document.getElementById("loginForm");
+    document.getElementById(
+      "loginForm"
+    );
 
   if (form) {
+
     form.addEventListener(
       "submit",
       handleLogin
     );
+
   }
 }
 
@@ -539,14 +943,22 @@ async function handleLogin(event) {
 
   clearAuthMessage();
 
+
   const emailInput =
-    document.getElementById("loginEmail");
+    document.getElementById(
+      "loginEmail"
+    );
 
   const passwordInput =
-    document.getElementById("loginPassword");
+    document.getElementById(
+      "loginPassword"
+    );
 
   const button =
-    document.getElementById("loginButton");
+    document.getElementById(
+      "loginButton"
+    );
+
 
   if (
     !emailInput ||
@@ -556,6 +968,7 @@ async function handleLogin(event) {
     return;
   }
 
+
   const email =
     emailInput.value
       .trim()
@@ -563,6 +976,7 @@ async function handleLogin(event) {
 
   const password =
     passwordInput.value;
+
 
   if (!email || !password) {
 
@@ -573,21 +987,29 @@ async function handleLogin(event) {
     return;
   }
 
+
   button.disabled = true;
-  button.textContent = "Memproses...";
+
+  button.textContent =
+    "Memproses...";
+
   button.classList.add(
     "gtr-auth-loading"
   );
 
+
   try {
 
     if (
-      typeof supabase === "undefined" ||
+      typeof supabase ===
+      "undefined" ||
       !supabase?.auth
     ) {
+
       throw new Error(
         "Supabase belum tersedia."
       );
+
     }
 
 
@@ -595,10 +1017,11 @@ async function handleLogin(event) {
       data,
       error
     } =
-      await supabase.auth.signInWithPassword({
-        email,
-        password
-      });
+      await supabase.auth
+        .signInWithPassword({
+          email,
+          password
+        });
 
 
     if (error) {
@@ -636,29 +1059,23 @@ async function handleLogin(event) {
     }
 
 
-    /*
-     * Gunakan variabel yang SUDAH ADA
-     * di app.js.
-     *
-     * Jangan deklarasikan ulang dengan let/const.
-     */
+    currentUser =
+      profile;
 
-    currentUser = profile;
-    currentUserRole = profile.role;
+    currentUserRole =
+      profile.role;
 
-
-    /*
-     * Pastikan role valid.
-     */
 
     if (
-      typeof NAV_CONFIG !== "undefined" &&
+      typeof NAV_CONFIG !==
+      "undefined" &&
       !NAV_CONFIG[currentUserRole]
     ) {
 
       await supabase.auth.signOut();
 
       currentUser = null;
+
       currentUserRole = null;
 
       throw new Error(
@@ -668,35 +1085,27 @@ async function handleLogin(event) {
     }
 
 
-    /*
-     * Halaman awal berdasarkan role.
-     */
-
     if (
-      typeof NAV_CONFIG !== "undefined" &&
+      typeof NAV_CONFIG !==
+      "undefined" &&
       NAV_CONFIG[currentUserRole]?.[0]?.id
     ) {
 
       currentNav =
-        NAV_CONFIG[currentUserRole][0].id;
+        NAV_CONFIG[
+          currentUserRole
+        ][0].id;
 
     } else {
 
-      currentNav = "dasbor";
+      currentNav =
+        "dasbor";
 
     }
 
 
-    /*
-     * Masuk aplikasi.
-     */
-
     renderApp();
 
-
-    /*
-     * Mulai realtime setelah login.
-     */
 
     if (
       typeof startRealtimeNotifications ===
@@ -704,12 +1113,16 @@ async function handleLogin(event) {
     ) {
 
       try {
+
         startRealtimeNotifications();
-      } catch (e) {
+
+      } catch (error) {
+
         console.warn(
-          "Realtime notifications gagal dimulai:",
-          e
+          "Realtime gagal dimulai:",
+          error
         );
+
       }
 
     }
@@ -722,23 +1135,25 @@ async function handleLogin(event) {
       error
     );
 
-    /*
-     * Bersihkan session jika proses gagal.
-     */
 
     try {
 
       if (
-        typeof supabase !== "undefined" &&
+        typeof supabase !==
+        "undefined" &&
         supabase?.auth
       ) {
-        await supabase.auth.signOut();
+
+        await supabase.auth
+          .signOut();
+
       }
 
     } catch (e) {}
 
 
     currentUser = null;
+
     currentUserRole = null;
 
 
@@ -751,7 +1166,10 @@ async function handleLogin(event) {
   } finally {
 
     button.disabled = false;
-    button.textContent = "Masuk";
+
+    button.textContent =
+      "Masuk";
+
     button.classList.remove(
       "gtr-auth-loading"
     );
@@ -761,7 +1179,7 @@ async function handleLogin(event) {
 
 
 /* ============================================================
-   REGISTER ORANG TUA
+   REGISTER PAGE
    ============================================================ */
 
 function renderRegister() {
@@ -769,9 +1187,12 @@ function renderRegister() {
   injectAuthStyles();
 
   const app =
-    document.getElementById("app");
+    document.getElementById(
+      "app"
+    );
 
   if (!app) return;
+
 
   app.innerHTML = `
 
@@ -779,15 +1200,7 @@ function renderRegister() {
 
       <div class="gtr-auth-card">
 
-        <div class="gtr-auth-logo">
-
-          <img
-            src="logo-gantari.png"
-            alt="Gantari"
-            onerror="this.style.display='none'"
-          >
-
-        </div>
+        ${renderGantariBrand()}
 
 
         <h1 class="gtr-auth-title">
@@ -796,8 +1209,8 @@ function renderRegister() {
 
 
         <p class="gtr-auth-subtitle">
-          Buat akun untuk memantau anak
-          melalui Gantariku.
+          Buat akun untuk memantau
+          anak melalui Gantariku.
         </p>
 
 
@@ -840,7 +1253,7 @@ function renderRegister() {
               type="email"
               id="registerEmail"
               class="gtr-auth-input"
-              placeholder="Email"
+              placeholder="Email aktif"
               autocomplete="email"
               required
             >
@@ -869,7 +1282,12 @@ function renderRegister() {
               <button
                 type="button"
                 class="gtr-auth-eye"
-                onclick="togglePassword('registerPassword', this)"
+                onclick="
+                  togglePassword(
+                    'registerPassword',
+                    this
+                  )
+                "
                 aria-label="Tampilkan password"
               >
                 👁
@@ -901,7 +1319,12 @@ function renderRegister() {
               <button
                 type="button"
                 class="gtr-auth-eye"
-                onclick="togglePassword('registerPassword2', this)"
+                onclick="
+                  togglePassword(
+                    'registerPassword2',
+                    this
+                  )
+                "
                 aria-label="Tampilkan password"
               >
                 👁
@@ -940,11 +1363,14 @@ function renderRegister() {
       </div>
 
     </div>
+
   `;
 
 
   const form =
-    document.getElementById("registerForm");
+    document.getElementById(
+      "registerForm"
+    );
 
   if (form) {
 
@@ -967,20 +1393,31 @@ async function handleRegister(event) {
 
   clearAuthMessage();
 
+
   const namaInput =
-    document.getElementById("registerNama");
+    document.getElementById(
+      "registerNama"
+    );
 
   const emailInput =
-    document.getElementById("registerEmail");
+    document.getElementById(
+      "registerEmail"
+    );
 
   const passwordInput =
-    document.getElementById("registerPassword");
+    document.getElementById(
+      "registerPassword"
+    );
 
   const password2Input =
-    document.getElementById("registerPassword2");
+    document.getElementById(
+      "registerPassword2"
+    );
 
   const button =
-    document.getElementById("registerButton");
+    document.getElementById(
+      "registerButton"
+    );
 
 
   if (
@@ -1050,33 +1487,16 @@ async function handleRegister(event) {
 
 
   button.disabled = true;
-  button.textContent = "Membuat akun...";
+
+  button.textContent =
+    "Membuat akun...";
+
   button.classList.add(
     "gtr-auth-loading"
   );
 
 
   try {
-
-    if (
-      typeof supabase === "undefined" ||
-      !supabase?.auth
-    ) {
-
-      throw new Error(
-        "Supabase belum tersedia."
-      );
-
-    }
-
-
-    /*
-     * registration_type = ortu
-     *
-     * Trigger database yang sudah kita buat
-     * akan membuat record pengguna
-     * dengan role = ortu.
-     */
 
     const {
       data,
@@ -1085,6 +1505,7 @@ async function handleRegister(event) {
       await supabase.auth.signUp({
 
         email,
+
         password,
 
         options: {
@@ -1093,7 +1514,8 @@ async function handleRegister(event) {
 
             nama: nama,
 
-            registration_type: "ortu"
+            registration_type:
+              "ortu"
 
           }
 
@@ -1103,6 +1525,7 @@ async function handleRegister(event) {
 
 
     if (error) {
+
       throw error;
     }
 
@@ -1118,35 +1541,28 @@ async function handleRegister(event) {
 
     /*
      * Confirm Email harus OFF.
-     *
-     * Kalau OFF, session akan langsung tersedia.
      */
 
     if (!data.session) {
 
       throw new Error(
-        "Akun berhasil dibuat, tetapi belum langsung masuk. Pastikan Confirm Email di Supabase sudah OFF."
+        "Akun berhasil dibuat tetapi belum langsung masuk. Pastikan Confirm Email di Supabase sudah OFF."
       );
 
     }
 
 
-    /*
-     * Simpan user ke variabel global
-     * yang sudah dimiliki app.js.
-     */
-
-    currentUser = data.user;
+    currentUser =
+      data.user;
 
 
     /*
-     * Trigger database mungkin membutuhkan
-     * sedikit waktu untuk membuat pengguna.
-     *
-     * Coba beberapa kali.
+     * Tunggu trigger
+     * membuat profile pengguna.
      */
 
-    let profile = null;
+    let profile =
+      null;
 
 
     for (
@@ -1179,15 +1595,6 @@ async function handleRegister(event) {
 
     if (!profile) {
 
-      /*
-       * Tidak perlu menghapus akun.
-       * User sudah dibuat.
-       *
-       * Biarkan pengguna mencoba login kembali.
-       */
-
-      currentUser = null;
-
       throw new Error(
         "Akun berhasil dibuat, tetapi profil orang tua belum siap. Coba login kembali."
       );
@@ -1195,57 +1602,38 @@ async function handleRegister(event) {
     }
 
 
-    /*
-     * Pastikan role benar-benar ortu.
-     */
-
-    if (profile.role !== "ortu") {
+    if (
+      profile.role !==
+      "ortu"
+    ) {
 
       await supabase.auth.signOut();
 
       currentUser = null;
+
       currentUserRole = null;
 
       throw new Error(
-        "Akun berhasil dibuat tetapi role akun tidak sesuai."
+        "Role akun tidak sesuai."
       );
 
     }
 
 
-    currentUser = profile;
-    currentUserRole = "ortu";
+    currentUser =
+      profile;
+
+    currentUserRole =
+      "ortu";
 
 
-    /*
-     * Halaman pertama orang tua.
-     */
+    currentNav =
+      NAV_CONFIG.ortu?.[0]?.id ||
+      "ringkasan";
 
-    if (
-      typeof NAV_CONFIG !== "undefined" &&
-      NAV_CONFIG.ortu?.[0]?.id
-    ) {
-
-      currentNav =
-        NAV_CONFIG.ortu[0].id;
-
-    } else {
-
-      currentNav = "ringkasan";
-
-    }
-
-
-    /*
-     * Masuk ke aplikasi.
-     */
 
     renderApp();
 
-
-    /*
-     * Jalankan realtime notification.
-     */
 
     if (
       typeof startRealtimeNotifications ===
@@ -1253,27 +1641,27 @@ async function handleRegister(event) {
     ) {
 
       try {
+
         startRealtimeNotifications();
-      } catch (e) {
+
+      } catch (error) {
+
         console.warn(
-          "Realtime notifications gagal dimulai:",
-          e
+          "Realtime gagal dimulai:",
+          error
         );
+
       }
 
     }
 
 
-    /*
-     * Toast jika fungsi tersedia.
-     */
+    if (
+      typeof showToast ===
+      "function"
+    ) {
 
-    setTimeout(() => {
-
-      if (
-        typeof showToast ===
-        "function"
-      ) {
+      setTimeout(() => {
 
         try {
 
@@ -1283,9 +1671,9 @@ async function handleRegister(event) {
 
         } catch (e) {}
 
-      }
+      }, 500);
 
-    }, 500);
+    }
 
 
   } catch (error) {
@@ -1305,7 +1693,10 @@ async function handleRegister(event) {
   } finally {
 
     button.disabled = false;
-    button.textContent = "Buat Akun";
+
+    button.textContent =
+      "Buat Akun";
+
     button.classList.remove(
       "gtr-auth-loading"
     );
@@ -1322,10 +1713,6 @@ async function logout() {
 
   try {
 
-    /*
-     * Hentikan realtime terlebih dahulu.
-     */
-
     if (
       typeof stopRealtimeNotifications ===
       "function"
@@ -1338,7 +1725,7 @@ async function logout() {
       } catch (error) {
 
         console.warn(
-          "Gagal menghentikan realtime:",
+          "Realtime gagal dihentikan:",
           error
         );
 
@@ -1347,19 +1734,18 @@ async function logout() {
     }
 
 
-    /*
-     * Logout dari Supabase.
-     */
-
     if (
-      typeof supabase !== "undefined" &&
+      typeof supabase !==
+      "undefined" &&
       supabase?.auth
     ) {
 
       const {
         error
       } =
-        await supabase.auth.signOut();
+        await supabase.auth
+          .signOut();
+
 
       if (error) {
 
@@ -1372,7 +1758,6 @@ async function logout() {
 
     }
 
-
   } catch (error) {
 
     console.error(
@@ -1380,24 +1765,14 @@ async function logout() {
       error
     );
 
-
   } finally {
 
-    /*
-     * Variabel ini MILIK app.js.
-     * Jangan deklarasikan ulang.
-     */
-
     currentUser = null;
+
     currentUserRole = null;
 
     currentNav = "dasbor";
 
-
-    /*
-     * Bersihkan data orang tua
-     * kalau variabel tersebut tersedia.
-     */
 
     try {
 
@@ -1426,10 +1801,6 @@ async function logout() {
 
     } catch (e) {}
 
-
-    /*
-     * Kembali ke login.
-     */
 
     renderLogin();
 
@@ -1467,6 +1838,5 @@ window.logout =
 
 
 /* ============================================================
-   JANGAN menjalankan init sendiri di sini.
-   app.js sudah memiliki init().
+   END AUTH.JS
    ============================================================ */
