@@ -1,12 +1,18 @@
 // ============================================================
 // GANTARIKU — DATA SISWA
+// FULL REPLACEMENT
+// ============================================================
+
+// ============================================================
+// AKUN ORANG TUA
 // ============================================================
 
 async function loadOrangTuaUntukForm(selectedId = "") {
   const select = document.getElementById("siswaOrangTuaId");
   if (!select || !supabase) return;
 
-  select.innerHTML = `<option value="">Memuat akun orang tua...</option>`;
+  select.innerHTML =
+    `<option value="">Memuat akun orang tua...</option>`;
 
   try {
     const { data, error } = await supabase
@@ -24,17 +30,21 @@ async function loadOrangTuaUntukForm(selectedId = "") {
       semuaOrangTua
         .map(
           (o) =>
-            `<option value="${o.id}" ${
-              String(o.id) === String(selectedId) ? "selected" : ""
-            }>${o.nama || o.email || "Orang tua"} — ${o.email || ""}</option>`
+            `<option value="${escapeHtml(o.id)}" ${
+              String(o.id) === String(selectedId)
+                ? "selected"
+                : ""
+            }>${escapeHtml(
+              o.nama || o.email || "Orang tua"
+            )} — ${escapeHtml(o.email || "")}</option>`
         )
         .join("");
   } catch (error) {
     console.error("Error load akun orang tua:", error);
-    select.innerHTML = `<option value="">Gagal memuat akun orang tua</option>`;
+    select.innerHTML =
+      `<option value="">Gagal memuat akun orang tua</option>`;
   }
 }
-
 
 // ============================================================
 // VIEW DATA SISWA
@@ -43,10 +53,19 @@ async function loadOrangTuaUntukForm(selectedId = "") {
 function renderSiswa() {
   return `
     <div class="section">
+
       <div class="section-head">
-        <h2>Daftar Siswa</h2>
+
+        <div>
+          <h2>Daftar Siswa</h2>
+
+          <div class="section-hint">
+            Kelola data siswa dan hubungkan dengan akun orang tua.
+          </div>
+        </div>
 
         <div class="controls">
+
           <input
             type="text"
             id="cariSiswa"
@@ -54,17 +73,32 @@ function renderSiswa() {
           >
 
           <button
+            class="btn ghost"
+            type="button"
+            onclick="window.bukaImportSiswa()"
+          >
+            📊 Import Data
+          </button>
+
+          <button
             class="btn"
+            type="button"
             onclick="window.__app.bukaFormSiswa()"
           >
             + Tambah Siswa
           </button>
+
         </div>
+
       </div>
 
       <div
         id="formSiswaContainer"
-        style="display:none; padding:20px; border-bottom:1px solid var(--line);"
+        style="
+          display:none;
+          padding:20px;
+          border-bottom:1px solid var(--line);
+        "
       >
 
         <h3 id="judulFormSiswa" style="margin-top:0;">
@@ -81,13 +115,17 @@ function renderSiswa() {
           <div
             style="
               display:grid;
-              grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+              grid-template-columns:repeat(
+                auto-fit,
+                minmax(220px,1fr)
+              );
               gap:15px;
             "
           >
 
             <div class="form-group">
               <label>Nama Siswa</label>
+
               <input
                 type="text"
                 id="siswaNama"
@@ -98,26 +136,29 @@ function renderSiswa() {
 
             <div class="form-group">
               <label>NIS</label>
+
               <input
                 type="text"
                 id="siswaNis"
-                placeholder="Masukkan NIS"
+                placeholder="Contoh: GTR-001-24"
                 required
               >
             </div>
 
             <div class="form-group">
               <label>Kelas</label>
+
               <input
                 type="text"
                 id="siswaKelas"
-                placeholder="Contoh: 7A"
+                placeholder="Contoh: Kecil"
                 required
               >
             </div>
 
             <div class="form-group">
               <label>Tahun Ajaran</label>
+
               <input
                 type="text"
                 id="siswaTahunAjaran"
@@ -126,7 +167,18 @@ function renderSiswa() {
             </div>
 
             <div class="form-group">
+              <label>Tempat Lahir</label>
+
+              <input
+                type="text"
+                id="siswaTempatLahir"
+                placeholder="Contoh: Semarang"
+              >
+            </div>
+
+            <div class="form-group">
               <label>Tanggal Lahir</label>
+
               <input
                 type="date"
                 id="siswaTanggalLahir"
@@ -137,10 +189,30 @@ function renderSiswa() {
               <label>Jenis Kelamin</label>
 
               <select id="siswaJenisKelamin">
-                <option value="">Pilih jenis kelamin</option>
-                <option value="L">Laki-laki</option>
-                <option value="P">Perempuan</option>
+
+                <option value="">
+                  Pilih jenis kelamin
+                </option>
+
+                <option value="L">
+                  Laki-laki
+                </option>
+
+                <option value="P">
+                  Perempuan
+                </option>
+
               </select>
+            </div>
+
+            <div class="form-group">
+              <label>Nama Wali</label>
+
+              <input
+                type="text"
+                id="siswaNamaWali"
+                placeholder="Nama orang tua / wali"
+              >
             </div>
 
             <div class="form-group">
@@ -163,8 +235,20 @@ function renderSiswa() {
               </select>
 
               <small style="color:var(--ink-soft);">
-                Hubungkan siswa dengan akun login orang tua
-                agar data anak muncul otomatis.
+                Hubungkan bila akun orang tua sudah dibuat.
+              </small>
+            </div>
+
+            <div class="form-group">
+              <label>Mulai Bergabung</label>
+
+              <input
+                type="month"
+                id="siswaMulaiBergabung"
+              >
+
+              <small style="color:var(--ink-soft);">
+                Contoh: Juli 2024
               </small>
             </div>
 
@@ -185,6 +269,7 @@ function renderSiswa() {
               display:flex;
               gap:10px;
               margin-top:20px;
+              flex-wrap:wrap;
             "
           >
 
@@ -205,65 +290,69 @@ function renderSiswa() {
             </button>
 
           </div>
+
         </form>
+
       </div>
 
       <div class="section-body">
 
-        <table>
+        <div style="overflow-x:auto;">
 
-          <thead>
-            <tr>
-              <th>Nama</th>
-              <th>NIS</th>
-              <th>Kelas</th>
-              <th>Tahun Ajaran</th>
-              <th>Orang Tua</th>
-              <th>Nomor HP</th>
-              <th>Aksi</th>
-            </tr>
-          </thead>
+          <table>
 
-          <tbody id="daftarSiswa">
-            <tr>
-              <td colspan="7" style="text-align:center;">
-                Memuat data siswa...
-              </td>
-            </tr>
-          </tbody>
+            <thead>
+              <tr>
+                <th>Nama</th>
+                <th>NIS</th>
+                <th>Kelas</th>
+                <th>Tahun Ajaran</th>
+                <th>Orang Tua</th>
+                <th>Nomor HP</th>
+                <th>Bergabung</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
 
-        </table>
+            <tbody id="daftarSiswa">
+
+              <tr>
+                <td colspan="8" style="text-align:center;">
+                  Memuat data siswa...
+                </td>
+              </tr>
+
+            </tbody>
+
+          </table>
+
+        </div>
 
       </div>
+
     </div>
   `;
 }
 
-
 // ============================================================
-// BUKA FORM TAMBAH
+// FORM TAMBAH
 // ============================================================
 
 function bukaFormSiswa() {
-  const container = document.getElementById(
-    "formSiswaContainer"
-  );
+  const container =
+    document.getElementById("formSiswaContainer");
 
-  const judul = document.getElementById(
-    "judulFormSiswa"
-  );
+  const judul =
+    document.getElementById("judulFormSiswa");
 
-  const form = document.getElementById(
-    "formSiswa"
-  );
+  const form =
+    document.getElementById("formSiswa");
 
-  const hiddenId = document.getElementById(
-    "siswaId"
-  );
+  const hiddenId =
+    document.getElementById("siswaId");
 
-  const btn = document.getElementById(
-    "btnSimpanSiswa"
-  );
+  const btn =
+    document.getElementById("btnSimpanSiswa");
 
   if (!container) return;
 
@@ -286,25 +375,26 @@ function bukaFormSiswa() {
   }
 
   loadOrangTuaUntukForm("");
-}
 
+  container.scrollIntoView({
+    behavior: "smooth",
+    block: "start",
+  });
+}
 
 // ============================================================
 // TUTUP FORM
 // ============================================================
 
 function tutupFormSiswa() {
-  const container = document.getElementById(
-    "formSiswaContainer"
-  );
+  const container =
+    document.getElementById("formSiswaContainer");
 
-  const form = document.getElementById(
-    "formSiswa"
-  );
+  const form =
+    document.getElementById("formSiswa");
 
-  const hiddenId = document.getElementById(
-    "siswaId"
-  );
+  const hiddenId =
+    document.getElementById("siswaId");
 
   if (container) {
     container.style.display = "none";
@@ -319,9 +409,8 @@ function tutupFormSiswa() {
   }
 }
 
-
 // ============================================================
-// EDIT SISWA
+// EDIT
 // ============================================================
 
 async function editSiswa(id) {
@@ -330,30 +419,27 @@ async function editSiswa(id) {
     return;
   }
 
-  const siswa = semuaSiswa.find(
-    (x) => String(x.id) === String(id)
-  );
+  const siswa =
+    (semuaSiswa || []).find(
+      (x) => String(x.id) === String(id)
+    );
 
   if (!siswa) {
     alert("Data siswa tidak ditemukan.");
     return;
   }
 
-  const container = document.getElementById(
-    "formSiswaContainer"
-  );
+  const container =
+    document.getElementById("formSiswaContainer");
 
-  const judul = document.getElementById(
-    "judulFormSiswa"
-  );
+  const judul =
+    document.getElementById("judulFormSiswa");
 
-  const hiddenId = document.getElementById(
-    "siswaId"
-  );
+  const hiddenId =
+    document.getElementById("siswaId");
 
-  const btn = document.getElementById(
-    "btnSimpanSiswa"
-  );
+  const btn =
+    document.getElementById("btnSimpanSiswa");
 
   if (!container) return;
 
@@ -367,23 +453,30 @@ async function editSiswa(id) {
     hiddenId.value = siswa.id;
   }
 
-  document.getElementById("siswaNama").value =
-    siswa.nama || "";
+  setValue("siswaNama", siswa.nama);
+  setValue("siswaNis", siswa.nis);
+  setValue("siswaKelas", siswa.kelas);
+  setValue("siswaTahunAjaran", siswa.tahun_ajaran);
+  setValue("siswaTempatLahir", siswa.tempat_lahir);
+  setValue("siswaTanggalLahir", siswa.tanggal_lahir);
+  setValue("siswaJenisKelamin", siswa.jenis_kelamin);
+  setValue("siswaNamaWali", siswa.nama_wali);
+  setValue("siswaNomorHpOrtu", siswa.nomor_hp_ortu);
+  setValue("siswaAlamat", siswa.alamat);
 
-  document.getElementById("siswaNis").value =
-    siswa.nis || "";
-
-  document.getElementById("siswaKelas").value =
-    siswa.kelas || "";
-
-  document.getElementById("siswaTahunAjaran").value =
-    siswa.tahun_ajaran || "";
-
-  document.getElementById("siswaNomorHpOrtu").value =
-    siswa.nomor_hp_ortu || "";
-
-  document.getElementById("siswaAlamat").value =
-    siswa.alamat || "";
+  if (
+    siswa.mulai_bulan &&
+    siswa.mulai_tahun
+  ) {
+    setValue(
+      "siswaMulaiBergabung",
+      `${siswa.mulai_tahun}-${String(
+        siswa.mulai_bulan
+      ).padStart(2, "0")}`
+    );
+  } else {
+    setValue("siswaMulaiBergabung", "");
+  }
 
   await loadOrangTuaUntukForm(
     siswa.orang_tua_id || ""
@@ -393,31 +486,14 @@ async function editSiswa(id) {
     btn.textContent = "Simpan Perubahan";
   }
 
-  const tanggalEl = document.getElementById(
-    "siswaTanggalLahir"
-  );
-
-  const jkEl = document.getElementById(
-    "siswaJenisKelamin"
-  );
-
-  if (tanggalEl) {
-    tanggalEl.value = siswa.tanggal_lahir || "";
-  }
-
-  if (jkEl) {
-    jkEl.value = siswa.jenis_kelamin || "";
-  }
-
   container.scrollIntoView({
     behavior: "smooth",
-    block: "start"
+    block: "start",
   });
 }
 
-
 // ============================================================
-// SIMPAN SISWA / UPDATE SISWA
+// SIMPAN / UPDATE
 // ============================================================
 
 async function simpanSiswa(event) {
@@ -428,49 +504,60 @@ async function simpanSiswa(event) {
     return;
   }
 
-  const btn = document.getElementById(
-    "btnSimpanSiswa"
-  );
+  const btn =
+    document.getElementById("btnSimpanSiswa");
 
-  const id = document.getElementById(
-    "siswaId"
-  )?.value || "";
+  const id =
+    document.getElementById("siswaId")
+      ?.value || "";
 
-  const nama = document.getElementById(
-    "siswaNama"
-  )?.value.trim();
+  const nama =
+    getValue("siswaNama");
 
-  const nis = document.getElementById(
-    "siswaNis"
-  )?.value.trim();
+  const nis =
+    getValue("siswaNis");
 
-  const kelas = document.getElementById(
-    "siswaKelas"
-  )?.value.trim();
+  const kelas =
+    getValue("siswaKelas");
 
-  const tahunAjaran = document.getElementById(
-    "siswaTahunAjaran"
-  )?.value.trim();
+  const tahunAjaran =
+    getValue("siswaTahunAjaran");
 
-  const tanggalLahir = document.getElementById(
-    "siswaTanggalLahir"
-  )?.value;
+  const tempatLahir =
+    getValue("siswaTempatLahir");
 
-  const jenisKelamin = document.getElementById(
-    "siswaJenisKelamin"
-  )?.value;
+  const tanggalLahir =
+    getValue("siswaTanggalLahir");
 
-  const nomorHpOrtu = document.getElementById(
-    "siswaNomorHpOrtu"
-  )?.value.trim();
+  const jenisKelamin =
+    getValue("siswaJenisKelamin");
 
-  const orangTuaId = document.getElementById(
-    "siswaOrangTuaId"
-  )?.value || null;
+  const namaWali =
+    getValue("siswaNamaWali");
 
-  const alamat = document.getElementById(
-    "siswaAlamat"
-  )?.value.trim();
+  const nomorHpOrtu =
+    normalizePhone(
+      getValue("siswaNomorHpOrtu")
+    );
+
+  const orangTuaId =
+    document.getElementById(
+      "siswaOrangTuaId"
+    )?.value || null;
+
+  const alamat =
+    getValue("siswaAlamat");
+
+  const mulai =
+    parseMonthInput(
+      getValue("siswaMulaiBergabung")
+    );
+
+  const tahunAjaranOtomatis =
+    hitungTahunAjaranMulai(
+      mulai.bulan,
+      mulai.tahun
+    );
 
   if (!nama || !nis || !kelas) {
     alert(
@@ -481,9 +568,10 @@ async function simpanSiswa(event) {
 
   if (btn) {
     btn.disabled = true;
-    btn.textContent = id
-      ? "Menyimpan perubahan..."
-      : "Menyimpan...";
+    btn.textContent =
+      id
+        ? "Menyimpan perubahan..."
+        : "Menyimpan...";
   }
 
   try {
@@ -491,41 +579,58 @@ async function simpanSiswa(event) {
       nama,
       nis,
       kelas,
+
       tahun_ajaran:
-        tahunAjaran || null,
+        tahunAjaran ||
+        tahunAjaranOtomatis ||
+        null,
+
+      tempat_lahir:
+        tempatLahir || null,
+
       tanggal_lahir:
         tanggalLahir || null,
+
       jenis_kelamin:
         jenisKelamin || null,
+
+      nama_wali:
+        namaWali || null,
+
       nomor_hp_ortu:
         nomorHpOrtu || null,
+
       orang_tua_id:
         orangTuaId || null,
+
       alamat:
-        alamat || null
+        alamat || null,
+
+      mulai_bulan:
+        mulai.bulan,
+
+      mulai_tahun:
+        mulai.tahun,
     };
 
-    let error;
+    let result;
 
     if (id) {
-
-      const result = await supabase
-        .from("siswa")
-        .update(dataSiswa)
-        .eq("id", id);
-
-      error = result.error;
-
+      result =
+        await supabase
+          .from("siswa")
+          .update(dataSiswa)
+          .eq("id", id);
     } else {
-
-      const result = await supabase
-        .from("siswa")
-        .insert(dataSiswa);
-
-      error = result.error;
+      result =
+        await supabase
+          .from("siswa")
+          .insert(dataSiswa);
     }
 
-    if (error) throw error;
+    if (result.error) {
+      throw result.error;
+    }
 
     alert(
       id
@@ -536,7 +641,6 @@ async function simpanSiswa(event) {
     tutupFormSiswa();
 
     await loadSiswa();
-
   } catch (error) {
     console.error(
       "Error simpan siswa:",
@@ -545,12 +649,12 @@ async function simpanSiswa(event) {
 
     alert(
       "Gagal menyimpan siswa:\n\n" +
-      (error?.message ||
-        "Terjadi kesalahan.")
+        (
+          error?.message ||
+          "Terjadi kesalahan."
+        )
     );
-
   } finally {
-
     if (btn) {
       btn.disabled = false;
       btn.textContent =
@@ -559,21 +663,21 @@ async function simpanSiswa(event) {
   }
 }
 
-
 // ============================================================
 // LOAD SISWA
 // ============================================================
 
 async function loadSiswa() {
-  const tbody = document.getElementById(
-    "daftarSiswa"
-  );
+  const tbody =
+    document.getElementById(
+      "daftarSiswa"
+    );
 
   if (!tbody) return;
 
   tbody.innerHTML = `
     <tr>
-      <td colspan="7" style="text-align:center;">
+      <td colspan="8" style="text-align:center;">
         Memuat data siswa...
       </td>
     </tr>
@@ -586,7 +690,10 @@ async function loadSiswa() {
       );
     }
 
-    const { data, error } =
+    const {
+      data,
+      error,
+    } =
       await supabase
         .from("siswa")
         .select(`
@@ -595,11 +702,16 @@ async function loadSiswa() {
           nis,
           kelas,
           tahun_ajaran,
+          tempat_lahir,
           tanggal_lahir,
           jenis_kelamin,
+          nama_wali,
           nomor_hp_ortu,
           orang_tua_id,
           alamat,
+          mulai_bulan,
+          mulai_tahun,
+          kode_akses,
           orang_tua:orang_tua_id (
             id,
             nama,
@@ -607,33 +719,35 @@ async function loadSiswa() {
           )
         `)
         .order(
-          "created_at",
-          { ascending: false }
+          "nama",
+          {
+            ascending: true,
+          }
         );
 
-    if (error) throw error;
+    if (error) {
+      throw error;
+    }
 
-    semuaSiswa = data || [];
+    semuaSiswa =
+      data || [];
 
-    if (
-      semuaSiswa.length === 0
-    ) {
+    if (!semuaSiswa.length) {
       tbody.innerHTML = `
         <tr>
-          <td colspan="7" style="text-align:center;">
+          <td colspan="8" style="text-align:center;">
             Belum ada data siswa.
           </td>
         </tr>
       `;
+
       return;
     }
 
     renderDaftarSiswa(
       semuaSiswa
     );
-
   } catch (error) {
-
     console.error(
       "Error load siswa:",
       error
@@ -642,11 +756,8 @@ async function loadSiswa() {
     tbody.innerHTML = `
       <tr>
         <td
-          colspan="7"
-          style="
-            text-align:center;
-            color:#E11D48;
-          "
+          colspan="8"
+          style="text-align:center;color:#E11D48;"
         >
           Gagal memuat data siswa.
         </td>
@@ -655,7 +766,6 @@ async function loadSiswa() {
   }
 }
 
-
 // ============================================================
 // RENDER DAFTAR
 // ============================================================
@@ -663,23 +773,25 @@ async function loadSiswa() {
 function renderDaftarSiswa(
   dataSiswa
 ) {
-  const tbody = document.getElementById(
-    "daftarSiswa"
-  );
+  const tbody =
+    document.getElementById(
+      "daftarSiswa"
+    );
 
   if (!tbody) return;
 
   if (
     !dataSiswa ||
-    dataSiswa.length === 0
+    !dataSiswa.length
   ) {
     tbody.innerHTML = `
       <tr>
-        <td colspan="7" style="text-align:center;">
+        <td colspan="8" style="text-align:center;">
           Data siswa tidak ditemukan.
         </td>
       </tr>
     `;
+
     return;
   }
 
@@ -688,48 +800,59 @@ function renderDaftarSiswa(
       .map(
         (siswa) => {
 
-          const namaSafe =
-            String(
-              siswa.nama || ""
-            )
-              .replace(
-                /\\/g,
-                "\\\\"
-              )
-              .replace(
-                /'/g,
-                "\\'"
-              );
+          const orangTuaNama =
+            siswa.orang_tua?.nama ||
+            siswa.orang_tua?.email ||
+            siswa.nama_wali ||
+            "Belum ditautkan";
 
           return `
             <tr>
 
               <td>
-                ${siswa.nama || "-"}
+                ${escapeHtml(
+                  siswa.nama || "-"
+                )}
               </td>
 
               <td>
-                ${siswa.nis || "-"}
+                ${escapeHtml(
+                  siswa.nis || "-"
+                )}
               </td>
 
               <td>
-                ${siswa.kelas || "-"}
+                ${escapeHtml(
+                  siswa.kelas || "-"
+                )}
               </td>
 
               <td>
-                ${siswa.tahun_ajaran || "-"}
+                ${escapeHtml(
+                  siswa.tahun_ajaran ||
+                    "-"
+                )}
               </td>
 
               <td>
-                ${
-                  siswa.orang_tua?.nama ||
-                  siswa.orang_tua?.email ||
-                  "Belum ditautkan"
-                }
+                ${escapeHtml(
+                  orangTuaNama
+                )}
               </td>
 
               <td>
-                ${siswa.nomor_hp_ortu || "-"}
+                ${escapeHtml(
+                  siswa.nomor_hp_ortu ||
+                    "-"
+                )}
+              </td>
+
+              <td>
+                ${escapeHtml(
+                  formatBergabungSiswa(
+                    siswa
+                  )
+                )}
               </td>
 
               <td>
@@ -744,14 +867,32 @@ function renderDaftarSiswa(
 
                   <button
                     class="btn ghost small"
-                    onclick="window.__app.editSiswa('${siswa.id}')"
+                    type="button"
+                    onclick="
+                      window.__app.editSiswa(
+                        '${escapeJs(
+                          siswa.id
+                        )}'
+                      )
+                    "
                   >
                     Edit
                   </button>
 
                   <button
                     class="btn ghost small"
-                    onclick="window.__app.hapusSiswa('${siswa.id}', '${namaSafe}')"
+                    type="button"
+                    onclick="
+                      window.__app.hapusSiswa(
+                        '${escapeJs(
+                          siswa.id
+                        )}',
+                        '${escapeJs(
+                          siswa.nama ||
+                            "Siswa"
+                        )}'
+                      )
+                    "
                   >
                     Hapus
                   </button>
@@ -767,15 +908,15 @@ function renderDaftarSiswa(
       .join("");
 }
 
-
 // ============================================================
 // CARI SISWA
 // ============================================================
 
 function cariSiswa() {
-  const input = document.getElementById(
-    "cariSiswa"
-  );
+  const input =
+    document.getElementById(
+      "cariSiswa"
+    );
 
   if (!input) return;
 
@@ -785,42 +926,39 @@ function cariSiswa() {
       .trim();
 
   const hasil =
-    semuaSiswa.filter(
-      (siswa) => {
+    (semuaSiswa || [])
+      .filter(
+        (siswa) => {
 
-        const nama =
-          (siswa.nama || "")
-            .toLowerCase();
+          const text = [
+            siswa.nama,
+            siswa.nis,
+            siswa.kelas,
+            siswa.tahun_ajaran,
+            siswa.nama_wali,
+            siswa.nomor_hp_ortu,
+          ]
+            .map(
+              (x) =>
+                String(
+                  x || ""
+                ).toLowerCase()
+            )
+            .join(" ");
 
-        const nis =
-          (siswa.nis || "")
-            .toLowerCase();
-
-        const kelas =
-          (siswa.kelas || "")
-            .toLowerCase();
-
-        const tahunAjaran =
-          (siswa.tahun_ajaran || "")
-            .toLowerCase();
-
-        return (
-          nama.includes(keyword) ||
-          nis.includes(keyword) ||
-          kelas.includes(keyword) ||
-          tahunAjaran.includes(keyword)
-        );
-      }
-    );
+          return text.includes(
+            keyword
+          );
+        }
+      );
 
   renderDaftarSiswa(
     hasil
   );
 }
 
-
 // ============================================================
-// HAPUS SISWA
+// HAPUS
 // ============================================================
 
 async function hapusSiswa(
@@ -831,6 +969,7 @@ async function hapusSiswa(
     alert(
       "Supabase belum terhubung."
     );
+
     return;
   }
 
@@ -841,26 +980,29 @@ async function hapusSiswa(
       `mungkin juga ikut terdampak tergantung aturan foreign key database.`
     );
 
-  if (!konfirmasi) return;
+  if (!konfirmasi) {
+    return;
+  }
 
   try {
-
-    const { error } =
+    const {
+      error,
+    } =
       await supabase
         .from("siswa")
         .delete()
         .eq("id", id);
 
-    if (error) throw error;
+    if (error) {
+      throw error;
+    }
 
     alert(
       "Data siswa berhasil dihapus."
     );
 
     await loadSiswa();
-
   } catch (error) {
-
     console.error(
       "Error hapus siswa:",
       error
@@ -868,956 +1010,144 @@ async function hapusSiswa(
 
     alert(
       "Gagal menghapus siswa:\n\n" +
-      (error?.message ||
-        "Terjadi kesalahan.")
+        (
+          error?.message ||
+          "Terjadi kesalahan."
+        )
     );
   }
 }
+
 // ============================================================
-// GANTARIKU — IMPORT DATA SISWA
-// Tambahkan di PALING BAWAH js/siswa.js
-// Tidak perlu mengubah app.js / index.html
+// IMPORT DATA SISWA
+// FORMAT:
+// A No
+// B Nama
+// C NIS
+// D TTL
+// E Alamat
+// F Nama Wali
+// G No. HP
+// H Kelas
+// I Mulai bergabung
 // ============================================================
 
-(function () {
-  "use strict";
+const IMPORT_CHUNK_SIZE =
+  200;
 
-  // ----------------------------------------------------------
-  // KONFIGURASI
-  // ----------------------------------------------------------
+let importRows = [];
+let importValidRows = [];
+let importInvalidRows = [];
 
-  const IMPORT_CHUNK_SIZE = 200;
+// ============================================================
+// SHEETJS
+// ============================================================
 
-  let importRows = [];
-  let importValidRows = [];
-  let importInvalidRows = [];
+async function ensureXLSX() {
+  if (window.XLSX) {
+    return window.XLSX;
+  }
 
-  // ----------------------------------------------------------
-  // LOAD SHEETJS DINAMIS
-  // Supaya tidak perlu menambah file/library secara manual.
-  // ----------------------------------------------------------
+  return new Promise(
+    (resolve, reject) => {
 
-  async function ensureXLSX() {
-    if (window.XLSX) {
-      return window.XLSX;
-    }
-
-    return new Promise((resolve, reject) => {
       const existing =
         document.querySelector(
           'script[data-gantariku-xlsx="1"]'
         );
 
       if (existing) {
-        existing.addEventListener("load", () => {
-          if (window.XLSX) {
-            resolve(window.XLSX);
-          } else {
-            reject(
-              new Error(
-                "Library Excel berhasil dimuat tetapi XLSX tidak tersedia."
-              )
-            );
+
+        existing.addEventListener(
+          "load",
+          () => {
+
+            if (window.XLSX) {
+              resolve(
+                window.XLSX
+              );
+            } else {
+              reject(
+                new Error(
+                  "Library Excel tidak tersedia."
+                )
+              );
+            }
+
           }
-        });
+        );
 
         existing.addEventListener(
           "error",
-          () =>
+          () => {
             reject(
               new Error(
                 "Gagal memuat library Excel."
               )
-            )
+            );
+          }
         );
 
         return;
       }
 
       const script =
-        document.createElement("script");
+        document.createElement(
+          "script"
+        );
 
       script.src =
         "https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js";
 
       script.async = true;
-      script.dataset.gantarikuXlsx = "1";
 
-      script.onload = () => {
-        if (window.XLSX) {
-          resolve(window.XLSX);
-        } else {
+      script.dataset
+        .gantarikuXlsx =
+        "1";
+
+      script.onload =
+        () => {
+
+          if (window.XLSX) {
+            resolve(
+              window.XLSX
+            );
+          } else {
+            reject(
+              new Error(
+                "Library Excel tidak tersedia."
+              )
+            );
+          }
+
+        };
+
+      script.onerror =
+        () => {
+
           reject(
             new Error(
-              "Library Excel tidak tersedia."
+              "Tidak dapat memuat library Excel. Periksa koneksi internet."
             )
           );
-        }
-      };
 
-      script.onerror = () => {
-        reject(
-          new Error(
-            "Tidak dapat memuat library Excel. Periksa koneksi internet."
-          )
-        );
-      };
+        };
 
-      document.head.appendChild(script);
-    });
-  }
-
-  // ----------------------------------------------------------
-  // ESCAPE HTML
-  // ----------------------------------------------------------
-
-  function esc(value) {
-    return String(value ?? "")
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#039;");
-  }
-
-  // ----------------------------------------------------------
-  // NORMALISASI HEADER
-  // Bisa membaca beberapa variasi nama kolom.
-  // ----------------------------------------------------------
-
-  function normalizeHeader(value) {
-    return String(value ?? "")
-      .trim()
-      .toLowerCase()
-      .replace(/\s+/g, " ")
-      .replace(/[_-]+/g, " ");
-  }
-
-  function findValue(row, aliases) {
-    const keys =
-      Object.keys(row || {});
-
-    for (const alias of aliases) {
-      const wanted =
-        normalizeHeader(alias);
-
-      const found =
-        keys.find(
-          key =>
-            normalizeHeader(key) === wanted
-        );
-
-      if (
-        found !== undefined &&
-        row[found] !== undefined &&
-        row[found] !== null
-      ) {
-        return row[found];
-      }
-    }
-
-    return "";
-  }
-
-  // ----------------------------------------------------------
-  // NORMALISASI NOMOR HP
-  // ----------------------------------------------------------
-
-  function normalizePhone(value) {
-    if (
-      value === null ||
-      value === undefined
-    ) {
-      return "";
-    }
-
-    let phone =
-      String(value)
-        .trim()
-        .replace(/[^\d+]/g, "");
-
-    if (phone.startsWith("+62")) {
-      phone =
-        "0" +
-        phone.slice(3);
-    } else if (
-      phone.startsWith("62")
-    ) {
-      phone =
-        "0" +
-        phone.slice(2);
-    }
-
-    return phone;
-  }
-
-  // ----------------------------------------------------------
-  // TANGGAL EXCEL
-  // ----------------------------------------------------------
-
-  function parseDateValue(value) {
-    if (
-      value === null ||
-      value === undefined ||
-      value === ""
-    ) {
-      return null;
-    }
-
-    // Date object
-    if (value instanceof Date) {
-      if (Number.isNaN(value.getTime())) {
-        return null;
-      }
-
-      const y =
-        value.getFullYear();
-
-      const m =
-        String(
-          value.getMonth() + 1
-        ).padStart(2, "0");
-
-      const d =
-        String(
-          value.getDate()
-        ).padStart(2, "0");
-
-      return `${y}-${m}-${d}`;
-    }
-
-    // Excel serial number
-    if (
-      typeof value === "number" &&
-      window.XLSX &&
-      XLSX.SSF &&
-      typeof XLSX.SSF.parse_date_code ===
-        "function"
-    ) {
-      const parsed =
-        XLSX.SSF.parse_date_code(
-          value
-        );
-
-      if (parsed) {
-        return `${parsed.y}-${String(
-          parsed.m
-        ).padStart(2, "0")}-${String(
-          parsed.d
-        ).padStart(2, "0")}`;
-      }
-    }
-
-    const text =
-      String(value).trim();
-
-    // yyyy-mm-dd
-    if (
-      /^\d{4}-\d{1,2}-\d{1,2}$/.test(
-        text
-      )
-    ) {
-      const parts =
-        text.split("-");
-
-      return `${parts[0]}-${String(
-        parts[1]
-      ).padStart(2, "0")}-${String(
-        parts[2]
-      ).padStart(2, "0")}`;
-    }
-
-    // dd/mm/yyyy
-    if (
-      /^\d{1,2}\/\d{1,2}\/\d{4}$/.test(
-        text
-      )
-    ) {
-      const parts =
-        text.split("/");
-
-      return `${parts[2]}-${String(
-        parts[1]
-      ).padStart(2, "0")}-${String(
-        parts[0]
-      ).padStart(2, "0")}`;
-    }
-
-    return null;
-  }
-
-// ============================================================
-// MAP BARIS EXCEL → DATA SISWA
-// MENGIKUTI POSISI KOLOM ASLI
-// ============================================================
-
-function mapImportRow(
-  row,
-  index
-) {
-
-  // ----------------------------------------------------------
-  // POSISI KOLOM
-  // ----------------------------------------------------------
-
-  const nomor =
-    row[0] ?? "";
-
-  const nama =
-    String(
-      row[1] ?? ""
-    ).trim();
-
-  const nis =
-    String(
-      row[2] ?? ""
-    ).trim();
-
-  const ttl =
-    String(
-      row[3] ?? ""
-    ).trim();
-
-  const alamat =
-    String(
-      row[4] ?? ""
-    ).trim();
-
-  const namaWali =
-    String(
-      row[5] ?? ""
-    ).trim();
-
-  const nomorHpOrtu =
-    normalizePhone(
-      row[6] ?? ""
-    );
-
-  const kelas =
-    String(
-      row[7] ?? ""
-    ).trim();
-
-  const mulaiBergabung =
-    row[8] ?? "";
-
-  const errors = [];
-
-  // ----------------------------------------------------------
-  // NAMA
-  // ----------------------------------------------------------
-
-  if (!nama) {
-    errors.push(
-      "Nama siswa kosong"
-    );
-  }
-
-  // ----------------------------------------------------------
-  // NIS
-  // ----------------------------------------------------------
-
-  if (!nis) {
-    errors.push(
-      "NIS kosong"
-    );
-  }
-
-  // ----------------------------------------------------------
-  // KELAS
-  // ----------------------------------------------------------
-
-  if (!kelas) {
-    errors.push(
-      "Kelas kosong"
-    );
-  }
-
-  // ----------------------------------------------------------
-  // TTL
-  // Contoh:
-  // Semarang, 01 Mei 2020
-  // ----------------------------------------------------------
-
-  let tempatLahir = "";
-  let tanggalLahir = null;
-
-  if (ttl) {
-
-    const parts =
-      ttl.split(",");
-
-    if (parts.length >= 2) {
-
-      tempatLahir =
-        parts
-          .slice(
-            0,
-            parts.length - 1
-          )
-          .join(",")
-          .trim();
-
-      tanggalLahir =
-        parseFlexibleDate(
-          parts[
-            parts.length - 1
-          ]
-        );
-
-    } else {
-
-      tanggalLahir =
-        parseFlexibleDate(
-          ttl
-        );
-
-    }
-
-  }
-
-  // ----------------------------------------------------------
-  // MULAI BERGABUNG
-  // Excel date serial → bulan + tahun
-  // ----------------------------------------------------------
-
-  const mulai =
-    parseBulanTahunExcel(
-      mulaiBergabung
-    );
-
-  if (
-    mulaiBergabung !== "" &&
-    (
-      mulai.bulan === null ||
-      mulai.tahun === null
-    )
-  ) {
-    errors.push(
-      "Format Mulai bergabung tidak dapat dibaca"
-    );
-  }
-
- return {
-  rowNumber:
-    index + 1,
-
-  nomor:
-    nomor,
-
-  nama:
-    nama,
-
-  nis:
-    nis,
-
-  tempat_lahir:
-    tempatLahir ||
-    null,
-
-  tanggal_lahir:
-    tanggalLahir ||
-    null,
-
-  alamat:
-    alamat ||
-    null,
-
-  nama_wali:
-    namaWali ||
-    null,
-
-  nomor_hp_ortu:
-    nomorHpOrtu ||
-    null,
-
-  kelas:
-    kelas,
-
-  // Otomatis dihitung dari Mulai Bergabung
-  tahun_ajaran:
-    hitungTahunAjaran(
-      mulai.bulan,
-      mulai.tahun
-    ),
-
-  jenis_kelamin:
-    null,
-
-  mulai_bulan:
-    mulai.bulan,
-
-  mulai_tahun:
-    mulai.tahun,
-
-  orang_tua_id:
-    null,
-
-  kode_akses:
-    null,
-
-  errors:
-    errors
-};
-  // ============================================================
-// PARSE TANGGAL LEBIH FLEKSIBEL
-// Mendukung:
-// 01 Mei 2020
-// 1 Juni 2018
-// 05 September 2019
-// 2020-05-01
-// 01/05/2020
-// ============================================================
-
-function parseFlexibleDate(
-  value
-) {
-
-  if (
-    value === null ||
-    value === undefined ||
-    value === ""
-  ) {
-    return null;
-  }
-
-  if (
-    value instanceof Date
-  ) {
-
-    if (
-      Number.isNaN(
-        value.getTime()
-      )
-    ) {
-      return null;
-    }
-
-    return formatDateISO(
-      value
-    );
-
-  }
-
-  const text =
-    String(
-      value
-    ).trim();
-
-  if (!text) {
-    return null;
-  }
-
-  // yyyy-mm-dd
-  if (
-    /^\d{4}-\d{1,2}-\d{1,2}$/
-      .test(text)
-  ) {
-
-    const [
-      tahun,
-      bulan,
-      tanggal
-    ] =
-      text.split("-");
-
-    return `${tahun}-${String(
-      bulan
-    ).padStart(
-      2,
-      "0"
-    )}-${String(
-      tanggal
-    ).padStart(
-      2,
-      "0"
-    )}`;
-
-  }
-
-  // dd/mm/yyyy
-  if (
-    /^\d{1,2}\/\d{1,2}\/\d{4}$/
-      .test(text)
-  ) {
-
-    const [
-      tanggal,
-      bulan,
-      tahun
-    ] =
-      text.split("/");
-
-    return `${tahun}-${String(
-      bulan
-    ).padStart(
-      2,
-      "0"
-    )}-${String(
-      tanggal
-    ).padStart(
-      2,
-      "0"
-    )}`;
-
-  }
-
-  // ----------------------------------------------------------
-  // Nama bulan Indonesia
-  // ----------------------------------------------------------
-
-  const bulanMap = {
-
-    januari: 1,
-    jan: 1,
-
-    februari: 2,
-    feb: 2,
-
-    maret: 3,
-    mar: 3,
-
-    april: 4,
-    apr: 4,
-
-    mei: 5,
-
-    juni: 6,
-    jun: 6,
-
-    juli: 7,
-    jul: 7,
-
-    agustus: 8,
-    agu: 8,
-
-    september: 9,
-    sep: 9,
-
-    oktober: 10,
-    okt: 10,
-
-    november: 11,
-    nov: 11,
-
-    desember: 12,
-    des: 12
-
-  };
-
-  const match =
-    text.match(
-      /^(\d{1,2})\s+([A-Za-z]+)\s+(\d{4})$/i
-    );
-
-  if (match) {
-
-    const tanggal =
-      Number(
-        match[1]
+      document.head.appendChild(
+        script
       );
 
-    const namaBulan =
-      match[2]
-        .toLowerCase();
-
-    const tahun =
-      Number(
-        match[3]
-      );
-
-    const bulan =
-      bulanMap[
-        namaBulan
-      ];
-
-    if (
-      bulan &&
-      tanggal >= 1 &&
-      tanggal <= 31
-    ) {
-
-      return `${tahun}-${String(
-        bulan
-      ).padStart(
-        2,
-        "0"
-      )}-${String(
-        tanggal
-      ).padStart(
-        2,
-        "0"
-      )}`;
-
     }
-
-  }
-
-  return null;
-}
-// ============================================================
-// PARSE MULAI BERGABUNG
-// Hasil:
-// {
-//   bulan: 7,
-//   tahun: 2024
-// }
-// ============================================================
-
-function parseBulanTahunExcel(
-  value
-) {
-
-  if (
-    value === null ||
-    value === undefined ||
-    value === ""
-  ) {
-    return {
-      bulan: null,
-      tahun: null
-    };
-  }
-
-  let date = null;
-
-  // ----------------------------------------------------------
-  // Date object
-  // ----------------------------------------------------------
-
-  if (
-    value instanceof Date
-  ) {
-
-    date =
-      value;
-
-  }
-
-  // ----------------------------------------------------------
-  // Excel serial number
-  // ----------------------------------------------------------
-
-  else if (
-    typeof value === "number"
-  ) {
-
-    /*
-     * Excel menggunakan sistem 1900-date.
-     */
-
-    const utcDate =
-      new Date(
-        Math.round(
-          (
-            value -
-            25569
-          ) *
-          86400 *
-          1000
-        )
-      );
-
-    if (
-      !Number.isNaN(
-        utcDate.getTime()
-      )
-    ) {
-
-      date =
-        utcDate;
-
-    }
-
-  }
-
-  // ----------------------------------------------------------
-  // String
-  // ----------------------------------------------------------
-
-  else {
-
-    const text =
-      String(
-        value
-      ).trim();
-
-    if (!text) {
-      return {
-        bulan: null,
-        tahun: null
-      };
-    }
-
-    /*
-     * Coba dd/mm/yyyy
-     */
-
-    const slash =
-      text.match(
-        /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/
-      );
-
-    if (slash) {
-
-      const d =
-        Number(
-          slash[1]
-        );
-
-      const m =
-        Number(
-          slash[2]
-        );
-
-      const y =
-        Number(
-          slash[3]
-        );
-
-      return {
-        bulan:
-          m >= 1 &&
-          m <= 12
-            ? m
-            : null,
-
-        tahun:
-          y >= 2000 &&
-          y <= 2100
-            ? y
-            : null
-      };
-
-    }
-
-    /*
-     * Coba yyyy-mm-dd
-     */
-
-    const iso =
-      text.match(
-        /^(\d{4})-(\d{1,2})-(\d{1,2})$/
-      );
-
-    if (iso) {
-
-      const y =
-        Number(
-          iso[1]
-        );
-
-      const m =
-        Number(
-          iso[2]
-        );
-
-      return {
-        bulan:
-          m >= 1 &&
-          m <= 12
-            ? m
-            : null,
-
-        tahun:
-          y >= 2000 &&
-          y <= 2100
-            ? y
-            : null
-      };
-
-    }
-
-    const parsed =
-      parseFlexibleDate(
-        text
-      );
-
-    if (parsed) {
-
-      const [
-        y,
-        m
-      ] =
-        parsed.split("-");
-
-      return {
-        bulan:
-          Number(m),
-
-        tahun:
-          Number(y)
-      };
-
-    }
-
-  }
-
-  if (date) {
-
-    return {
-      bulan:
-        date.getUTCMonth() +
-        1,
-
-      tahun:
-        date.getUTCFullYear()
-    };
-
-  }
-
-  return {
-    bulan: null,
-    tahun: null
-  };
+  );
 }
 
-
 // ============================================================
-// DATE → YYYY-MM-DD
+// BACA FILE
 // ============================================================
 
-function formatDateISO(
-  date
+async function bacaFileImport(
+  file
 ) {
-
-  const y =
-    date.getFullYear();
-
-  const m =
-    String(
-      date.getMonth() + 1
-    ).padStart(
-      2,
-      "0"
-    );
-
-  const d =
-    String(
-      date.getDate()
-    ).padStart(
-      2,
-      "0"
-    );
-
-  return `${y}-${m}-${d}`;
-}
-// ============================================================
-// BACA FILE IMPORT GANTARIKU
-// FORMAT SESUAI EXCEL ASLI:
-// A = No
-// B = Nama
-// C = NIS
-// D = TTL
-// E = Alamat
-// F = Nama Wali
-// G = No. HP
-// H = Kelas
-// I = Mulai bergabung
-// ============================================================
-
-async function bacaFileImport(file) {
-
   if (!file) {
     throw new Error(
       "File belum dipilih."
@@ -1830,15 +1160,17 @@ async function bacaFileImport(file) {
       .pop()
       .toLowerCase();
 
-  const allowed = [
-    "xlsx",
-    "xls",
-    "csv"
-  ];
-
-  if (!allowed.includes(extension)) {
+  if (
+    ![
+      "xlsx",
+      "xls",
+      "csv",
+    ].includes(
+      extension
+    )
+  ) {
     throw new Error(
-      "Format file tidak didukung. Gunakan Excel (.xlsx/.xls) atau CSV."
+      "Format file tidak didukung. Gunakan .xlsx, .xls, atau .csv."
     );
   }
 
@@ -1853,12 +1185,13 @@ async function bacaFileImport(file) {
       buffer,
       {
         type: "array",
-        cellDates: true
+        cellDates: true,
       }
     );
 
   const sheetName =
-    workbook.SheetNames?.[0];
+    workbook
+      .SheetNames?.[0];
 
   if (!sheetName) {
     throw new Error(
@@ -1871,15 +1204,6 @@ async function bacaFileImport(file) {
       sheetName
     ];
 
-  /*
-   * PENTING:
-   * Kita membaca berdasarkan posisi kolom,
-   * bukan nama header.
-   *
-   * Karena file asli kamu punya
-   * kolom B dengan header kosong/spasi.
-   */
-
   const rows =
     XLSXLib.utils.sheet_to_json(
       sheet,
@@ -1887,7 +1211,7 @@ async function bacaFileImport(file) {
         header: 1,
         raw: true,
         defval: "",
-        blankrows: false
+        blankrows: false,
       }
     );
 
@@ -1897,17 +1221,15 @@ async function bacaFileImport(file) {
     );
   }
 
-  /*
-   * Cari baris header.
-   * Kita cari baris yang memiliki
-   * "NIS", "TTL", "Alamat", dst.
-   */
-
   let headerIndex = -1;
 
   for (
     let i = 0;
-    i < Math.min(rows.length, 20);
+    i <
+      Math.min(
+        rows.length,
+        20
+      );
     i++
   ) {
 
@@ -1917,7 +1239,7 @@ async function bacaFileImport(file) {
     const joined =
       row
         .map(
-          value =>
+          (value) =>
             String(
               value ?? ""
             )
@@ -1927,72 +1249,56 @@ async function bacaFileImport(file) {
         .join("|");
 
     if (
-      joined.includes("nis") &&
-      joined.includes("ttl") &&
-      joined.includes("alamat") &&
-      joined.includes("kelas")
+      joined.includes(
+        "nis"
+      ) &&
+      joined.includes(
+        "ttl"
+      ) &&
+      joined.includes(
+        "alamat"
+      ) &&
+      joined.includes(
+        "kelas"
+      )
     ) {
       headerIndex = i;
       break;
     }
   }
 
-  if (headerIndex === -1) {
-    throw new Error(
-      "Header Data Siswa tidak ditemukan. Pastikan format Excel sesuai template Gantariku."
-    );
+  if (
+    headerIndex === -1
+  ) {
+    headerIndex = 0;
   }
-
-  /*
-   * Semua baris setelah header
-   * adalah data siswa.
-   */
 
   const dataRows =
     rows
-      .slice(headerIndex + 1)
-      .filter(row => {
+      .slice(
+        headerIndex + 1
+      )
+      .filter(
+        (row) => {
 
-        if (!row) return false;
+          const nama =
+            String(
+              row?.[1] ??
+                ""
+            ).trim();
 
-        const values =
-          row.map(
-            value =>
-              String(
-                value ?? ""
-              ).trim()
+          const nis =
+            String(
+              row?.[2] ??
+                ""
+            ).trim();
+
+          return (
+            nama !== "" ||
+            nis !== ""
           );
-
-        return values.some(
-          value => value !== ""
-        );
-
-      })
-      .filter(row => {
-
-        /*
-         * Hilangkan baris judul/keterangan
-         * kalau ada di bawah.
-         *
-         * Baris siswa biasanya memiliki
-         * nama/NIS.
-         */
-
-        const nama =
-          String(
-            row[1] ?? ""
-          ).trim();
-
-        const nis =
-          String(
-            row[2] ?? ""
-          ).trim();
-
-        return (
-          nama !== "" ||
-          nis !== ""
-        );
-      });
+        }
+      );
 
   if (!dataRows.length) {
     throw new Error(
@@ -2003,695 +1309,600 @@ async function bacaFileImport(file) {
   return dataRows;
 }
 
-  // ----------------------------------------------------------
-  // CEK DUPLIKAT DI FILE
-  // ----------------------------------------------------------
-
-  function cekDuplikatDalamFile(rows) {
-    const seen =
-      new Map();
-
-    rows.forEach(row => {
-      const key =
-        String(row.nis || "")
-          .trim()
-          .toLowerCase();
-
-      if (!key) return;
-
-      if (!seen.has(key)) {
-        seen.set(key, []);
-      }
-
-      seen
-        .get(key)
-        .push(row);
-    });
-
-    seen.forEach(
-      list => {
-        if (list.length > 1) {
-          list.forEach(row => {
-            row.errors.push(
-              "NIS duplikat di dalam file"
-            );
-          });
-        }
-      }
-    );
-  }
-
-  // ----------------------------------------------------------
-  // CEK DUPLIKAT DENGAN DATABASE
-  // ----------------------------------------------------------
-
-  async function cekDatabase(rows) {
-    if (!supabase) {
-      throw new Error(
-        "Supabase belum terhubung."
-      );
-    }
-
-    const nisList =
-      [
-        ...new Set(
-          rows
-            .filter(
-              x =>
-                x.nis &&
-                !x.errors.includes(
-                  "NIS duplikat di dalam file"
-                )
-            )
-            .map(
-              x =>
-                String(
-                  x.nis
-                ).trim()
-            )
-        ),
-      ];
-
-    if (!nisList.length) {
-      return [];
-    }
-
-    const existing = [];
-
-    // Query bertahap supaya tidak terlalu panjang
-    for (
-      let i = 0;
-      i < nisList.length;
-      i += 200
-    ) {
-      const chunk =
-        nisList.slice(
-          i,
-          i + 200
-        );
-
-      const {
-        data,
-        error,
-      } =
-        await supabase
-          .from("siswa")
-          .select(
-            "id,nis,nama"
-          )
-          .in(
-            "nis",
-            chunk
-          );
-
-      if (error) {
-        throw error;
-      }
-
-      existing.push(
-        ...(data || [])
-      );
-    }
-
-    return existing;
-  }
-
-  // ----------------------------------------------------------
-  // MODAL IMPORT
-  // ----------------------------------------------------------
-
-  function buatModalImport() {
-    const existing =
-      document.getElementById(
-        "modalImportSiswa"
-      );
-
-    if (existing) {
-      existing.remove();
-    }
-
-    const modal =
-      document.createElement(
-        "div"
-      );
-
-    modal.id =
-      "modalImportSiswa";
-
-    modal.innerHTML = `
-      <div class="gtr-import-backdrop">
-
-        <div class="gtr-import-modal">
-
-          <div class="gtr-import-header">
-
-            <div>
-              <h2>Import Data Siswa</h2>
-
-              <p>
-                Masukkan data siswa sekaligus dari Excel atau CSV.
-              </p>
-            </div>
-
-            <button
-              type="button"
-              class="gtr-import-close"
-              onclick="window.tutupImportSiswa()"
-            >
-              ×
-            </button>
-
-          </div>
-
-          <div
-            id="gtrImportContent"
-            class="gtr-import-content"
-          >
-
-            <div class="gtr-import-upload">
-
-              <div class="gtr-import-icon">
-                📊
-              </div>
-
-              <strong>
-                Pilih file Excel / CSV
-              </strong>
-
-              <span>
-                .xlsx, .xls atau .csv
-              </span>
-
-              <input
-                type="file"
-                id="gtrInputFileSiswa"
-                accept=".xlsx,.xls,.csv"
-              >
-
-              <label
-                for="gtrInputFileSiswa"
-                class="btn"
-              >
-                Pilih File
-              </label>
-
-              <small>
-                Kolom wajib:
-                <b>Nama Siswa, NIS, Kelas</b>
-              </small>
-
-            </div>
-
-            <div
-              id="gtrImportStatus"
-              class="gtr-import-status"
-            ></div>
-
-            <div
-              id="gtrImportPreview"
-              class="gtr-import-preview"
-            ></div>
-
-          </div>
-
-        </div>
-
-      </div>
-    `;
-
-    document.body.appendChild(
-      modal
-    );
-
-    document
-      .getElementById(
-        "gtrInputFileSiswa"
-      )
-      ?.addEventListener(
-        "change",
-        handleImportFile
-      );
-
-    modal
-      .querySelector(
-        ".gtr-import-backdrop"
-      )
-      ?.addEventListener(
-        "click",
-        event => {
-          if (
-            event.target.classList.contains(
-              "gtr-import-backdrop"
-            )
-          ) {
-            tutupImportSiswa();
-          }
-        }
-      );
-  }
-
-  // ----------------------------------------------------------
-  // PROSES FILE
-  // ----------------------------------------------------------
-
-  async function handleImportFile(event) {
-    const file =
-      event.target.files?.[0];
-
-    if (!file) return;
-
-    const status =
-      document.getElementById(
-        "gtrImportStatus"
-      );
-
-    const preview =
-      document.getElementById(
-        "gtrImportPreview"
-      );
-
-    if (status) {
-      status.innerHTML =
-        `
-          <div class="gtr-import-loading">
-            ⏳ Membaca file...
-          </div>
-        `;
-    }
-
-    if (preview) {
-      preview.innerHTML = "";
-    }
-
-    try {
-      const rawRows =
-        await bacaFileImport(
-          file
-        );
-
-      const mapped =
-        rawRows.map(
-          (row, index) =>
-            mapImportRow(
-              row,
-              index
-            )
-        );
-
-      cekDuplikatDalamFile(
-        mapped
-      );
-
-      const existing =
-        await cekDatabase(
-          mapped
-        );
-
-      const existingMap =
-        new Map(
-          existing.map(
-            x => [
-              String(x.nis)
-                .trim()
-                .toLowerCase(),
-              x,
-            ]
-          )
-        );
-
-      mapped.forEach(row => {
-
-        const existingStudent =
-          existingMap.get(
-            String(
-              row.nis || ""
-            )
-              .trim()
-              .toLowerCase()
-          );
-
-        if (
-          existingStudent
-        ) {
-          row.errors.push(
-            `NIS sudah terdaftar (${existingStudent.nama || "siswa lain"})`
-          );
-        }
-
-      });
-
-      importRows =
-        mapped;
-
-      importValidRows =
-        mapped.filter(
-          row =>
-            row.errors.length === 0
-        );
-
-      importInvalidRows =
-        mapped.filter(
-          row =>
-            row.errors.length > 0
-        );
-
-      renderImportPreview(
-        file.name
-      );
-
-    } catch (error) {
-
-      console.error(
-        "Import siswa:",
-        error
-      );
-
-      if (status) {
-        status.innerHTML =
-          `
-            <div class="gtr-import-error">
-              ❌ ${esc(
-                error?.message ||
-                "Gagal membaca file."
-              )}
-            </div>
-          `;
-      }
-    }
-  }
-
-  // ----------------------------------------------------------
-  // PREVIEW
-  // ----------------------------------------------------------
-
-  function renderImportPreview(
-    fileName
-  ) {
-    const status =
-      document.getElementById(
-        "gtrImportStatus"
-      );
-
-    const preview =
-      document.getElementById(
-        "gtrImportPreview"
-      );
-
-    if (!status || !preview) {
-      return;
-    }
-
-    status.innerHTML = `
-      <div class="gtr-import-summary">
-
-        <div class="gtr-import-stat">
-          <strong>
-            ${importRows.length}
-          </strong>
-          <span>Total baris</span>
-        </div>
-
-        <div class="gtr-import-stat good">
-          <strong>
-            ${importValidRows.length}
-          </strong>
-          <span>Siap diimport</span>
-        </div>
-
-        <div class="gtr-import-stat bad">
-          <strong>
-            ${importInvalidRows.length}
-          </strong>
-          <span>Perlu diperbaiki</span>
-        </div>
-
-      </div>
-
-      <div class="gtr-import-file">
-        📄 ${esc(fileName)}
-      </div>
-    `;
-
-    const previewRows =
-      importRows.slice(
-        0,
-        30
-      );
-
-    preview.innerHTML = `
-      <div class="gtr-import-preview-title">
-        <strong>Preview Data</strong>
-
-        <span>
-          ${
-            importRows.length > 30
-              ? "Menampilkan 30 baris pertama"
-              : "Semua baris"
-          }
-        </span>
-      </div>
-
-      <div class="gtr-import-table-wrap">
-
-        <table class="gtr-import-table">
-
-          <thead>
-            <tr>
-              <th>Baris</th>
-              <th>Nama</th>
-              <th>NIS</th>
-              <th>Kelas</th>
-              <th>Status</th>
-              <th>Masalah</th>
-            </tr>
-          </thead>
-
-          <tbody>
-
-            ${previewRows
-              .map(
-                row => {
-
-                  const valid =
-                    row.errors.length ===
-                    0;
-
-                  return `
-                    <tr
-                      class="${
-                        valid
-                          ? ""
-                          : "is-invalid"
-                      }"
-                    >
-
-                      <td>
-                        ${row.rowNumber}
-                      </td>
-
-                      <td>
-                        ${esc(row.nama)}
-                      </td>
-
-                      <td>
-                        ${esc(row.nis)}
-                      </td>
-
-                      <td>
-                        ${esc(row.kelas)}
-                      </td>
-
-                      <td>
-                        ${
-                          valid
-                            ? `<span class="gtr-import-ok">✓ Valid</span>`
-                            : `<span class="gtr-import-invalid">! Perlu diperbaiki</span>`
-                        }
-                      </td>
-
-                      <td>
-                        ${
-                          row.errors.length
-                            ? row.errors
-                                .map(
-                                  e =>
-                                    `<div>${esc(e)}</div>`
-                                )
-                                .join("")
-                            : `<span class="gtr-import-muted">—</span>`
-                        }
-                      </td>
-
-                    </tr>
-                  `;
-                }
-              )
-              .join("")}
-
-          </tbody>
-
-        </table>
-
-      </div>
-
-      <div class="gtr-import-actions">
-
-        <button
-          type="button"
-          class="btn ghost"
-          onclick="window.tutupImportSiswa()"
-        >
-          Batal
-        </button>
-
-        <button
-          type="button"
-          class="btn"
-          id="gtrBtnImportSekarang"
-          ${
-            importValidRows.length
-              ? ""
-              : "disabled"
-          }
-        >
-          Import ${
-            importValidRows.length
-          } Data
-        </button>
-
-      </div>
-    `;
-
-    document
-      .getElementById(
-        "gtrBtnImportSekarang"
-      )
-      ?.addEventListener(
-        "click",
-        importSekarang
-      );
-  }
-
-  // ----------------------------------------------------------
-  // EKSEKUSI IMPORT
-  // ----------------------------------------------------------
-
-  async function importSekarang() {
-    if (
-      currentUserRole !== "admin"
-    ) {
-      alert(
-        "Hanya admin yang dapat melakukan import data siswa."
-      );
-      return;
-    }
-
-    if (
-      !supabase
-    ) {
-      alert(
-        "Supabase belum terhubung."
-      );
-      return;
-    }
-
-    if (
-      !importValidRows.length
-    ) {
-      alert(
-        "Tidak ada data valid untuk diimport."
-      );
-      return;
-    }
-
-    const btn =
-      document.getElementById(
-        "gtrBtnImportSekarang"
-      );
-
-    const total =
-      importValidRows.length;
-
-    if (btn) {
-      btn.disabled = true;
-      btn.textContent =
-        `Mengimport 0/${total}...`;
-    }
-
-    try {
-
-      let berhasil = 0;
-
-      for (
-        let i = 0;
-        i < total;
-        i += IMPORT_CHUNK_SIZE
-      ) {
-
-        const chunk =
-          importValidRows.slice(
-            i,
-            i +
-              IMPORT_CHUNK_SIZE
-          );
-
-        const payload =
-  chunk.map(
-    row => ({
-
-      nama:
-        row.nama,
-
-      nis:
-        row.nis,
-
-      tempat_lahir:
-        row.tempat_lahir,
-
-      tanggal_lahir:
-        row.tanggal_lahir,
-
-      alamat:
-        row.alamat,
-
-      nama_wali:
-        row.nama_wali,
-
-      nomor_hp_ortu:
-        row.nomor_hp_ortu,
-
-      kelas:
-        row.kelas,
-
-      tahun_ajaran:
-        row.tahun_ajaran,
-
-      jenis_kelamin:
-        row.jenis_kelamin,
-
-      mulai_bulan:
-        row.mulai_bulan,
-
-      mulai_tahun:
-        row.mulai_tahun,
-
-      orang_tua_id:
-        null
-
-      // kode_akses tidak perlu dikirim.
-      // Trigger database akan membuat otomatis.
-
-    })
-  );
-        // ============================================================
-// HITUNG TAHUN AJARAN OTOMATIS
-//
-// Juli - Desember 2024  -> 2024/2025
-// Januari - Juni 2025  -> 2024/2025
-// Juli - Desember 2025 -> 2025/2026
+// ============================================================
+// MAP IMPORT
 // ============================================================
 
-function hitungTahunAjaran(
+function mapImportRow(
+  row,
+  index
+) {
+  const nama =
+    String(
+      row?.[1] ?? ""
+    ).trim();
+
+  const nis =
+    String(
+      row?.[2] ?? ""
+    ).trim();
+
+  const ttl =
+    String(
+      row?.[3] ?? ""
+    ).trim();
+
+  const alamat =
+    String(
+      row?.[4] ?? ""
+    ).trim();
+
+  const namaWali =
+    String(
+      row?.[5] ?? ""
+    ).trim();
+
+  const nomorHpOrtu =
+    normalizePhone(
+      row?.[6] ?? ""
+    );
+
+  const kelas =
+    String(
+      row?.[7] ?? ""
+    ).trim();
+
+  const mulaiBergabung =
+    row?.[8] ?? "";
+
+  const errors = [];
+
+  if (!nama) {
+    errors.push(
+      "Nama siswa kosong"
+    );
+  }
+
+  if (!nis) {
+    errors.push(
+      "NIS kosong"
+    );
+  }
+
+  if (!kelas) {
+    errors.push(
+      "Kelas kosong"
+    );
+  }
+
+  const {
+    tempatLahir,
+    tanggalLahir,
+  } =
+    parseTTL(
+      ttl
+    );
+
+  if (
+    ttl &&
+    !tanggalLahir
+  ) {
+    errors.push(
+      "Format TTL tidak dapat dibaca"
+    );
+  }
+
+  const mulai =
+    parseBulanTahunExcel(
+      mulaiBergabung
+    );
+
+  if (
+    mulaiBergabung !== "" &&
+    (
+      mulai.bulan ===
+        null ||
+      mulai.tahun ===
+        null
+    )
+  ) {
+    errors.push(
+      "Format Mulai bergabung tidak dapat dibaca"
+    );
+  }
+
+  const tahunAjaran =
+    hitungTahunAjaranMulai(
+      mulai.bulan,
+      mulai.tahun
+    );
+
+  if (!tahunAjaran) {
+    errors.push(
+      "Tahun ajaran tidak dapat dihitung dari Mulai bergabung"
+    );
+  }
+
+  return {
+    rowNumber:
+      index + 2,
+
+    nama,
+
+    nis,
+
+    tempat_lahir:
+      tempatLahir ||
+      null,
+
+    tanggal_lahir:
+      tanggalLahir ||
+      null,
+
+    alamat:
+      alamat ||
+      null,
+
+    nama_wali:
+      namaWali ||
+      null,
+
+    nomor_hp_ortu:
+      nomorHpOrtu ||
+      null,
+
+    kelas,
+
+    tahun_ajaran:
+      tahunAjaran,
+
+    jenis_kelamin:
+      null,
+
+    mulai_bulan:
+      mulai.bulan,
+
+    mulai_tahun:
+      mulai.tahun,
+
+    orang_tua_id:
+      null,
+
+    errors,
+  };
+}
+
+// ============================================================
+// TTL
+// ============================================================
+
+function parseTTL(
+  ttl
+) {
+  if (!ttl) {
+    return {
+      tempatLahir: "",
+      tanggalLahir: null,
+    };
+  }
+
+  const parts =
+    String(ttl)
+      .split(",")
+      .map(
+        (x) =>
+          x.trim()
+      )
+      .filter(Boolean);
+
+  if (
+    parts.length >= 2
+  ) {
+    return {
+      tempatLahir:
+        parts
+          .slice(
+            0,
+            parts.length -
+              1
+          )
+          .join(", ")
+          .trim(),
+
+      tanggalLahir:
+        parseFlexibleDate(
+          parts[
+            parts.length -
+              1
+          ]
+        ),
+    };
+  }
+
+  return {
+    tempatLahir: "",
+    tanggalLahir:
+      parseFlexibleDate(
+        ttl
+      ),
+  };
+}
+
+// ============================================================
+// PARSE TANGGAL
+// ============================================================
+
+function parseFlexibleDate(
+  value
+) {
+  if (
+    value === null ||
+    value === undefined ||
+    value === ""
+  ) {
+    return null;
+  }
+
+  if (
+    value instanceof Date
+  ) {
+    if (
+      Number.isNaN(
+        value.getTime()
+      )
+    ) {
+      return null;
+    }
+
+    return formatDateISO(
+      value
+    );
+  }
+
+  const text =
+    String(value)
+      .trim();
+
+  if (!text) {
+    return null;
+  }
+
+  let match =
+    text.match(
+      /^(\d{4})-(\d{1,2})-(\d{1,2})$/
+    );
+
+  if (match) {
+    return `${match[1]}-${String(
+      match[2]
+    ).padStart(
+      2,
+      "0"
+    )}-${String(
+      match[3]
+    ).padStart(
+      2,
+      "0"
+    )}`;
+  }
+
+  match =
+    text.match(
+      /^(\d{1,2})[\/-](\d{1,2})[\/-](\d{4})$/
+    );
+
+  if (match) {
+    return `${match[3]}-${String(
+      match[2]
+    ).padStart(
+      2,
+      "0"
+    )}-${String(
+      match[1]
+    ).padStart(
+      2,
+      "0"
+    )}`;
+  }
+
+  const bulanMap = {
+    januari: 1,
+    jan: 1,
+
+    februari: 2,
+    feb: 2,
+
+    maret: 3,
+    mar: 3,
+
+    april: 4,
+    apr: 4,
+
+    mei: 5,
+    may: 5,
+
+    juni: 6,
+    jun: 6,
+
+    juli: 7,
+    jul: 7,
+
+    agustus: 8,
+    agu: 8,
+    ags: 8,
+
+    september: 9,
+    sep: 9,
+
+    oktober: 10,
+    okt: 10,
+
+    november: 11,
+    nov: 11,
+
+    desember: 12,
+    des: 12,
+  };
+
+  match =
+    text.match(
+      /^(\d{1,2})\s+([A-Za-z]+)\s+(\d{4})$/i
+    );
+
+  if (match) {
+    const tanggal =
+      Number(
+        match[1]
+      );
+
+    const bulan =
+      bulanMap[
+        match[2].toLowerCase()
+      ];
+
+    const tahun =
+      Number(
+        match[3]
+      );
+
+    if (
+      bulan &&
+      tanggal >= 1 &&
+      tanggal <= 31
+    ) {
+      return `${tahun}-${String(
+        bulan
+      ).padStart(
+        2,
+        "0"
+      )}-${String(
+        tanggal
+      ).padStart(
+        2,
+        "0"
+      )}`;
+    }
+  }
+
+  return null;
+}
+
+// ============================================================
+// MULAI BERGABUNG
+// ============================================================
+
+function parseBulanTahunExcel(
+  value
+) {
+  if (
+    value === null ||
+    value === undefined ||
+    value === ""
+  ) {
+    return {
+      bulan: null,
+      tahun: null,
+    };
+  }
+
+  if (
+    value instanceof Date
+  ) {
+    if (
+      Number.isNaN(
+        value.getTime()
+      )
+    ) {
+      return {
+        bulan: null,
+        tahun: null,
+      };
+    }
+
+    return {
+      bulan:
+        value.getMonth() +
+        1,
+
+      tahun:
+        value.getFullYear(),
+    };
+  }
+
+  if (
+    typeof value ===
+    "number"
+  ) {
+    if (
+      window.XLSX?.SSF &&
+      typeof
+        window.XLSX
+          .SSF
+          .parse_date_code ===
+        "function"
+    ) {
+      const parsed =
+        window.XLSX.SSF.parse_date_code(
+          value
+        );
+
+      if (parsed) {
+        return {
+          bulan:
+            Number(
+              parsed.m
+            ),
+
+          tahun:
+            Number(
+              parsed.y
+            ),
+        };
+      }
+    }
+
+    const date =
+      new Date(
+        Math.round(
+          (
+            value -
+            25569
+          ) *
+            86400 *
+            1000
+        )
+      );
+
+    if (
+      !Number.isNaN(
+        date.getTime()
+      )
+    ) {
+      return {
+        bulan:
+          date.getUTCMonth() +
+          1,
+
+        tahun:
+          date.getUTCFullYear(),
+      };
+    }
+
+    return {
+      bulan: null,
+      tahun: null,
+    };
+  }
+
+  const text =
+    String(value)
+      .trim();
+
+  let match =
+    text.match(
+      /^(\d{4})-(\d{1,2})-(\d{1,2})$/
+    );
+
+  if (match) {
+    return {
+      tahun:
+        Number(
+          match[1]
+        ),
+
+      bulan:
+        Number(
+          match[2]
+        ),
+    };
+  }
+
+  match =
+    text.match(
+      /^(\d{1,2})[\/-](\d{1,2})[\/-](\d{4})$/
+    );
+
+  if (match) {
+    return {
+      bulan:
+        Number(
+          match[2]
+        ),
+
+      tahun:
+        Number(
+          match[3]
+        ),
+    };
+  }
+
+  const parsed =
+    parseFlexibleDate(
+      text
+    );
+
+  if (parsed) {
+    const [
+      tahun,
+      bulan,
+    ] =
+      parsed.split("-");
+
+    return {
+      bulan:
+        Number(
+          bulan
+        ),
+
+      tahun:
+        Number(
+          tahun
+        ),
+    };
+  }
+
+  return {
+    bulan: null,
+    tahun: null,
+  };
+}
+
+function parseMonthInput(
+  value
+) {
+  if (!value) {
+    return {
+      bulan: null,
+      tahun: null,
+    };
+  }
+
+  const match =
+    String(value).match(
+      /^(\d{4})-(\d{1,2})$/
+    );
+
+  if (!match) {
+    return {
+      bulan: null,
+      tahun: null,
+    };
+  }
+
+  return {
+    tahun:
+      Number(
+        match[1]
+      ),
+
+    bulan:
+      Number(
+        match[2]
+      ),
+  };
+}
+
+function hitungTahunAjaranMulai(
   bulan,
   tahun
 ) {
@@ -2703,244 +1914,1425 @@ function hitungTahunAjaran(
   }
 
   const b =
-    Number(bulan);
+    Number(
+      bulan
+    );
 
   const y =
-    Number(tahun);
+    Number(
+      tahun
+    );
 
   if (
-    !Number.isInteger(b) ||
-    !Number.isInteger(y) ||
-    b < 1 ||
-    b > 12
+    !Number.isInteger(
+      b
+    ) ||
+    !Number.isInteger(
+      y
+    )
   ) {
     return null;
   }
 
-  if (b >= 7) {
-    return `${y}/${y + 1}`;
+  if (
+    b < 1 ||
+    b > 12 ||
+    y < 2000 ||
+    y > 2100
+  ) {
+    return null;
   }
 
-  return `${y - 1}/${y}`;
+  return b >= 7
+    ? `${y}/${y + 1}`
+    : `${y - 1}/${y}`;
 }
-        const {
-          error,
-        } =
-          await supabase
-            .from("siswa")
-            .insert(
-              payload
-            );
 
-        if (error) {
-          throw error;
-        }
+function formatDateISO(
+  date
+) {
+  return `${date.getFullYear()}-${String(
+    date.getMonth() + 1
+  ).padStart(
+    2,
+    "0"
+  )}-${String(
+    date.getDate()
+  ).padStart(
+    2,
+    "0"
+  )}`;
+}
 
-        berhasil +=
-          chunk.length;
+// ============================================================
+// DUPLIKAT
+// ============================================================
 
-        if (btn) {
-          btn.textContent =
-            `Mengimport ${berhasil}/${total}...`;
-        }
+function cekDuplikatDalamFile(
+  rows
+) {
+  const seen =
+    new Map();
+
+  rows.forEach(
+    (row) => {
+
+      const key =
+        String(
+          row.nis ||
+            ""
+        )
+          .trim()
+          .toLowerCase();
+
+      if (!key) return;
+
+      if (!seen.has(key)) {
+        seen.set(
+          key,
+          []
+        );
       }
 
-      alert(
-        `Berhasil mengimport ${berhasil} data siswa.`
-      );
+      seen
+        .get(key)
+        .push(row);
+    }
+  );
 
-      tutupImportSiswa();
+  seen.forEach(
+    (list) => {
 
       if (
-        typeof loadSiswa ===
-        "function"
+        list.length >
+        1
       ) {
-        await loadSiswa();
+        list.forEach(
+          (row) => {
+
+            if (
+              !row.errors.includes(
+                "NIS duplikat di dalam file"
+              )
+            ) {
+              row.errors.push(
+                "NIS duplikat di dalam file"
+              );
+            }
+
+          }
+        );
       }
 
-    } catch (error) {
+    }
+  );
+}
 
-      console.error(
-        "Gagal import siswa:",
-        error
+async function cekDatabase(
+  rows
+) {
+  if (!supabase) {
+    throw new Error(
+      "Supabase belum terhubung."
+    );
+  }
+
+  const nisList =
+    [
+      ...new Set(
+        rows
+          .filter(
+            (x) =>
+              x.nis
+          )
+          .map(
+            (x) =>
+              String(
+                x.nis
+              ).trim()
+          )
+      ),
+    ];
+
+  if (
+    !nisList.length
+  ) {
+    return [];
+  }
+
+  const existing = [];
+
+  for (
+    let i = 0;
+    i <
+      nisList.length;
+    i += 200
+  ) {
+
+    const chunk =
+      nisList.slice(
+        i,
+        i + 200
       );
 
-      alert(
-        "Import berhenti.\n\n" +
+    const {
+      data,
+      error,
+    } =
+      await supabase
+        .from("siswa")
+        .select(
+          "id,nis,nama"
+        )
+        .in(
+          "nis",
+          chunk
+        );
+
+    if (error) {
+      throw error;
+    }
+
+    existing.push(
+      ...(data || [])
+    );
+  }
+
+  return existing;
+}
+
+// ============================================================
+// MODAL IMPORT + CSS
+// ============================================================
+
+function injectImportStyles() {
+  if (
+    document.getElementById(
+      "gtr-import-styles"
+    )
+  ) {
+    return;
+  }
+
+  const style =
+    document.createElement(
+      "style"
+    );
+
+  style.id =
+    "gtr-import-styles";
+
+  style.textContent = `
+    .gtr-import-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 99999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      background: rgba(47,43,42,.55);
+      backdrop-filter: blur(4px);
+    }
+
+    .gtr-import-modal {
+      width: min(1100px, 100%);
+      max-height: 92vh;
+      overflow: hidden;
+      background: #fffdf9;
+      border: 1px solid #e7ddd0;
+      border-radius: 20px;
+      box-shadow: 0 25px 80px rgba(45,35,28,.25);
+    }
+
+    .gtr-import-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 20px 22px;
+      border-bottom: 1px solid #eee5d9;
+    }
+
+    .gtr-import-header h2 {
+      margin: 0 0 5px;
+      color: #393536;
+      font-size: 20px;
+    }
+
+    .gtr-import-header p {
+      margin: 0;
+      color: #776d63;
+      font-size: 13px;
+    }
+
+    .gtr-import-close {
+      width: 36px;
+      height: 36px;
+      border: 0;
+      border-radius: 10px;
+      background: #f3ece3;
+      color: #5f5750;
+      font-size: 24px;
+      cursor: pointer;
+    }
+
+    .gtr-import-content {
+      padding: 20px;
+      max-height: calc(92vh - 90px);
+      overflow: auto;
+    }
+
+    .gtr-import-upload {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 26px 18px;
+      margin-bottom: 16px;
+      text-align: center;
+      background: linear-gradient(
+        180deg,
+        #fff7dc,
+        #fffdf9
+      );
+      border: 1px dashed #dcc79c;
+      border-radius: 16px;
+    }
+
+    .gtr-import-icon {
+      width: 50px;
+      height: 50px;
+      display: grid;
+      place-items: center;
+      margin-bottom: 4px;
+      background: #fff0c3;
+      border-radius: 15px;
+      font-size: 25px;
+    }
+
+    .gtr-import-upload strong {
+      color: #413b38;
+      font-size: 14px;
+    }
+
+    .gtr-import-upload span {
+      color: #7a7066;
+      font-size: 12px;
+    }
+
+    .gtr-import-upload input {
+      display: none;
+    }
+
+    .gtr-import-upload label {
+      margin-top: 9px;
+      cursor: pointer;
+    }
+
+    .gtr-import-upload small {
+      max-width: 800px;
+      margin-top: 5px;
+      color: #81766b;
+      font-size: 11px;
+      line-height: 1.5;
+    }
+
+    .gtr-import-summary {
+      display: grid;
+      grid-template-columns: repeat(3,minmax(0,1fr));
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .gtr-import-stat {
+      padding: 12px;
+      background: #f5efe7;
+      border-radius: 12px;
+      text-align: center;
+    }
+
+    .gtr-import-stat strong {
+      display: block;
+      font-size: 20px;
+      color: #403a37;
+    }
+
+    .gtr-import-stat span {
+      font-size: 11px;
+      color: #7c7268;
+    }
+
+    .gtr-import-stat.good {
+      background: #eaf7e9;
+    }
+
+    .gtr-import-stat.good strong {
+      color: #2d9143;
+    }
+
+    .gtr-import-stat.bad {
+      background: #fff0ec;
+    }
+
+    .gtr-import-stat.bad strong {
+      color: #c44945;
+    }
+
+    .gtr-import-file {
+      margin-bottom: 14px;
+      color: #766c62;
+      font-size: 12px;
+    }
+
+    .gtr-import-preview-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 15px 0 9px;
+    }
+
+    .gtr-import-preview-title strong {
+      color: #403a37;
+    }
+
+    .gtr-import-preview-title span {
+      color: #877c71;
+      font-size: 11px;
+    }
+
+    .gtr-import-table-wrap {
+      overflow: auto;
+      max-height: 390px;
+      border: 1px solid #e8ded2;
+      border-radius: 12px;
+    }
+
+    .gtr-import-table {
+      width: 100%;
+      min-width: 900px;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+
+    .gtr-import-table th {
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      padding: 10px;
+      background: #f4ecde;
+      color: #62594f;
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    .gtr-import-table td {
+      padding: 9px 10px;
+      border-top: 1px solid #eee7de;
+      color: #514b46;
+      vertical-align: top;
+    }
+
+    .gtr-import-table tr.is-invalid {
+      background: #fff7f4;
+    }
+
+    .gtr-import-ok,
+    .gtr-import-invalid {
+      display: inline-block;
+      padding: 4px 7px;
+      border-radius: 999px;
+      font-size: 10px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .gtr-import-ok {
+      background: #e8f6ea;
+      color: #2c9144;
+    }
+
+    .gtr-import-invalid {
+      background: #fbe8e5;
+      color: #c44843;
+    }
+
+    .gtr-import-muted {
+      color: #aaa098;
+    }
+
+    .gtr-import-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    @media (max-width:700px) {
+      .gtr-import-backdrop {
+        padding: 8px;
+      }
+
+      .gtr-import-modal {
+        max-height: 95vh;
+        border-radius: 17px;
+      }
+
+      .gtr-import-content {
+        max-height: calc(95vh - 88px);
+        padding: 14px;
+      }
+
+      .gtr-import-header {
+        padding: 16px;
+      }
+
+      .gtr-import-summary {
+        grid-template-columns: 1fr;
+      }
+
+      .gtr-import-actions {
+        flex-direction: column;
+      }
+
+      .gtr-import-actions .btn {
+        width: 100%;
+      }
+    }
+  `;
+
+  document.head.appendChild(
+    style
+  );
+}
+
+// ============================================================
+// BUKA MODAL IMPORT
+// ============================================================
+
+function bukaImportSiswa() {
+  if (
+    currentUserRole !==
+    "admin"
+  ) {
+    alert(
+      "Fitur import hanya tersedia untuk admin."
+    );
+    return;
+  }
+
+  injectImportStyles();
+
+  const old =
+    document.getElementById(
+      "modalImportSiswa"
+    );
+
+  if (old) {
+    old.remove();
+  }
+
+  const modal =
+    document.createElement(
+      "div"
+    );
+
+  modal.id =
+    "modalImportSiswa";
+
+  modal.innerHTML = `
+    <div class="gtr-import-backdrop">
+
+      <div class="gtr-import-modal">
+
+        <div class="gtr-import-header">
+
+          <div>
+            <h2>
+              Import Data Siswa
+            </h2>
+
+            <p>
+              Gunakan file Excel siswa yang biasa dipakai sekolah.
+            </p>
+          </div>
+
+          <button
+            type="button"
+            class="gtr-import-close"
+            id="gtrCloseImport"
+          >
+            ×
+          </button>
+
+        </div>
+
+        <div class="gtr-import-content">
+
+          <div class="gtr-import-upload">
+
+            <div class="gtr-import-icon">
+              📊
+            </div>
+
+            <strong>
+              Pilih file Excel / CSV
+            </strong>
+
+            <span>
+              .xlsx · .xls · .csv
+            </span>
+
+            <input
+              type="file"
+              id="gtrInputFileSiswa"
+              accept=".xlsx,.xls,.csv"
+            >
+
+            <label
+              for="gtrInputFileSiswa"
+              class="btn"
+            >
+              Pilih File
+            </label>
+
+            <small>
+              Format:
+              No · Nama · NIS · TTL · Alamat ·
+              Nama Wali · No. HP · Kelas · Mulai bergabung
+            </small>
+
+          </div>
+
+          <div id="gtrImportStatus"></div>
+
+          <div id="gtrImportPreview"></div>
+
+        </div>
+
+      </div>
+
+    </div>
+  `;
+
+  document.body.appendChild(
+    modal
+  );
+
+  document
+    .getElementById(
+      "gtrCloseImport"
+    )
+    ?.addEventListener(
+      "click",
+      tutupImportSiswa
+    );
+
+  document
+    .querySelector(
+      "#modalImportSiswa .gtr-import-backdrop"
+    )
+    ?.addEventListener(
+      "click",
+      (event) => {
+
+        if (
+          event.target.classList.contains(
+            "gtr-import-backdrop"
+          )
+        ) {
+          tutupImportSiswa();
+        }
+
+      }
+    );
+
+  document
+    .getElementById(
+      "gtrInputFileSiswa"
+    )
+    ?.addEventListener(
+      "change",
+      handleImportFile
+    );
+}
+
+// ============================================================
+// HANDLE FILE
+// ============================================================
+
+async function handleImportFile(
+  event
+) {
+  const file =
+    event.target.files?.[0];
+
+  if (!file) return;
+
+  const status =
+    document.getElementById(
+      "gtrImportStatus"
+    );
+
+  const preview =
+    document.getElementById(
+      "gtrImportPreview"
+    );
+
+  if (status) {
+    status.innerHTML = `
+      <div
+        class="gtr-import-loading"
+        style="
+          padding:12px;
+          border-radius:10px;
+          background:#f5efe7;
+          color:#6f665d;
+        "
+      >
+        ⏳ Membaca dan memeriksa file...
+      </div>
+    `;
+  }
+
+  if (preview) {
+    preview.innerHTML =
+      "";
+  }
+
+  try {
+    const rawRows =
+      await bacaFileImport(
+        file
+      );
+
+    const mapped =
+      rawRows.map(
+        (row, index) =>
+          mapImportRow(
+            row,
+            index
+          )
+      );
+
+    cekDuplikatDalamFile(
+      mapped
+    );
+
+    const existing =
+      await cekDatabase(
+        mapped
+      );
+
+    const existingMap =
+      new Map(
+        existing.map(
+          (x) => [
+            String(
+              x.nis
+            )
+              .trim()
+              .toLowerCase(),
+            x,
+          ]
+        )
+      );
+
+    mapped.forEach(
+      (row) => {
+
+        const key =
+          String(
+            row.nis ||
+              ""
+          )
+            .trim()
+            .toLowerCase();
+
+        const existingStudent =
+          existingMap.get(
+            key
+          );
+
+        if (
+          existingStudent
+        ) {
+          row.errors.push(
+            `NIS sudah terdaftar (${existingStudent.nama || "siswa lain"})`
+          );
+        }
+
+      }
+    );
+
+    importRows =
+      mapped;
+
+    importValidRows =
+      mapped.filter(
+        (row) =>
+          row.errors.length ===
+          0
+      );
+
+    importInvalidRows =
+      mapped.filter(
+        (row) =>
+          row.errors.length >
+          0
+      );
+
+    renderImportPreview(
+      file.name
+    );
+
+  } catch (error) {
+
+    console.error(
+      "Import siswa:",
+      error
+    );
+
+    if (status) {
+      status.innerHTML = `
+        <div
+          style="
+            padding:12px;
+            border-radius:10px;
+            background:#fcebe7;
+            color:#b84242;
+            font-size:13px;
+          "
+        >
+          ❌ ${escapeHtml(
+            error?.message ||
+              "Gagal membaca file."
+          )}
+        </div>
+      `;
+    }
+  }
+}
+
+// ============================================================
+// PREVIEW
+// ============================================================
+
+function renderImportPreview(
+  fileName
+) {
+  const status =
+    document.getElementById(
+      "gtrImportStatus"
+    );
+
+  const preview =
+    document.getElementById(
+      "gtrImportPreview"
+    );
+
+  if (!status || !preview) {
+    return;
+  }
+
+  status.innerHTML = `
+    <div class="gtr-import-summary">
+
+      <div class="gtr-import-stat">
+        <strong>
+          ${importRows.length}
+        </strong>
+
+        <span>
+          Total baris
+        </span>
+      </div>
+
+      <div class="gtr-import-stat good">
+        <strong>
+          ${importValidRows.length}
+        </strong>
+
+        <span>
+          Siap diimport
+        </span>
+      </div>
+
+      <div class="gtr-import-stat bad">
+        <strong>
+          ${importInvalidRows.length}
+        </strong>
+
+        <span>
+          Perlu diperbaiki
+        </span>
+      </div>
+
+    </div>
+
+    <div class="gtr-import-file">
+      📄 ${escapeHtml(
+        fileName
+      )}
+    </div>
+  `;
+
+  const previewRows =
+    importRows.slice(
+      0,
+      30
+    );
+
+  preview.innerHTML = `
+
+    <div class="gtr-import-preview-title">
+
+      <strong>
+        Preview Data
+      </strong>
+
+      <span>
+        ${
+          importRows.length >
+          30
+            ? "Menampilkan 30 baris pertama"
+            : "Semua baris"
+        }
+      </span>
+
+    </div>
+
+    <div class="gtr-import-table-wrap">
+
+      <table class="gtr-import-table">
+
+        <thead>
+          <tr>
+            <th>Baris</th>
+            <th>Nama</th>
+            <th>NIS</th>
+            <th>Kelas</th>
+            <th>Tahun Ajaran</th>
+            <th>Bergabung</th>
+            <th>Status</th>
+            <th>Masalah</th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          ${previewRows
+            .map(
+              (row) => {
+
+                const valid =
+                  row.errors
+                    .length ===
+                  0;
+
+                return `
+                  <tr
+                    class="${
+                      valid
+                        ? ""
+                        : "is-invalid"
+                    }"
+                  >
+
+                    <td>
+                      ${row.rowNumber}
+                    </td>
+
+                    <td>
+                      ${escapeHtml(
+                        row.nama
+                      )}
+                    </td>
+
+                    <td>
+                      ${escapeHtml(
+                        row.nis
+                      )}
+                    </td>
+
+                    <td>
+                      ${escapeHtml(
+                        row.kelas
+                      )}
+                    </td>
+
+                    <td>
+                      ${escapeHtml(
+                        row.tahun_ajaran ||
+                          "-"
+                      )}
+                    </td>
+
+                    <td>
+                      ${escapeHtml(
+                        formatBergabungSiswa(
+                          row
+                        )
+                      )}
+                    </td>
+
+                    <td>
+                      ${
+                        valid
+                          ? `
+                            <span class="gtr-import-ok">
+                              ✓ Valid
+                            </span>
+                          `
+                          : `
+                            <span class="gtr-import-invalid">
+                              ! Perlu diperbaiki
+                            </span>
+                          `
+                      }
+                    </td>
+
+                    <td>
+                      ${
+                        row.errors
+                          .length
+                          ? row.errors
+                              .map(
+                                (e) =>
+                                  `<div>${escapeHtml(
+                                    e
+                                  )}</div>`
+                              )
+                              .join("")
+                          : `
+                            <span class="gtr-import-muted">
+                              —
+                            </span>
+                          `
+                      }
+                    </td>
+
+                  </tr>
+                `;
+              }
+            )
+            .join("")}
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+    <div class="gtr-import-actions">
+
+      <button
+        type="button"
+        class="btn ghost"
+        id="gtrBtnBatalImport"
+      >
+        Batal
+      </button>
+
+      <button
+        type="button"
+        class="btn"
+        id="gtrBtnImportSekarang"
+        ${
+          importValidRows.length
+            ? ""
+            : "disabled"
+        }
+      >
+        Import ${
+          importValidRows.length
+        } Data
+      </button>
+
+    </div>
+  `;
+
+  document
+    .getElementById(
+      "gtrBtnBatalImport"
+    )
+    ?.addEventListener(
+      "click",
+      tutupImportSiswa
+    );
+
+  document
+    .getElementById(
+      "gtrBtnImportSekarang"
+    )
+    ?.addEventListener(
+      "click",
+      importSekarang
+    );
+}
+
+// ============================================================
+// IMPORT KE DATABASE
+// ============================================================
+
+async function importSekarang() {
+  if (
+    currentUserRole !==
+    "admin"
+  ) {
+    alert(
+      "Hanya admin yang dapat melakukan import data siswa."
+    );
+    return;
+  }
+
+  if (!supabase) {
+    alert(
+      "Supabase belum terhubung."
+    );
+    return;
+  }
+
+  if (
+    !importValidRows.length
+  ) {
+    alert(
+      "Tidak ada data valid untuk diimport."
+    );
+    return;
+  }
+
+  const btn =
+    document.getElementById(
+      "gtrBtnImportSekarang"
+    );
+
+  const total =
+    importValidRows.length;
+
+  if (btn) {
+    btn.disabled = true;
+
+    btn.textContent =
+      `Mengimport 0/${total}...`;
+  }
+
+  try {
+    let berhasil = 0;
+
+    for (
+      let i = 0;
+      i < total;
+      i +=
+        IMPORT_CHUNK_SIZE
+    ) {
+
+      const chunk =
+        importValidRows.slice(
+          i,
+          i +
+            IMPORT_CHUNK_SIZE
+        );
+
+      const payload =
+        chunk.map(
+          (row) => ({
+
+            nama:
+              row.nama,
+
+            nis:
+              row.nis,
+
+            tempat_lahir:
+              row.tempat_lahir,
+
+            tanggal_lahir:
+              row.tanggal_lahir,
+
+            alamat:
+              row.alamat,
+
+            nama_wali:
+              row.nama_wali,
+
+            nomor_hp_ortu:
+              row.nomor_hp_ortu,
+
+            kelas:
+              row.kelas,
+
+            tahun_ajaran:
+              row.tahun_ajaran,
+
+            jenis_kelamin:
+              row.jenis_kelamin,
+
+            mulai_bulan:
+              row.mulai_bulan,
+
+            mulai_tahun:
+              row.mulai_tahun,
+
+            orang_tua_id:
+              null,
+
+          })
+        );
+
+      const {
+        error,
+      } =
+        await supabase
+          .from("siswa")
+          .insert(
+            payload
+          );
+
+      if (error) {
+        throw error;
+      }
+
+      berhasil +=
+        chunk.length;
+
+      if (btn) {
+        btn.textContent =
+          `Mengimport ${berhasil}/${total}...`;
+      }
+    }
+
+    alert(
+      `Berhasil mengimport ${berhasil} data siswa.`
+    );
+
+    tutupImportSiswa();
+
+    await loadSiswa();
+
+  } catch (error) {
+
+    console.error(
+      "Gagal import siswa:",
+      error
+    );
+
+    alert(
+      "Import berhenti.\n\n" +
         (
           error?.message ||
           "Terjadi kesalahan."
         )
-      );
-
-      if (btn) {
-        btn.disabled = false;
-        btn.textContent =
-          `Import ${total} Data`;
-      }
-    }
-  }
-
-  // ----------------------------------------------------------
-  // BUKA IMPORT
-  // ----------------------------------------------------------
-
-  function bukaImportSiswa() {
-
-    if (
-      currentUserRole !==
-      "admin"
-    ) {
-      alert(
-        "Fitur import hanya tersedia untuk admin."
-      );
-      return;
-    }
-
-    buatModalImport();
-  }
-
-  // ----------------------------------------------------------
-  // TUTUP IMPORT
-  // ----------------------------------------------------------
-
-  function tutupImportSiswa() {
-    const modal =
-      document.getElementById(
-        "modalImportSiswa"
-      );
-
-    if (modal) {
-      modal.remove();
-    }
-
-    importRows = [];
-    importValidRows = [];
-    importInvalidRows = [];
-  }
-
-  // ----------------------------------------------------------
-  // PASANG TOMBOL IMPORT
-  //
-  // Kita bungkus renderSiswa() yang sudah ada.
-  // Jadi TIDAK perlu mengedit fungsi lama.
-  // ----------------------------------------------------------
-
-  function pasangTombolImport() {
-
-    if (
-      typeof window.renderSiswa !==
-      "function"
-    ) {
-      return;
-    }
-
-    if (
-      window.renderSiswa.__gtrImportWrapped
-    ) {
-      return;
-    }
-
-    const originalRenderSiswa =
-      window.renderSiswa;
-
-    function wrappedRenderSiswa() {
-
-      let html =
-        originalRenderSiswa();
-
-      // Hanya admin yang melihat tombol Import.
-      if (
-        currentUserRole !==
-        "admin"
-      ) {
-        return html;
-      }
-
-      const tambahButtonPattern =
-        /(<button[^>]*onclick="window\.__app\.bukaFormSiswa\(\)"[^>]*>[\s\S]*?\+ Tambah Siswa[\s\S]*?<\/button>)/;
-
-      const match =
-        html.match(
-          tambahButtonPattern
-        );
-
-      if (!match) {
-        return html;
-      }
-
-      const importButton = `
-        <button
-          class="btn ghost"
-          type="button"
-          onclick="window.bukaImportSiswa()"
-        >
-          📊 Import Data
-        </button>
-      `;
-
-      html =
-        html.replace(
-          match[1],
-          `${importButton}${match[1]}`
-        );
-
-      return html;
-    }
-
-    wrappedRenderSiswa
-      .__gtrImportWrapped = true;
-
-    wrappedRenderSiswa
-      .__gtrOriginal =
-      originalRenderSiswa;
-
-    window.renderSiswa =
-      wrappedRenderSiswa;
-  }
-
-  // ----------------------------------------------------------
-  // PUBLIC
-  // ----------------------------------------------------------
-
-  window.bukaImportSiswa =
-    bukaImportSiswa;
-
-  window.tutupImportSiswa =
-    tutupImportSiswa;
-
-  // ----------------------------------------------------------
-  // TUNGGU SEMUA SCRIPT SELESAI
-  // ----------------------------------------------------------
-
-  if (
-    document.readyState ===
-    "loading"
-  ) {
-
-    document.addEventListener(
-      "DOMContentLoaded",
-      pasangTombolImport,
-      { once: true }
     );
 
-  } else {
+    if (btn) {
 
-    pasangTombolImport();
+      btn.disabled = false;
 
+      btn.textContent =
+        `Import ${total} Data`;
+
+    }
+  }
+}
+
+// ============================================================
+// TUTUP IMPORT
+// ============================================================
+
+function tutupImportSiswa() {
+  document
+    .getElementById(
+      "modalImportSiswa"
+    )
+    ?.remove();
+
+  importRows = [];
+  importValidRows = [];
+  importInvalidRows = [];
+}
+
+// ============================================================
+// HELPER
+// ============================================================
+
+function normalizePhone(
+  value
+) {
+  if (
+    value === null ||
+    value === undefined
+  ) {
+    return "";
   }
 
-  // Beberapa project memuat script
-  // secara sangat cepat sebelum global
-  // benar-benar tersedia.
-  setTimeout(
-    pasangTombolImport,
-    0
-  );
+  let phone =
+    String(value)
+      .trim()
+      .replace(
+        /[^\d+]/g,
+        ""
+      );
 
-  setTimeout(
-    pasangTombolImport,
-    300
-  );
+  if (
+    phone.startsWith(
+      "+62"
+    )
+  ) {
+    phone =
+      "0" +
+      phone.slice(3);
 
-})();
+  } else if (
+    phone.startsWith(
+      "62"
+    )
+  ) {
+    phone =
+      "0" +
+      phone.slice(2);
+  }
+
+  return phone;
+}
+
+function formatBergabungSiswa(
+  siswa
+) {
+  const bulan =
+    Number(
+      siswa?.mulai_bulan ||
+        0
+    );
+
+  const tahun =
+    Number(
+      siswa?.mulai_tahun ||
+        0
+    );
+
+  if (
+    !Number.isInteger(
+      bulan
+    ) ||
+    bulan < 1 ||
+    bulan > 12 ||
+    !Number.isInteger(
+      tahun
+    ) ||
+    tahun < 2000
+  ) {
+    return "-";
+  }
+
+  const names = [
+    "Januari",
+    "Februari",
+    "Maret",
+    "April",
+    "Mei",
+    "Juni",
+    "Juli",
+    "Agustus",
+    "September",
+    "Oktober",
+    "November",
+    "Desember",
+  ];
+
+  return `${
+    names[
+      bulan - 1
+    ]
+  } ${tahun}`;
+}
+
+function setValue(
+  id,
+  value
+) {
+  const el =
+    document.getElementById(
+      id
+    );
+
+  if (el) {
+    el.value =
+      value ?? "";
+  }
+}
+
+function getValue(
+  id
+) {
+  return (
+    document.getElementById(
+      id
+    )?.value?.trim() ||
+    ""
+  );
+}
+
+function escapeHtml(
+  value
+) {
+  return String(
+    value ?? ""
+  )
+    .replace(
+      /&/g,
+      "&amp;"
+    )
+    .replace(
+      /</g,
+      "&lt;"
+    )
+    .replace(
+      />/g,
+      "&gt;"
+    )
+    .replace(
+      /"/g,
+      "&quot;"
+    )
+    .replace(
+      /'/g,
+      "&#039;"
+    );
+}
+
+function escapeJs(
+  value
+) {
+  return String(
+    value ?? ""
+  )
+    .replace(
+      /\\/g,
+      "\\\\"
+    )
+    .replace(
+      /'/g,
+      "\\'"
+    )
+    .replace(
+      /\n/g,
+      "\\n"
+    )
+    .replace(
+      /\r/g,
+      "\\r"
+    );
+}
+
+// ============================================================
+// GLOBAL
+// ============================================================
+
+window.bukaImportSiswa =
+  bukaImportSiswa;
+
+window.tutupImportSiswa =
+  tutupImportSiswa;
