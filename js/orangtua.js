@@ -1323,5 +1323,526 @@ async function debugAksesPembayaran() {
     );
   }
 }
+// ============================================================
+// GANTARIKU — HUBUNGKAN ANAK DENGAN KODE AKSES
+// ============================================================
 
+(function () {
 
+  "use strict";
+
+  // ----------------------------------------------------------
+  // Escape
+  // ----------------------------------------------------------
+
+  function escOrtu(
+    value
+  ) {
+
+    return String(
+      value ?? ""
+    )
+      .replace(
+        /&/g,
+        "&amp;"
+      )
+      .replace(
+        /</g,
+        "&lt;"
+      )
+      .replace(
+        />/g,
+        "&gt;"
+      )
+      .replace(
+        /"/g,
+        "&quot;"
+      )
+      .replace(
+        /'/g,
+        "&#039;"
+      );
+
+  }
+
+  // ----------------------------------------------------------
+  // Render form
+  // ----------------------------------------------------------
+
+  function renderFormHubungkanAnak() {
+
+    return `
+
+      <div
+        style="
+          max-width:640px;
+          margin:10px auto;
+          padding:30px 24px;
+          text-align:center;
+          border:1px solid #E8DED0;
+          border-radius:20px;
+          background:
+            linear-gradient(
+              135deg,
+              #FFF7DB,
+              #FFFEFB
+            );
+          box-shadow:
+            0 8px 25px rgba(90,65,40,.06);
+        "
+      >
+
+        <div
+          style="
+            width:58px;
+            height:58px;
+            margin:0 auto 14px;
+            display:grid;
+            place-items:center;
+            border-radius:18px;
+            background:#FFF0C5;
+            font-size:27px;
+          "
+        >
+          🌻
+        </div>
+
+        <h2
+          style="
+            margin:0 0 8px;
+            color:#393536;
+          "
+        >
+          Hubungkan Anak
+        </h2>
+
+        <p
+          style="
+            margin:0 auto 20px;
+            max-width:480px;
+            color:#756B61;
+            line-height:1.6;
+            font-size:13px;
+          "
+        >
+          Masukkan
+          <strong>Kode Akses Anak</strong>
+          yang diberikan oleh sekolah.
+          Setelah berhasil, data anak akan
+          langsung terhubung dengan akun Anda.
+        </p>
+
+        <form
+          id="formHubungkanAnak"
+          style="
+            max-width:420px;
+            margin:0 auto;
+          "
+        >
+
+          <input
+            type="text"
+            id="kodeAksesAnak"
+            maxlength="20"
+            autocomplete="off"
+            placeholder="Contoh: GTR-A7F92C31"
+            required
+            style="
+              width:100%;
+              box-sizing:border-box;
+              text-align:center;
+              text-transform:uppercase;
+              letter-spacing:.08em;
+              font-weight:700;
+              font-size:16px;
+              padding:13px 15px;
+              border:1px solid #DCCFBC;
+              border-radius:12px;
+              background:#FFFFFF;
+              color:#393536;
+            "
+          >
+
+          <div
+            id="hubungkanAnakError"
+            style="
+              display:none;
+              margin-top:9px;
+              padding:10px 12px;
+              border-radius:10px;
+              background:#FCEBE7;
+              color:#B84242;
+              font-size:12px;
+              text-align:left;
+            "
+          ></div>
+
+          <div
+            id="hubungkanAnakSuccess"
+            style="
+              display:none;
+              margin-top:9px;
+              padding:10px 12px;
+              border-radius:10px;
+              background:#EAF7E9;
+              color:#2D8B43;
+              font-size:12px;
+              text-align:left;
+            "
+          ></div>
+
+          <button
+            type="submit"
+            id="btnHubungkanAnak"
+            class="btn"
+            style="
+              width:100%;
+              margin-top:12px;
+            "
+          >
+            Hubungkan Anak
+          </button>
+
+        </form>
+
+        <div
+          style="
+            margin-top:18px;
+            color:#8B8075;
+            font-size:11px;
+            line-height:1.5;
+          "
+        >
+          Kode akses diberikan oleh sekolah
+          dan hanya dapat digunakan untuk
+          menghubungkan siswa yang belum
+          terhubung dengan akun orang tua.
+        </div>
+
+      </div>
+    `;
+  }
+
+  // ----------------------------------------------------------
+  // Hubungkan ke database
+  // ----------------------------------------------------------
+
+  async function hubungkanAnakDenganKode(
+    kode
+  ) {
+
+    if (
+      !supabase ||
+      !currentUser
+    ) {
+      throw new Error(
+        "Sesi login tidak ditemukan."
+      );
+    }
+
+    const cleaned =
+      String(
+        kode || ""
+      )
+        .trim()
+        .toUpperCase()
+        .replace(
+          /\s+/g,
+          ""
+        );
+
+    if (!cleaned) {
+      throw new Error(
+        "Kode akses wajib diisi."
+      );
+    }
+
+    const {
+      data,
+      error,
+    } =
+      await supabase.rpc(
+        "hubungkan_anak",
+        {
+          p_kode_akses:
+            cleaned,
+        }
+      );
+
+    if (error) {
+
+      console.error(
+        "RPC hubungkan anak:",
+        error
+      );
+
+      throw new Error(
+        error.message ||
+        "Gagal menghubungkan anak."
+      );
+    }
+
+    const anak =
+      Array.isArray(data)
+        ? data[0]
+        : data;
+
+    if (!anak) {
+
+      throw new Error(
+        "Data anak tidak ditemukan."
+      );
+    }
+
+    /*
+     * Bersihkan cache anak,
+     * lalu muat ulang dari database.
+     */
+
+    anakOrangTuaList = [];
+
+    anakTerpilihId = null;
+
+    return anak;
+  }
+
+  // ----------------------------------------------------------
+  // Tampilkan form pada ringkasan
+  // ----------------------------------------------------------
+
+  async function tampilkanFormHubungkanAnak() {
+
+    const body =
+      document.getElementById(
+        "ringkasanAnakBody"
+      );
+
+    if (!body) return;
+
+    body.innerHTML =
+      renderFormHubungkanAnak();
+
+    const form =
+      document.getElementById(
+        "formHubungkanAnak"
+      );
+
+    const input =
+      document.getElementById(
+        "kodeAksesAnak"
+      );
+
+    const errorEl =
+      document.getElementById(
+        "hubungkanAnakError"
+      );
+
+    const successEl =
+      document.getElementById(
+        "hubungkanAnakSuccess"
+      );
+
+    form?.addEventListener(
+      "submit",
+      async (
+        event
+      ) => {
+
+        event.preventDefault();
+
+        if (errorEl) {
+          errorEl.style.display =
+            "none";
+
+          errorEl.textContent =
+            "";
+        }
+
+        if (successEl) {
+          successEl.style.display =
+            "none";
+
+          successEl.textContent =
+            "";
+        }
+
+        const btn =
+          document.getElementById(
+            "btnHubungkanAnak"
+          );
+
+        const kode =
+          input?.value
+            ?.trim()
+            .toUpperCase();
+
+        if (!kode) {
+
+          if (errorEl) {
+
+            errorEl.textContent =
+              "Masukkan kode akses anak.";
+
+            errorEl.style.display =
+              "block";
+
+          }
+
+          return;
+        }
+
+        if (btn) {
+
+          btn.disabled =
+            true;
+
+          btn.textContent =
+            "Menghubungkan...";
+        }
+
+        try {
+
+          const anak =
+            await hubungkanAnakDenganKode(
+              kode
+            );
+
+          /*
+           * Langsung refresh daftar anak.
+           */
+
+          await pastikanAnakOrangTuaDimuat();
+
+          if (successEl) {
+
+            successEl.innerHTML =
+              `
+                ✅ Berhasil! Akun Anda
+                terhubung dengan
+                <strong>
+                  ${escOrtu(
+                    anak.nama
+                  )}
+                </strong>.
+              `;
+
+            successEl.style.display =
+              "block";
+          }
+
+          setTimeout(
+            () => {
+
+              if (
+                typeof renderView ===
+                "function"
+              ) {
+                renderView();
+              } else if (
+                window.__app &&
+                typeof window.__app.goTo ===
+                  "function"
+              ) {
+                window.__app.goTo(
+                  currentNav
+                );
+              }
+
+            },
+            500
+          );
+
+        } catch (error) {
+
+          console.error(
+            "Hubungkan anak:",
+            error
+          );
+
+          if (errorEl) {
+
+            errorEl.textContent =
+              error.message ||
+              "Gagal menghubungkan anak.";
+
+            errorEl.style.display =
+              "block";
+          }
+
+          if (btn) {
+
+            btn.disabled =
+              false;
+
+            btn.textContent =
+              "Hubungkan Anak";
+          }
+        }
+      }
+    );
+  }
+
+  // ----------------------------------------------------------
+  // Bungkus loadRingkasanAnak
+  // ----------------------------------------------------------
+
+  if (
+    typeof window.loadRingkasanAnak ===
+      "function" &&
+    !window
+      .loadRingkasanAnak
+      .__gtrConnectWrapped
+  ) {
+
+    const original =
+      window.loadRingkasanAnak;
+
+    async function wrapped() {
+
+      await original();
+
+      if (
+        currentUserRole !==
+        "ortu"
+      ) {
+        return;
+      }
+
+      /*
+       * Cari elemen body.
+       */
+
+      const body =
+        document.getElementById(
+          "ringkasanAnakBody"
+        );
+
+      if (
+        body &&
+        anakOrangTuaList.length ===
+          0
+      ) {
+
+        await tampilkanFormHubungkanAnak();
+
+      }
+    }
+
+    wrapped.__gtrConnectWrapped =
+      true;
+
+    wrapped.__gtrOriginal =
+      original;
+
+    window.loadRingkasanAnak =
+      wrapped;
+  }
+
+  // ----------------------------------------------------------
+  // Global
+  // ----------------------------------------------------------
+
+  window.hubungkanAnakDenganKode =
+    hubungkanAnakDenganKode;
+
+})();
