@@ -685,5 +685,225 @@
 
 }
 </style>
+  <style>
+/* =========================================================
+   FIX FINAL MOBILE
+   HASIL PENILAIAN GURU
+   TABEL -> KARTU LEBAR PENUH
+   ========================================================= */
+
+@media (max-width: 760px) {
+
+  /* =======================================================
+     Sembunyikan header tabel pada HP
+     ======================================================= */
+
+  #daftarPerkembanganGuru {
+    display: block !important;
+    width: 100% !important;
+    min-width: 100% !important;
+  }
+
+  /*
+    Paksa tabel pembungkus agar tidak mempertahankan
+    lebar kolom desktop.
+  */
+
+  #daftarPerkembanganGuru {
+    table-layout: auto !important;
+  }
+
+
+  /* =======================================================
+     SETIAP HASIL = SATU KARTU FULL WIDTH
+     ======================================================= */
+
+  #daftarPerkembanganGuru tr {
+
+    display: grid !important;
+
+    grid-template-columns: 1fr 1fr !important;
+
+    width: 100% !important;
+    min-width: 100% !important;
+
+    box-sizing: border-box !important;
+
+    gap: 8px 14px !important;
+
+    margin: 0 0 12px 0 !important;
+
+    padding: 14px !important;
+
+    border: 1px solid rgba(0,0,0,.09) !important;
+
+    border-radius: 16px !important;
+
+    background: #ffffff !important;
+
+    box-shadow: 0 4px 16px rgba(0,0,0,.05) !important;
+
+  }
+
+
+  /* =======================================================
+     CELL
+     ======================================================= */
+
+  #daftarPerkembanganGuru td {
+
+    display: block !important;
+
+    width: auto !important;
+    min-width: 0 !important;
+
+    padding: 0 !important;
+
+    border: none !important;
+
+    white-space: normal !important;
+
+    word-break: normal !important;
+
+    overflow-wrap: anywhere !important;
+
+    font-size: 13px !important;
+
+    line-height: 1.45 !important;
+
+    box-sizing: border-box !important;
+
+  }
+
+
+  /* =======================================================
+     LABEL
+     ======================================================= */
+
+  #daftarPerkembanganGuru td::before {
+
+    display: block !important;
+
+    margin-bottom: 3px !important;
+
+    font-size: 9px !important;
+
+    font-weight: 800 !important;
+
+    color: #8a8178 !important;
+
+    text-transform: uppercase !important;
+
+    letter-spacing: .05em !important;
+
+  }
+
+
+  #daftarPerkembanganGuru td:nth-child(1)::before {
+    content: "Tanggal" !important;
+  }
+
+  #daftarPerkembanganGuru td:nth-child(2)::before {
+    content: "Siswa" !important;
+  }
+
+  #daftarPerkembanganGuru td:nth-child(3)::before {
+    content: "Ringkasan Nilai" !important;
+  }
+
+  #daftarPerkembanganGuru td:nth-child(4)::before {
+    content: "Catatan" !important;
+  }
+
+
+  /* =======================================================
+     TANGGAL + SISWA
+     ======================================================= */
+
+  #daftarPerkembanganGuru td:nth-child(1),
+  #daftarPerkembanganGuru td:nth-child(2) {
+
+    padding-bottom: 4px !important;
+
+  }
+
+
+  /* =======================================================
+     RINGKASAN NILAI FULL WIDTH
+     ======================================================= */
+
+  #daftarPerkembanganGuru td:nth-child(3) {
+
+    grid-column: 1 / -1 !important;
+
+    width: 100% !important;
+
+    padding-top: 9px !important;
+
+    border-top: 1px solid rgba(0,0,0,.07) !important;
+
+    font-size: 12px !important;
+
+    line-height: 1.55 !important;
+
+    color: #4b4742 !important;
+
+  }
+
+
+  /* =======================================================
+     CATATAN FULL WIDTH
+     ======================================================= */
+
+  #daftarPerkembanganGuru td:nth-child(4) {
+
+    grid-column: 1 / -1 !important;
+
+    width: 100% !important;
+
+    padding-top: 8px !important;
+
+    border-top: 1px solid rgba(0,0,0,.07) !important;
+
+    line-height: 1.55 !important;
+
+  }
+
+
+  /* =======================================================
+     PESAN KOSONG
+     ======================================================= */
+
+  #daftarPerkembanganGuru td[colspan] {
+
+    grid-column: 1 / -1 !important;
+
+    width: 100% !important;
+
+    text-align: center !important;
+
+    padding: 10px !important;
+
+  }
+
+  #daftarPerkembanganGuru td[colspan]::before {
+    display: none !important;
+  }
+
+
+  /* =======================================================
+     PERBAIKAN PARENT TABLE
+     ======================================================= */
+
+  .table-wrap {
+
+    width: 100% !important;
+
+    overflow-x: hidden !important;
+
+  }
+
+}
+</style>
 </body>
 </html>
