@@ -2139,3 +2139,426 @@ textarea:focus {
   }
 
 }
+/* ============================================================
+   GANTARIKU — IMPORT SISWA UI
+   ============================================================ */
+
+.gtr-import-backdrop {
+  position: fixed;
+  inset: 0;
+
+  z-index: 9999;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 20px;
+
+  background:
+    rgba(47,43,42,.52);
+
+  backdrop-filter:
+    blur(4px);
+}
+
+.gtr-import-modal {
+  width: min(1100px, 100%);
+  max-height: 90vh;
+
+  overflow: hidden;
+
+  background: #FFFEFB;
+
+  border:
+    1px solid #E8DED0;
+
+  border-radius: 20px;
+
+  box-shadow:
+    0 24px 70px rgba(50,40,30,.22);
+}
+
+.gtr-import-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  gap: 20px;
+
+  padding:
+    20px 22px;
+
+  border-bottom:
+    1px solid #ECE4D9;
+}
+
+.gtr-import-header h2 {
+  margin: 0 0 5px;
+
+  color: #393536;
+
+  font-size: 20px;
+}
+
+.gtr-import-header p {
+  margin: 0;
+
+  color: #776D63;
+
+  font-size: 13px;
+}
+
+.gtr-import-close {
+  width: 36px;
+  height: 36px;
+
+  border: 0;
+
+  border-radius: 10px;
+
+  background: #F4ECE1;
+
+  color: #665E58;
+
+  font-size: 24px;
+
+  cursor: pointer;
+}
+
+.gtr-import-close:hover {
+  background: #FFF0CF;
+}
+
+.gtr-import-content {
+  padding: 20px;
+
+  max-height:
+    calc(90vh - 95px);
+
+  overflow-y: auto;
+}
+
+.gtr-import-upload {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  gap: 6px;
+
+  padding: 28px 20px;
+
+  margin-bottom: 18px;
+
+  background:
+    linear-gradient(
+      180deg,
+      #FFF9EA,
+      #FFFDF8
+    );
+
+  border:
+    1px dashed #DECBAA;
+
+  border-radius: 16px;
+
+  text-align: center;
+}
+
+.gtr-import-icon {
+  width: 50px;
+  height: 50px;
+
+  display: grid;
+  place-items: center;
+
+  margin-bottom: 4px;
+
+  border-radius: 15px;
+
+  background: #FFF0C5;
+
+  font-size: 25px;
+}
+
+.gtr-import-upload strong {
+  color: #403A37;
+
+  font-size: 14px;
+}
+
+.gtr-import-upload span {
+  color: #7A7066;
+
+  font-size: 12px;
+}
+
+.gtr-import-upload input {
+  display: none;
+}
+
+.gtr-import-upload label {
+  margin-top: 10px;
+
+  cursor: pointer;
+}
+
+.gtr-import-upload small {
+  margin-top: 5px;
+
+  color: #82776C;
+
+  font-size: 11px;
+}
+
+/* SUMMARY */
+
+.gtr-import-summary {
+  display: grid;
+
+  grid-template-columns:
+    repeat(
+      3,
+      minmax(0, 1fr)
+    );
+
+  gap: 10px;
+
+  margin-bottom: 10px;
+}
+
+.gtr-import-stat {
+  padding: 12px;
+
+  background: #F6F0E8;
+
+  border-radius: 12px;
+
+  text-align: center;
+}
+
+.gtr-import-stat strong {
+  display: block;
+
+  color: #403A37;
+
+  font-size: 20px;
+}
+
+.gtr-import-stat span {
+  color: #7A7066;
+
+  font-size: 11px;
+}
+
+.gtr-import-stat.good {
+  background: #EDF8EA;
+}
+
+.gtr-import-stat.good strong {
+  color: #2D9143;
+}
+
+.gtr-import-stat.bad {
+  background: #FFF0EC;
+}
+
+.gtr-import-stat.bad strong {
+  color: #C44D45;
+}
+
+.gtr-import-file {
+  margin-bottom: 12px;
+
+  color: #766B60;
+
+  font-size: 12px;
+}
+
+/* STATUS */
+
+.gtr-import-loading,
+.gtr-import-error {
+  padding: 12px 14px;
+
+  border-radius: 10px;
+
+  background: #F6F0E8;
+
+  color: #6F665D;
+
+  font-size: 13px;
+}
+
+.gtr-import-error {
+  background: #FCEBE7;
+
+  color: #B84242;
+}
+
+/* PREVIEW */
+
+.gtr-import-preview-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 15px;
+
+  margin:
+    15px 0 9px;
+}
+
+.gtr-import-preview-title strong {
+  color: #403A37;
+}
+
+.gtr-import-preview-title span {
+  color: #877C71;
+
+  font-size: 11px;
+}
+
+.gtr-import-table-wrap {
+  overflow: auto;
+
+  max-height: 420px;
+
+  border:
+    1px solid #E8DED2;
+
+  border-radius: 12px;
+}
+
+.gtr-import-table {
+  width: 100%;
+
+  border-collapse: collapse;
+
+  font-size: 12px;
+}
+
+.gtr-import-table th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+
+  padding: 10px;
+
+  background: #F5EEDF;
+
+  color: #62594F;
+
+  text-align: left;
+
+  white-space: nowrap;
+}
+
+.gtr-import-table td {
+  padding: 9px 10px;
+
+  border-top:
+    1px solid #EEE7DE;
+
+  color: #514B46;
+
+  vertical-align: top;
+}
+
+.gtr-import-table tr.is-invalid {
+  background: #FFF7F4;
+}
+
+.gtr-import-ok {
+  display: inline-block;
+
+  padding:
+    4px 7px;
+
+  border-radius: 999px;
+
+  background: #E8F6EA;
+
+  color: #2C9144;
+
+  font-size: 10px;
+
+  font-weight: 700;
+}
+
+.gtr-import-invalid {
+  display: inline-block;
+
+  padding:
+    4px 7px;
+
+  border-radius: 999px;
+
+  background: #FBE8E5;
+
+  color: #C44843;
+
+  font-size: 10px;
+
+  font-weight: 700;
+}
+
+.gtr-import-muted {
+  color: #AAA098;
+}
+
+/* ACTIONS */
+
+.gtr-import-actions {
+  display: flex;
+  justify-content: flex-end;
+
+  gap: 10px;
+
+  margin-top: 15px;
+}
+
+/* MOBILE */
+
+@media (max-width: 700px) {
+
+  .gtr-import-backdrop {
+    padding: 10px;
+  }
+
+  .gtr-import-modal {
+    max-height: 94vh;
+
+    border-radius: 17px;
+  }
+
+  .gtr-import-content {
+    max-height:
+      calc(94vh - 90px);
+
+    padding: 14px;
+  }
+
+  .gtr-import-header {
+    padding: 16px;
+  }
+
+  .gtr-import-summary {
+    grid-template-columns:
+      1fr;
+  }
+
+  .gtr-import-table {
+    min-width: 760px;
+  }
+
+  .gtr-import-actions {
+    flex-direction: column;
+  }
+
+  .gtr-import-actions .btn {
+    width: 100%;
+  }
+
+}
