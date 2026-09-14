@@ -584,6 +584,106 @@
 
 })();
 </script>
-  
+  <style>
+@media (max-width: 760px) {
+
+  /* =========================================================
+     GURU — HASIL PENILAIAN LEBIH RINGKAS
+     ========================================================= */
+
+  #daftarPerkembanganGuru tr {
+    display: grid !important;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 4px 14px;
+
+    margin-bottom: 10px;
+
+    padding: 10px 12px;
+  }
+
+  #daftarPerkembanganGuru td {
+    display: block !important;
+
+    padding: 3px 0 !important;
+
+    font-size: 12px;
+
+    min-width: 0;
+  }
+
+  /* Label kecil di atas isi */
+  #daftarPerkembanganGuru td::before {
+    display: block;
+
+    margin-bottom: 2px;
+
+    font-size: 9px;
+
+    line-height: 1.2;
+
+    color: var(--ink-soft, #6b7280);
+  }
+
+  #daftarPerkembanganGuru td:nth-child(1)::before {
+    content: "Tanggal";
+  }
+
+  #daftarPerkembanganGuru td:nth-child(2)::before {
+    content: "Siswa";
+  }
+
+  #daftarPerkembanganGuru td:nth-child(3)::before {
+    content: "Nilai";
+  }
+
+  #daftarPerkembanganGuru td:nth-child(4)::before {
+    content: "Catatan";
+  }
+
+  /* Tanggal + siswa */
+  #daftarPerkembanganGuru td:nth-child(1),
+  #daftarPerkembanganGuru td:nth-child(2) {
+    align-self: start;
+  }
+
+  /* Nilai dibuat sedikit lebih menonjol */
+  #daftarPerkembanganGuru td:nth-child(3) {
+    font-weight: 700;
+  }
+
+  /* Catatan memenuhi lebar kartu */
+  #daftarPerkembanganGuru td:nth-child(4) {
+    grid-column: 1 / -1;
+
+    padding-top: 6px !important;
+
+    margin-top: 3px;
+
+    border-top: 1px solid rgba(0,0,0,.06) !important;
+
+    line-height: 1.4;
+
+    color: var(--ink, #374151);
+  }
+
+  /* Baris kosong / pesan loading */
+  #daftarPerkembanganGuru td[colspan] {
+    grid-column: 1 / -1;
+
+    display: block !important;
+
+    padding: 8px !important;
+
+    text-align: center !important;
+  }
+
+  #daftarPerkembanganGuru td[colspan]::before {
+    display: none;
+  }
+
+}
+</style>
 </body>
 </html>
