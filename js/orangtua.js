@@ -1,5 +1,6 @@
 // ============================================================
 // GANTARIKU — HALAMAN ORANG TUA
+// MOBILE-FIRST RESPONSIVE VERSION
 // ============================================================
 
 // Satu akun orang tua bisa memiliki beberapa anak.
@@ -7,62 +8,149 @@ let anakOrangTuaList = [];
 let anakTerpilihId = null;
 
 
+// ============================================================
+// HELPER RESPONSIVE
+// ============================================================
+
+function isMobileOrtu() {
+  return window.innerWidth <= 768;
+}
+
 
 // ============================================================
 // BUKTI PEMBAYARAN — STORAGE PRIVATE
 // ============================================================
+
 function getBuktiPathOrtu(value) {
+
   if (!value) return null;
+
   const text = String(value);
-  const marker = "/storage/v1/object/public/bukti-pembayaran/";
-  const markerSign = "/storage/v1/object/sign/bukti-pembayaran/";
-  if (text.includes(marker)) return decodeURIComponent(text.split(marker)[1].split("?")[0]);
-  if (text.includes(markerSign)) return decodeURIComponent(text.split(markerSign)[1].split("?")[0]);
+
+  const marker =
+    "/storage/v1/object/public/bukti-pembayaran/";
+
+  const markerSign =
+    "/storage/v1/object/sign/bukti-pembayaran/";
+
+  if (text.includes(marker)) {
+    return decodeURIComponent(
+      text
+        .split(marker)[1]
+        .split("?")[0]
+    );
+  }
+
+  if (text.includes(markerSign)) {
+    return decodeURIComponent(
+      text
+        .split(markerSign)[1]
+        .split("?")[0]
+    );
+  }
+
   return text;
 }
 
-async function getBuktiSignedUrlOrtu(value, expiresIn = 600) {
-  if (!supabase || !value) return null;
-  const path = getBuktiPathOrtu(value);
-  const { data, error } = await supabase
-    .storage
-    .from("bukti-pembayaran")
-    .createSignedUrl(path, expiresIn);
-  if (error) {
-    console.error("Gagal membuka bukti pembayaran:", error);
+
+async function getBuktiSignedUrlOrtu(
+  value,
+  expiresIn = 600
+) {
+
+  if (!supabase || !value) {
     return null;
   }
-  return data?.signedUrl || null;
+
+  const path =
+    getBuktiPathOrtu(value);
+
+  const {
+    data,
+    error
+  } =
+    await supabase
+      .storage
+      .from("bukti-pembayaran")
+      .createSignedUrl(
+        path,
+        expiresIn
+      );
+
+  if (error) {
+
+    console.error(
+      "Gagal membuka bukti pembayaran:",
+      error
+    );
+
+    return null;
+  }
+
+  return (
+    data?.signedUrl ||
+    null
+  );
 }
+
 
 // ============================================================
 // LOAD ANAK ORANG TUA
 // ============================================================
 
 async function pastikanAnakOrangTuaDimuat() {
-  if (!supabase || !currentUser) return;
-  if (anakOrangTuaList.length > 0) return;
 
-  const { data, error } = await supabase
-    .from("siswa")
-    .select("id, nama, nis, kelas, tahun_ajaran")
-    .eq("orang_tua_id", currentUser.id)
-    .order("nama", { ascending: true });
+  if (
+    !supabase ||
+    !currentUser
+  ) {
+    return;
+  }
+
+  if (
+    anakOrangTuaList.length > 0
+  ) {
+    return;
+  }
+
+  const {
+    data,
+    error
+  } =
+    await supabase
+      .from("siswa")
+      .select(
+        "id, nama, nis, kelas, tahun_ajaran"
+      )
+      .eq(
+        "orang_tua_id",
+        currentUser.id
+      )
+      .order(
+        "nama",
+        {
+          ascending: true
+        }
+      );
 
   if (error) {
+
     console.error(
       "Error load daftar anak:",
       error
     );
+
     return;
   }
 
-  anakOrangTuaList = data || [];
+  anakOrangTuaList =
+    data || [];
 
   if (
     !anakTerpilihId &&
     anakOrangTuaList.length > 0
   ) {
+
     anakTerpilihId =
       anakOrangTuaList[0].id;
   }
@@ -70,6 +158,7 @@ async function pastikanAnakOrangTuaDimuat() {
 
 
 function anakYangDipilih() {
+
   return (
     anakOrangTuaList.find(
       (a) =>
@@ -87,7 +176,10 @@ function anakYangDipilih() {
 // ============================================================
 
 function renderPilihAnakHtml() {
-  if (anakOrangTuaList.length <= 1) {
+
+  if (
+    anakOrangTuaList.length <= 1
+  ) {
     return "";
   }
 
@@ -112,22 +204,44 @@ function renderPilihAnakHtml() {
 
   return `
     <div
-      class="controls"
-      style="margin-bottom:16px;"
+      class="ortu-child-selector"
+      style="
+        margin-bottom:16px;
+      "
     >
+
+      <div
+        style="
+          font-size:12px;
+          font-weight:700;
+          color:var(--ink-soft);
+          margin-bottom:7px;
+        "
+      >
+        Pilih Anak
+      </div>
+
       <select
         id="pilihAnak"
         onchange="window.__app.gantiAnak(this.value)"
+        style="
+          width:100%;
+          max-width:420px;
+        "
       >
         ${opsi}
       </select>
+
     </div>
   `;
 }
 
 
 function gantiAnak(id) {
-  anakTerpilihId = id;
+
+  anakTerpilihId =
+    id;
+
   renderView();
 }
 
@@ -137,19 +251,25 @@ function gantiAnak(id) {
 // ============================================================
 
 function renderRingkasanAnak() {
+
   return `
+
     <div id="pilihAnakWrap"></div>
 
     <div id="ringkasanAnakBody">
+
       <div class="empty">
         Memuat data anak...
       </div>
+
     </div>
+
   `;
 }
 
 
 async function loadRingkasanAnak() {
+
   const wrap =
     document.getElementById(
       "pilihAnakWrap"
@@ -160,11 +280,17 @@ async function loadRingkasanAnak() {
       "ringkasanAnakBody"
     );
 
-  if (!body || !supabase) return;
+  if (
+    !body ||
+    !supabase
+  ) {
+    return;
+  }
 
   await pastikanAnakOrangTuaDimuat();
 
   if (wrap) {
+
     wrap.innerHTML =
       renderPilihAnakHtml();
   }
@@ -172,20 +298,32 @@ async function loadRingkasanAnak() {
   if (
     anakOrangTuaList.length === 0
   ) {
+
     body.innerHTML = `
       <div class="empty">
-        Belum ada data siswa yang terhubung
-        dengan akun ini. Hubungi admin sekolah
-        untuk menautkannya.
+
+        Belum ada data siswa yang
+        terhubung dengan akun ini.
+
+        <br><br>
+
+        Hubungi admin sekolah atau
+        hubungkan anak menggunakan
+        kode akses yang diberikan.
+
       </div>
     `;
+
     return;
   }
 
-  const anak = anakYangDipilih();
+  const anak =
+    anakYangDipilih();
 
   try {
-    const today = getNowWIB();
+
+    const today =
+      getNowWIB();
 
     const bulanIni =
       today.getMonth() + 1;
@@ -194,7 +332,9 @@ async function loadRingkasanAnak() {
       today.getFullYear();
 
     const bulanStr =
-      String(bulanIni).padStart(
+      String(
+        bulanIni
+      ).padStart(
         2,
         "0"
       );
@@ -209,199 +349,387 @@ async function loadRingkasanAnak() {
     const {
       data: absensiBulanIni,
       error: absensiError
-    } = await supabase
-      .from("absensi")
-      .select("status")
-      .eq("siswa_id", anak.id)
-      .gte(
-        "tanggal",
-        `${tahunIni}-${bulanStr}-01`
-      )
-      .lte(
-        "tanggal",
-        `${tahunIni}-${bulanStr}-${String(
-          hariTerakhir
-        ).padStart(2, "0")}`
-      );
+    } =
+      await supabase
+        .from("absensi")
+        .select("status")
+        .eq(
+          "siswa_id",
+          anak.id
+        )
+        .gte(
+          "tanggal",
+          `${tahunIni}-${bulanStr}-01`
+        )
+        .lte(
+          "tanggal",
+          `${tahunIni}-${bulanStr}-${String(
+            hariTerakhir
+          ).padStart(2, "0")}`
+        );
 
     if (absensiError) {
       throw absensiError;
     }
 
     const hitung = {
+
       H: 0,
       I: 0,
       S: 0,
       A: 0
+
     };
 
-    (absensiBulanIni || [])
-      .forEach((a) => {
-        if (
-          hitung[a.status] !==
-          undefined
-        ) {
-          hitung[a.status]++;
+    (
+      absensiBulanIni ||
+      []
+    )
+      .forEach(
+        (a) => {
+
+          if (
+            hitung[
+              a.status
+            ] !== undefined
+          ) {
+
+            hitung[
+              a.status
+            ]++;
+
+          }
+
         }
-      });
+      );
 
     const {
       data: sppBulanIni,
       error: sppError
-    } = await supabase
-      .from("spp")
-      .select(
-        "status, nominal, bukti_bayar_url"
-      )
-      .eq(
-        "siswa_id",
-        anak.id
-      )
-      .eq(
-        "bulan",
-        bulanIni
-      )
-      .eq(
-        "tahun",
-        tahunIni
-      )
-      .maybeSingle();
+    } =
+      await supabase
+        .from("spp")
+        .select(
+          "status, nominal, bukti_bayar_url"
+        )
+        .eq(
+          "siswa_id",
+          anak.id
+        )
+        .eq(
+          "bulan",
+          bulanIni
+        )
+        .eq(
+          "tahun",
+          tahunIni
+        )
+        .maybeSingle();
 
     if (sppError) {
       throw sppError;
     }
 
+    const sppStatus =
+      sppBulanIni
+        ? sppBulanIni.status
+        : "Belum ada tagihan";
+
     body.innerHTML = `
+
       <div class="section">
 
         <div class="section-head">
-          <h2>${anak.nama}</h2>
+
+          <div>
+
+            <h2
+              style="
+                margin:0;
+              "
+            >
+              ${anak.nama}
+            </h2>
+
+            <div
+              style="
+                margin-top:5px;
+                font-size:12px;
+                color:var(--ink-soft);
+              "
+            >
+              Ringkasan
+              ${namaBulan(
+                bulanIni
+              )}
+              ${tahunIni}
+            </div>
+
+          </div>
+
         </div>
+
 
         <div class="section-body">
 
-          <p
+          <div
+            class="ortu-child-profile"
             style="
-              margin:0 0 18px;
-              color:var(--ink-soft);
+              margin-bottom:20px;
+              padding:14px;
+              border:1px solid var(--line);
+              border-radius:16px;
+              background:
+                rgba(255,255,255,.45);
             "
           >
-            NIS: ${anak.nis || "-"}
-            &middot;
-            Kelas: ${anak.kelas || "-"}
-            &middot;
-            Tahun Ajaran:
-            ${anak.tahun_ajaran || "-"}
-          </p>
+
+            <div
+              style="
+                display:grid;
+                grid-template-columns:
+                  repeat(
+                    3,
+                    minmax(0,1fr)
+                  );
+                gap:12px;
+              "
+            >
+
+              <div>
+
+                <div
+                  style="
+                    font-size:10px;
+                    color:var(--ink-soft);
+                    text-transform:uppercase;
+                    font-weight:700;
+                  "
+                >
+                  NIS
+                </div>
+
+                <div
+                  style="
+                    margin-top:3px;
+                    font-weight:700;
+                  "
+                >
+                  ${anak.nis || "-"}
+                </div>
+
+              </div>
+
+
+              <div>
+
+                <div
+                  style="
+                    font-size:10px;
+                    color:var(--ink-soft);
+                    text-transform:uppercase;
+                    font-weight:700;
+                  "
+                >
+                  Kelas
+                </div>
+
+                <div
+                  style="
+                    margin-top:3px;
+                    font-weight:700;
+                  "
+                >
+                  ${anak.kelas || "-"}
+                </div>
+
+              </div>
+
+
+              <div>
+
+                <div
+                  style="
+                    font-size:10px;
+                    color:var(--ink-soft);
+                    text-transform:uppercase;
+                    font-weight:700;
+                  "
+                >
+                  Tahun Ajaran
+                </div>
+
+                <div
+                  style="
+                    margin-top:3px;
+                    font-weight:700;
+                  "
+                >
+                  ${anak.tahun_ajaran || "-"}
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
 
           <div class="stat-row">
 
             <div class="stat c-teal">
+
               <div class="num">
                 ${hitung.H}
               </div>
+
               <div class="lbl">
-                Hadir — ${namaBulan(bulanIni)}
+                Hadir
               </div>
+
             </div>
 
+
             <div class="stat c-warn">
+
               <div class="num">
                 ${hitung.I}
               </div>
+
               <div class="lbl">
-                Izin — ${namaBulan(bulanIni)}
+                Izin
               </div>
+
             </div>
 
+
             <div class="stat c-sick">
+
               <div class="num">
                 ${hitung.S}
               </div>
+
               <div class="lbl">
-                Sakit — ${namaBulan(bulanIni)}
+                Sakit
               </div>
+
             </div>
 
+
             <div class="stat c-bad">
+
               <div class="num">
                 ${hitung.A}
               </div>
+
               <div class="lbl">
-                Alpa — ${namaBulan(bulanIni)}
+                Alpa
               </div>
+
             </div>
 
           </div>
 
+
           <div
+            class="ortu-spp-summary"
             style="
               margin-top:20px;
-              display:flex;
-              align-items:center;
-              gap:10px;
-              flex-wrap:wrap;
+              padding:16px;
+              border:1px solid var(--line);
+              border-radius:16px;
             "
           >
 
-            <span
-              class="badge ${
-                sppBulanIni
-                  ? sppBulanIni.status ===
-                    "Lunas"
-                    ? "badge-good"
-                    : sppBulanIni.status ===
-                      "Menunggu Verifikasi"
-                    ? "badge-warn"
-                    : "badge-bad"
-                  : "badge-muted"
-              }"
+            <div
+              style="
+                display:flex;
+                justify-content:space-between;
+                gap:12px;
+                align-items:center;
+                flex-wrap:wrap;
+              "
             >
-              SPP
-              ${namaBulan(bulanIni)}
-              ${tahunIni}:
-              ${
-                sppBulanIni
-                  ? sppBulanIni.status
-                  : "Belum ada tagihan"
-              }
-            </span>
 
-            ${
-              sppBulanIni
-                ? `
-                  <span
-                    style="
-                      color:var(--ink-soft);
-                      font-size:13px;
-                    "
-                  >
-                    ${formatRupiah(
-                      sppBulanIni.nominal
-                    )}
-                  </span>
-                `
-                : ""
-            }
+              <div>
+
+                <div
+                  style="
+                    font-size:11px;
+                    color:var(--ink-soft);
+                    margin-bottom:5px;
+                  "
+                >
+                  Status SPP
+                  ${namaBulan(
+                    bulanIni
+                  )}
+                  ${tahunIni}
+                </div>
+
+                <div
+                  style="
+                    font-size:15px;
+                    font-weight:800;
+                  "
+                >
+                  ${sppBulanIni
+                    ? formatRupiah(
+                        sppBulanIni.nominal
+                      )
+                    : "-"
+                  }
+                </div>
+
+              </div>
+
+
+              <span
+                class="badge ${
+                  sppBulanIni
+                    ? sppBulanIni.status ===
+                      "Lunas"
+                      ? "badge-good"
+                      : sppBulanIni.status ===
+                        "Menunggu Verifikasi"
+                      ? "badge-warn"
+                      : "badge-bad"
+                    : "badge-muted"
+                }"
+              >
+
+                ${sppStatus}
+
+              </span>
+
+            </div>
 
           </div>
 
         </div>
+
       </div>
+
     `;
+
   } catch (error) {
+
     console.error(
       "Error load ringkasan anak:",
       error
     );
 
     body.innerHTML = `
+
       <div
         class="empty"
-        style="color:#E11D48;"
+        style="
+          color:#E11D48;
+        "
       >
         Gagal memuat ringkasan anak.
       </div>
+
     `;
   }
 }
@@ -412,7 +740,9 @@ async function loadRingkasanAnak() {
 // ============================================================
 
 function renderAbsenAnak() {
-  const today = getNowWIB();
+
+  const today =
+    getNowWIB();
 
   const todayStr =
     getTodayWIBString();
@@ -420,32 +750,45 @@ function renderAbsenAnak() {
   const awalBulanStr =
     `${today.getFullYear()}-${String(
       today.getMonth() + 1
-    ).padStart(2, "0")}-01`;
+    ).padStart(
+      2,
+      "0"
+    )}-01`;
 
   return `
+
     <div id="pilihAnakWrap"></div>
+
 
     <div class="section">
 
-      <div class="section-head ortu-kehadiran-head">
+      <div class="section-head">
 
         <div>
+
           <h2>Kehadiran Anak</h2>
 
           <div
             style="
-              margin-top:4px;
               font-size:12px;
               color:var(--ink-soft);
+              margin-top:4px;
             "
           >
-            Ringkasan dan riwayat kehadiran anak.
+            Riwayat kehadiran anak
           </div>
+
         </div>
 
-        <div class="ortu-absen-controls">
 
-          <div class="ortu-date-field">
+        <div
+          class="controls ortu-mobile-controls"
+        >
+
+          <div
+            class="ortu-date-field"
+          >
+
             <label>Dari</label>
 
             <input
@@ -453,9 +796,14 @@ function renderAbsenAnak() {
               id="absenAnakDari"
               value="${awalBulanStr}"
             >
+
           </div>
 
-          <div class="ortu-date-field">
+
+          <div
+            class="ortu-date-field"
+          >
+
             <label>Sampai</label>
 
             <input
@@ -463,7 +811,9 @@ function renderAbsenAnak() {
               id="absenAnakSampai"
               value="${todayStr}"
             >
+
           </div>
+
 
           <button
             class="btn secondary"
@@ -476,569 +826,81 @@ function renderAbsenAnak() {
 
       </div>
 
+
       <div class="section-body">
 
-        <div
-          id="ringkasanAbsenAnak"
-          class="ortu-absen-summary"
-        >
-          <div class="empty">
-            Memuat ringkasan kehadiran...
-          </div>
-        </div>
+
+        <!-- DESKTOP TABLE -->
 
         <div
-          style="
-            margin-top:24px;
-          "
+          class="ortu-desktop-table"
         >
 
-          <div
-            style="
-              display:flex;
-              align-items:center;
-              justify-content:space-between;
-              gap:12px;
-              flex-wrap:wrap;
-              margin-bottom:12px;
-            "
-          >
+          <table>
 
-            <div>
+            <thead>
 
-              <h3
-                style="
-                  margin:0;
-                  font-size:16px;
-                "
-              >
-                Riwayat Kehadiran
-              </h3>
+              <tr>
 
-              <div
-                style="
-                  margin-top:3px;
-                  font-size:12px;
-                  color:var(--ink-soft);
-                "
-              >
-                Riwayat absensi sesuai periode yang dipilih.
-              </div>
+                <th>Tanggal</th>
 
-            </div>
+                <th>Status</th>
 
-            <div
-              id="absenAnakJumlah"
-              style="
-                font-size:12px;
-                color:var(--ink-soft);
-              "
+                <th>Keterangan</th>
+
+              </tr>
+
+            </thead>
+
+
+            <tbody
+              id="daftarAbsenAnak"
             >
-            </div>
 
-          </div>
+              <tr>
 
-          <div
-            id="daftarAbsenAnak"
-            class="ortu-absen-list"
-          >
-            <div class="empty">
-              Memuat data...
-            </div>
-          </div>
-
-        </div>
-
-      </div>
-
-    </div>
-  `;
-}
-
-
-// ============================================================
-// LOAD KEHADIRAN ANAK
-// ============================================================
-
-async function loadAbsenAnak() {
-
-  const wrap =
-    document.getElementById(
-      "pilihAnakWrap"
-    );
-
-  const list =
-    document.getElementById(
-      "daftarAbsenAnak"
-    );
-
-  const summary =
-    document.getElementById(
-      "ringkasanAbsenAnak"
-    );
-
-  const jumlah =
-    document.getElementById(
-      "absenAnakJumlah"
-    );
-
-  if (
-    !list ||
-    !summary ||
-    !supabase
-  ) {
-    return;
-  }
-
-  await pastikanAnakOrangTuaDimuat();
-
-  if (wrap) {
-    wrap.innerHTML =
-      renderPilihAnakHtml();
-  }
-
-  if (
-    anakOrangTuaList.length === 0
-  ) {
-
-    summary.innerHTML = `
-      <div class="empty">
-        Belum ada data siswa yang
-        terhubung dengan akun ini.
-      </div>
-    `;
-
-    list.innerHTML = "";
-
-    return;
-  }
-
-  const anak =
-    anakYangDipilih();
-
-  const dari =
-    document.getElementById(
-      "absenAnakDari"
-    )?.value;
-
-  const sampai =
-    document.getElementById(
-      "absenAnakSampai"
-    )?.value;
-
-  if (!dari || !sampai) {
-
-    summary.innerHTML = `
-      <div class="empty">
-        Pilih rentang tanggal terlebih dahulu.
-      </div>
-    `;
-
-    list.innerHTML = "";
-
-    return;
-  }
-
-  if (dari > sampai) {
-
-    summary.innerHTML = `
-      <div
-        class="empty"
-        style="color:#E11D48;"
-      >
-        Tanggal awal tidak boleh
-        lebih besar dari tanggal akhir.
-      </div>
-    `;
-
-    list.innerHTML = "";
-
-    return;
-  }
-
-  summary.innerHTML = `
-    <div class="empty">
-      Memuat ringkasan kehadiran...
-    </div>
-  `;
-
-  list.innerHTML = `
-    <div class="empty">
-      Memuat riwayat kehadiran...
-    </div>
-  `;
-
-  if (jumlah) {
-    jumlah.textContent = "";
-  }
-
-  try {
-
-    const {
-      data,
-      error
-    } = await supabase
-      .from("absensi")
-      .select(
-        "tanggal, status, keterangan"
-      )
-      .eq(
-        "siswa_id",
-        anak.id
-      )
-      .gte(
-        "tanggal",
-        dari
-      )
-      .lte(
-        "tanggal",
-        sampai
-      )
-      .order(
-        "tanggal",
-        {
-          ascending: false
-        }
-      );
-
-    if (error) {
-      throw error;
-    }
-
-    const rows =
-      data || [];
-
-    const hitung = {
-      H: 0,
-      I: 0,
-      S: 0,
-      A: 0
-    };
-
-    rows.forEach(
-      (item) => {
-
-        const status =
-          String(
-            item.status || ""
-          ).toUpperCase();
-
-        if (
-          hitung[status] !==
-          undefined
-        ) {
-          hitung[status]++;
-        }
-
-      }
-    );
-
-    const total =
-      rows.length;
-
-    const hadir =
-      hitung.H;
-
-    const persentase =
-      total > 0
-        ? Math.round(
-            (hadir / total) *
-            100
-          )
-        : 0;
-
-    summary.innerHTML = `
-
-      <div class="ortu-absen-student">
-
-        <div>
-
-          <div
-            style="
-              font-weight:800;
-              font-size:16px;
-              color:var(--ink);
-            "
-          >
-            ${anak.nama}
-          </div>
-
-          <div
-            style="
-              margin-top:3px;
-              font-size:12px;
-              color:var(--ink-soft);
-            "
-          >
-            ${anak.kelas || "Tanpa kelas"}
-            ${anak.nis
-              ? ` · NIS ${anak.nis}`
-              : ""
-            }
-          </div>
-
-        </div>
-
-        <div
-          class="ortu-kehadiran-percent"
-        >
-
-          <div class="num">
-            ${persentase}%
-          </div>
-
-          <div class="lbl">
-            Kehadiran
-          </div>
-
-        </div>
-
-      </div>
-
-
-      <div
-        class="ortu-absen-stats"
-      >
-
-        <div
-          class="ortu-absen-stat hadir"
-        >
-
-          <div class="num">
-            ${hitung.H}
-          </div>
-
-          <div class="lbl">
-            Hadir
-          </div>
-
-        </div>
-
-
-        <div
-          class="ortu-absen-stat izin"
-        >
-
-          <div class="num">
-            ${hitung.I}
-          </div>
-
-          <div class="lbl">
-            Izin
-          </div>
-
-        </div>
-
-
-        <div
-          class="ortu-absen-stat sakit"
-        >
-
-          <div class="num">
-            ${hitung.S}
-          </div>
-
-          <div class="lbl">
-            Sakit
-          </div>
-
-        </div>
-
-
-        <div
-          class="ortu-absen-stat alfa"
-        >
-
-          <div class="num">
-            ${hitung.A}
-          </div>
-
-          <div class="lbl">
-            Alfa
-          </div>
-
-        </div>
-
-      </div>
-
-
-      <div
-        class="ortu-absen-progress"
-      >
-
-        <div
-          class="ortu-absen-progress-bar"
-        >
-
-          <div
-            class="ortu-absen-progress-fill"
-            style="
-              width:${persentase}%;
-            "
-          ></div>
-
-        </div>
-
-        <div
-          style="
-            margin-top:7px;
-            font-size:12px;
-            color:var(--ink-soft);
-          "
-        >
-          ${hadir}
-          dari
-          ${total}
-          catatan absensi adalah hadir.
-        </div>
-
-      </div>
-
-    `;
-
-    if (jumlah) {
-
-      jumlah.textContent =
-        total > 0
-          ? `${total} catatan`
-          : "Belum ada catatan";
-
-    }
-
-    if (
-      rows.length === 0
-    ) {
-
-      list.innerHTML = `
-        <div
-          class="empty"
-          style="
-            padding:28px 16px;
-          "
-        >
-          Belum ada data kehadiran
-          pada periode ini.
-        </div>
-      `;
-
-      return;
-    }
-
-    list.innerHTML =
-      rows
-        .map(
-          (item) => {
-
-            const status =
-              String(
-                item.status || ""
-              ).toUpperCase();
-
-            const label =
-              labelStatusAbsensi(
-                status
-              );
-
-            const badge =
-              statusBadgeAbsensi(
-                status
-              );
-
-            const tanggal =
-              item.tanggal
-                ? new Date(
-                    item.tanggal +
-                    "T00:00:00"
-                  ).toLocaleDateString(
-                    "id-ID",
-                    {
-                      weekday:
-                        "short",
-                      day:
-                        "numeric",
-                      month:
-                        "short",
-                      year:
-                        "numeric"
-                    }
-                  )
-                : "-";
-
-            return `
-
-              <div
-                class="ortu-absen-card"
-              >
-
-                <div
-                  class="ortu-absen-card-main"
+                <td
+                  colspan="3"
+                  style="
+                    text-align:center;
+                  "
                 >
+                  Memuat data...
+                </td>
 
-                  <div>
+              </tr>
 
-                    <div
-                      class="ortu-absen-date"
-                    >
-                      ${tanggal}
-                    </div>
+            </tbody>
 
-                    <div
-                      class="ortu-absen-note"
-                    >
-                      ${
-                        item.keterangan ||
-                        "Tidak ada keterangan tambahan."
-                      }
-                    </div>
+          </table>
 
-                  </div>
+        </div>
 
-                  <span
-                    class="badge ${badge}"
-                  >
-                    ${label}
-                  </span>
 
-                </div>
+        <!-- MOBILE CARD -->
 
-              </div>
+        <div
+          id="daftarAbsenAnakMobile"
+          class="ortu-mobile-list"
+        >
 
-            `;
+          <div class="empty">
+            Memuat data...
+          </div>
 
-          }
-        )
-        .join("");
+        </div>
 
-  } catch (error) {
 
-    console.error(
-      "Error load absen anak:",
-      error
-    );
-
-    summary.innerHTML = `
-      <div
-        class="empty"
-        style="color:#E11D48;"
-      >
-        Gagal memuat ringkasan
-        kehadiran anak.
       </div>
-    `;
 
-    list.innerHTML = `
-      <div
-        class="empty"
-        style="color:#E11D48;"
-      >
-        Gagal memuat data absensi.
-      </div>
-    `;
-  }
+    </div>
+
+  `;
 }
 
 
 async function loadAbsenAnak() {
+
   const wrap =
     document.getElementById(
       "pilihAnakWrap"
@@ -1049,11 +911,23 @@ async function loadAbsenAnak() {
       "daftarAbsenAnak"
     );
 
-  if (!tbody || !supabase) return;
+  const mobileList =
+    document.getElementById(
+      "daftarAbsenAnakMobile"
+    );
+
+  if (
+    !tbody ||
+    !mobileList ||
+    !supabase
+  ) {
+    return;
+  }
 
   await pastikanAnakOrangTuaDimuat();
 
   if (wrap) {
+
     wrap.innerHTML =
       renderPilihAnakHtml();
   }
@@ -1061,17 +935,32 @@ async function loadAbsenAnak() {
   if (
     anakOrangTuaList.length === 0
   ) {
+
+    const emptyHtml =
+      `
+        Belum ada data siswa yang
+        terhubung dengan akun ini.
+      `;
+
     tbody.innerHTML = `
       <tr>
         <td
           colspan="3"
-          style="text-align:center;"
+          style="
+            text-align:center;
+          "
         >
-          Belum ada data siswa yang
-          terhubung dengan akun ini.
+          ${emptyHtml}
         </td>
       </tr>
     `;
+
+    mobileList.innerHTML = `
+      <div class="empty">
+        ${emptyHtml}
+      </div>
+    `;
+
     return;
   }
 
@@ -1088,90 +977,158 @@ async function loadAbsenAnak() {
       "absenAnakSampai"
     )?.value;
 
-  if (!dari || !sampai) {
-    tbody.innerHTML = `
-      <tr>
-        <td
-          colspan="3"
-          style="text-align:center;"
-        >
-          Pilih rentang tanggal terlebih dahulu.
-        </td>
-      </tr>
-    `;
+  if (
+    !dari ||
+    !sampai
+  ) {
+
     return;
   }
 
-  tbody.innerHTML = `
-    <tr>
-      <td
-        colspan="3"
-        style="text-align:center;"
-      >
-        Memuat data...
-      </td>
-    </tr>
-  `;
-
   try {
+
     const {
       data,
       error
-    } = await supabase
-      .from("absensi")
-      .select(
-        "tanggal, status, keterangan"
-      )
-      .eq(
-        "siswa_id",
-        anak.id
-      )
-      .gte(
-        "tanggal",
-        dari
-      )
-      .lte(
-        "tanggal",
-        sampai
-      )
-      .order(
-        "tanggal",
-        {
-          ascending: false
-        }
-      );
+    } =
+      await supabase
+        .from("absensi")
+        .select(
+          "tanggal, status, keterangan"
+        )
+        .eq(
+          "siswa_id",
+          anak.id
+        )
+        .gte(
+          "tanggal",
+          dari
+        )
+        .lte(
+          "tanggal",
+          sampai
+        )
+        .order(
+          "tanggal",
+          {
+            ascending: false
+          }
+        );
 
-    if (error) throw error;
+    if (error) {
+      throw error;
+    }
 
     if (
       !data ||
       data.length === 0
     ) {
+
       tbody.innerHTML = `
         <tr>
+
           <td
             colspan="3"
-            style="text-align:center;"
+            style="
+              text-align:center;
+            "
           >
             Tidak ada data absensi
             pada rentang ini.
           </td>
+
         </tr>
       `;
+
+      mobileList.innerHTML = `
+        <div class="empty">
+          Tidak ada data absensi
+          pada rentang ini.
+        </div>
+      `;
+
       return;
     }
+
+
+    // --------------------------------------------------------
+    // DESKTOP TABLE
+    // --------------------------------------------------------
 
     tbody.innerHTML =
       data
         .map(
           (a) => `
+
             <tr>
 
               <td>
                 ${a.tanggal || "-"}
               </td>
 
+
               <td>
+
+                <span
+                  class="badge ${statusBadgeAbsensi(
+                    a.status
+                  )}"
+                >
+
+                  ${labelStatusAbsensi(
+                    a.status
+                  )}
+
+                </span>
+
+              </td>
+
+
+              <td>
+                ${a.keterangan || "-"}
+              </td>
+
+            </tr>
+
+          `
+        )
+        .join("");
+
+
+    // --------------------------------------------------------
+    // MOBILE CARD
+    // --------------------------------------------------------
+
+    mobileList.innerHTML =
+      data
+        .map(
+          (a) => `
+
+            <div
+              class="ortu-data-card"
+            >
+
+              <div
+                class="ortu-card-top"
+              >
+
+                <div>
+
+                  <div
+                    class="ortu-card-label"
+                  >
+                    Tanggal
+                  </div>
+
+                  <div
+                    class="ortu-card-title"
+                  >
+                    ${a.tanggal || "-"}
+                  </div>
+
+                </div>
+
+
                 <span
                   class="badge ${statusBadgeAbsensi(
                     a.status
@@ -1181,13 +1138,33 @@ async function loadAbsenAnak() {
                     a.status
                   )}
                 </span>
-              </td>
 
-              <td>
-                ${a.keterangan || "-"}
-              </td>
+              </div>
 
-            </tr>
+
+              <div
+                class="ortu-card-divider"
+              ></div>
+
+
+              <div
+                class="ortu-card-label"
+              >
+                Keterangan
+              </div>
+
+
+              <div
+                class="ortu-card-text"
+              >
+                ${
+                  a.keterangan ||
+                  "Tidak ada keterangan."
+                }
+              </div>
+
+            </div>
+
           `
         )
         .join("");
@@ -1201,6 +1178,7 @@ async function loadAbsenAnak() {
 
     tbody.innerHTML = `
       <tr>
+
         <td
           colspan="3"
           style="
@@ -1210,7 +1188,19 @@ async function loadAbsenAnak() {
         >
           Gagal memuat data absensi.
         </td>
+
       </tr>
+    `;
+
+    mobileList.innerHTML = `
+      <div
+        class="empty"
+        style="
+          color:#E11D48;
+        "
+      >
+        Gagal memuat data absensi.
+      </div>
     `;
   }
 }
@@ -1223,12 +1213,13 @@ async function loadAbsenAnak() {
 function renderSppAnak() {
 
   const tahunSekarang =
-    getNowWIB().getFullYear();
+    getNowWIB()
+      .getFullYear();
 
   const tahunOptions =
     `<option value="">
-       Semua tahun
-     </option>` +
+      Semua tahun
+    </option>` +
 
     [
       tahunSekarang,
@@ -1236,8 +1227,8 @@ function renderSppAnak() {
       tahunSekarang - 2
     ]
       .map(
-        (t) =>
-          `
+        (t) => `
+
           <option
             value="${t}"
             ${
@@ -1248,24 +1239,52 @@ function renderSppAnak() {
           >
             ${t}
           </option>
-          `
+
+        `
       )
       .join("");
 
   return `
+
     <div id="pilihAnakWrap"></div>
+
 
     <div class="section">
 
       <div class="section-head">
 
-        <h2>Status SPP</h2>
+        <div>
 
-        <div class="controls">
+          <h2>Status SPP</h2>
 
-          <select id="sppAnakTahun">
+          <div
+            style="
+              font-size:12px;
+              color:var(--ink-soft);
+              margin-top:4px;
+            "
+          >
+            Riwayat pembayaran SPP
+          </div>
+
+        </div>
+
+
+        <div
+          class="
+            controls
+            ortu-mobile-controls
+          "
+        >
+
+          <select
+            id="sppAnakTahun"
+          >
+
             ${tahunOptions}
+
           </select>
+
 
           <button
             class="btn secondary"
@@ -1278,41 +1297,85 @@ function renderSppAnak() {
 
       </div>
 
+
       <div class="section-body">
 
-        <table>
 
-          <thead>
+        <!-- DESKTOP -->
 
-            <tr>
-              <th>Bulan</th>
-              <th>Tahun</th>
-              <th class="num">Nominal</th>
-              <th>Status</th>
-              <th>Tanggal Bayar</th>
-              <th>Aksi</th>
-            </tr>
+        <div
+          class="ortu-desktop-table"
+        >
 
-          </thead>
+          <table>
 
-          <tbody id="daftarSppAnak">
+            <thead>
 
-            <tr>
-              <td
-                colspan="6"
-                style="text-align:center;"
-              >
-                Memuat data...
-              </td>
-            </tr>
+              <tr>
 
-          </tbody>
+                <th>Bulan</th>
 
-        </table>
+                <th>Tahun</th>
+
+                <th class="num">
+                  Nominal
+                </th>
+
+                <th>Status</th>
+
+                <th>
+                  Tanggal Bayar
+                </th>
+
+                <th>Aksi</th>
+
+              </tr>
+
+            </thead>
+
+
+            <tbody
+              id="daftarSppAnak"
+            >
+
+              <tr>
+
+                <td
+                  colspan="6"
+                  style="
+                    text-align:center;
+                  "
+                >
+                  Memuat data...
+                </td>
+
+              </tr>
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+
+        <!-- MOBILE -->
+
+        <div
+          id="daftarSppAnakMobile"
+          class="ortu-mobile-list"
+        >
+
+          <div class="empty">
+            Memuat data...
+          </div>
+
+        </div>
+
 
       </div>
 
     </div>
+
   `;
 }
 
@@ -1333,11 +1396,23 @@ async function loadSppAnak() {
       "daftarSppAnak"
     );
 
-  if (!tbody || !supabase) return;
+  const mobileList =
+    document.getElementById(
+      "daftarSppAnakMobile"
+    );
+
+  if (
+    !tbody ||
+    !mobileList ||
+    !supabase
+  ) {
+    return;
+  }
 
   await pastikanAnakOrangTuaDimuat();
 
   if (wrap) {
+
     wrap.innerHTML =
       renderPilihAnakHtml();
   }
@@ -1345,17 +1420,29 @@ async function loadSppAnak() {
   if (
     anakOrangTuaList.length === 0
   ) {
+
+    const message =
+      "Belum ada data siswa yang terhubung dengan akun ini.";
+
     tbody.innerHTML = `
       <tr>
         <td
           colspan="6"
-          style="text-align:center;"
+          style="
+            text-align:center;
+          "
         >
-          Belum ada data siswa yang
-          terhubung dengan akun ini.
+          ${message}
         </td>
       </tr>
     `;
+
+    mobileList.innerHTML = `
+      <div class="empty">
+        ${message}
+      </div>
+    `;
+
     return;
   }
 
@@ -1367,17 +1454,6 @@ async function loadSppAnak() {
       "sppAnakTahun"
     )?.value;
 
-  tbody.innerHTML = `
-    <tr>
-      <td
-        colspan="6"
-        style="text-align:center;"
-      >
-        Memuat data...
-      </td>
-    </tr>
-  `;
-
   try {
 
     let query =
@@ -1385,13 +1461,13 @@ async function loadSppAnak() {
         .from("spp")
         .select(
           `
-          id,
-          bulan,
-          tahun,
-          nominal,
-          status,
-          tanggal_bayar,
-          bukti_bayar_url
+            id,
+            bulan,
+            tahun,
+            nominal,
+            status,
+            tanggal_bayar,
+            bukti_bayar_url
           `
         )
         .eq(
@@ -1400,6 +1476,7 @@ async function loadSppAnak() {
         );
 
     if (tahun) {
+
       query =
         query.eq(
           "tahun",
@@ -1410,169 +1487,246 @@ async function loadSppAnak() {
     const {
       data,
       error
-    } = await query
-      .order(
-        "tahun",
-        {
-          ascending: false
-        }
-      )
-      .order(
-        "bulan",
-        {
-          ascending: false
-        }
-      );
+    } =
+      await query
+        .order(
+          "tahun",
+          {
+            ascending: false
+          }
+        )
+        .order(
+          "bulan",
+          {
+            ascending: false
+          }
+        );
 
-    if (error) throw error;
+    if (error) {
+      throw error;
+    }
 
     if (
       !data ||
       data.length === 0
     ) {
+
       tbody.innerHTML = `
         <tr>
+
           <td
             colspan="6"
-            style="text-align:center;"
+            style="
+              text-align:center;
+            "
           >
             Belum ada data SPP.
           </td>
+
         </tr>
       `;
+
+      mobileList.innerHTML = `
+        <div class="empty">
+          Belum ada data SPP.
+        </div>
+      `;
+
       return;
     }
 
-    const dataWithSigned = await Promise.all(
-      data.map(async (s) => ({
-        ...s,
-        buktiSignedUrl: s.bukti_bayar_url
-          ? await getBuktiSignedUrlOrtu(s.bukti_bayar_url)
-          : null,
-      }))
-    );
+
+    const dataWithSigned =
+      await Promise.all(
+
+        data.map(
+          async (s) => ({
+
+            ...s,
+
+            buktiSignedUrl:
+              s.bukti_bayar_url
+                ? await getBuktiSignedUrlOrtu(
+                    s.bukti_bayar_url
+                  )
+                : null
+
+          })
+        )
+
+      );
+
+
+    // --------------------------------------------------------
+    // RENDER DESKTOP
+    // --------------------------------------------------------
 
     tbody.innerHTML =
       dataWithSigned
         .map(
           (s) => {
 
-            let aksi = "-";
-
-            if (
-              s.status ===
-              "Belum Bayar"
-            ) {
-              aksi = `
-                <button
-                  class="btn small"
-                  onclick="window.__app.pilihBuktiSpp('${s.id}')"
-                >
-                  📎 Kirim Bukti
-                </button>
-
-                <input
-                  type="file"
-                  id="fileSpp_${s.id}"
-                  accept="image/jpeg,image/png,application/pdf"
-                  style="display:none;"
-                  onchange="window.__app.uploadBuktiSpp('${s.id}', this.files[0])"
-                >
-              `;
-            }
-
-            if (
-              s.status ===
-              "Menunggu Verifikasi"
-            ) {
-              aksi = `
-                <span
-                  style="
-                    font-size:12px;
-                    color:var(--ink-soft);
-                  "
-                >
-                  Bukti sudah dikirim,
-                  menunggu verifikasi admin.
-                </span>
-
-                ${
-                  s.bukti_bayar_url
-                    ? `
-                      <div style="margin-top:5px;">
-                        <a
-                          href="${s.buktiSignedUrl}"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          Lihat bukti
-                        </a>
-                      </div>
-                    `
-                    : ""
-                }
-              `;
-            }
-
-            if (
-              s.status ===
-              "Lunas"
-            ) {
-              aksi = `
-                <span
-                  style="
-                    font-size:12px;
-                    color:#15803D;
-                  "
-                >
-                  ✓ Pembayaran terverifikasi
-                </span>
-              `;
-            }
+            const aksi =
+              renderAksiSppOrtu(
+                s,
+                false
+              );
 
             return `
+
               <tr>
 
                 <td>
-                  ${namaBulan(s.bulan)}
+                  ${namaBulan(
+                    s.bulan
+                  )}
                 </td>
+
 
                 <td>
                   ${s.tahun}
                 </td>
 
+
                 <td class="num">
-                  ${formatRupiah(s.nominal)}
+                  ${formatRupiah(
+                    s.nominal
+                  )}
                 </td>
+
 
                 <td>
 
-                  <span
-                    class="badge ${
-                      s.status ===
-                      "Lunas"
-                        ? "badge-good"
-                        : s.status ===
-                          "Menunggu Verifikasi"
-                        ? "badge-warn"
-                        : "badge-bad"
-                    }"
-                  >
-                    ${s.status}
-                  </span>
+                  ${renderBadgeSppOrtu(
+                    s.status
+                  )}
 
                 </td>
+
 
                 <td>
-                  ${s.tanggal_bayar || "-"}
+                  ${
+                    s.tanggal_bayar ||
+                    "-"
+                  }
                 </td>
+
 
                 <td>
                   ${aksi}
                 </td>
 
               </tr>
+
             `;
+
+          }
+        )
+        .join("");
+
+
+    // --------------------------------------------------------
+    // RENDER MOBILE
+    // --------------------------------------------------------
+
+    mobileList.innerHTML =
+      dataWithSigned
+        .map(
+          (s) => {
+
+            const aksi =
+              renderAksiSppOrtu(
+                s,
+                true
+              );
+
+            return `
+
+              <div
+                class="ortu-spp-card"
+              >
+
+                <div
+                  class="ortu-card-top"
+                >
+
+                  <div>
+
+                    <div
+                      class="ortu-card-label"
+                    >
+                      Periode
+                    </div>
+
+                    <div
+                      class="ortu-card-title"
+                    >
+                      ${namaBulan(
+                        s.bulan
+                      )}
+                      ${s.tahun}
+                    </div>
+
+                  </div>
+
+
+                  ${renderBadgeSppOrtu(
+                    s.status
+                  )}
+
+                </div>
+
+
+                <div
+                  class="ortu-spp-nominal"
+                >
+
+                  ${formatRupiah(
+                    s.nominal
+                  )}
+
+                </div>
+
+
+                <div
+                  class="ortu-spp-detail"
+                >
+
+                  <div>
+
+                    <span>
+                      Tanggal bayar
+                    </span>
+
+                    <strong>
+                      ${
+                        s.tanggal_bayar ||
+                        "-"
+                      }
+                    </strong>
+
+                  </div>
+
+                </div>
+
+
+                <div
+                  class="ortu-card-divider"
+                ></div>
+
+
+                <div
+                  class="ortu-spp-action"
+                >
+
+                  ${aksi}
+
+                </div>
+
+              </div>
+
+            `;
+
           }
         )
         .join("");
@@ -1586,6 +1740,7 @@ async function loadSppAnak() {
 
     tbody.innerHTML = `
       <tr>
+
         <td
           colspan="6"
           style="
@@ -1595,9 +1750,170 @@ async function loadSppAnak() {
         >
           Gagal memuat data SPP.
         </td>
+
       </tr>
     `;
+
+    mobileList.innerHTML = `
+      <div
+        class="empty"
+        style="
+          color:#E11D48;
+        "
+      >
+        Gagal memuat data SPP.
+      </div>
+    `;
   }
+}
+
+
+// ============================================================
+// BADGE SPP
+// ============================================================
+
+function renderBadgeSppOrtu(
+  status
+) {
+
+  const badgeClass =
+    status === "Lunas"
+      ? "badge-good"
+      : status ===
+        "Menunggu Verifikasi"
+      ? "badge-warn"
+      : "badge-bad";
+
+  return `
+    <span
+      class="badge ${badgeClass}"
+    >
+      ${status}
+    </span>
+  `;
+}
+
+
+// ============================================================
+// AKSI SPP
+// ============================================================
+
+function renderAksiSppOrtu(
+  s,
+  mobile = false
+) {
+
+  if (
+    s.status ===
+    "Belum Bayar"
+  ) {
+
+    return `
+
+      <button
+        class="btn small"
+        style="
+          ${
+            mobile
+              ? "width:100%;"
+              : ""
+          }
+        "
+        onclick="window.__app.pilihBuktiSpp('${s.id}')"
+      >
+        📎 Kirim Bukti Pembayaran
+      </button>
+
+      <input
+        type="file"
+        id="fileSpp_${s.id}"
+        accept="
+          image/jpeg,
+          image/png,
+          application/pdf
+        "
+        style="display:none;"
+        onchange="
+          window.__app.uploadBuktiSpp(
+            '${s.id}',
+            this.files[0]
+          )
+        "
+      >
+
+    `;
+  }
+
+
+  if (
+    s.status ===
+    "Menunggu Verifikasi"
+  ) {
+
+    return `
+
+      <div
+        style="
+          font-size:12px;
+          color:var(--ink-soft);
+          line-height:1.5;
+        "
+      >
+        Bukti pembayaran sudah dikirim.
+        Admin sedang melakukan verifikasi.
+      </div>
+
+      ${
+        s.buktiSignedUrl
+          ? `
+
+            <a
+              href="${s.buktiSignedUrl}"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="btn secondary small"
+              style="
+                display:inline-flex;
+                margin-top:10px;
+                ${
+                  mobile
+                    ? "width:100%;justify-content:center;"
+                    : ""
+                }
+              "
+            >
+              Lihat Bukti
+            </a>
+
+          `
+          : ""
+      }
+
+    `;
+  }
+
+
+  if (
+    s.status ===
+    "Lunas"
+  ) {
+
+    return `
+
+      <div
+        style="
+          font-size:12px;
+          color:#15803D;
+          font-weight:700;
+        "
+      >
+        ✓ Pembayaran telah diverifikasi
+      </div>
+
+    `;
+  }
+
+  return "-";
 }
 
 
@@ -1605,14 +1921,18 @@ async function loadSppAnak() {
 // PILIH FILE BUKTI
 // ============================================================
 
-function pilihBuktiSpp(id) {
+function pilihBuktiSpp(
+  id
+) {
 
   const input =
     document.getElementById(
       `fileSpp_${id}`
     );
 
-  if (!input) return;
+  if (!input) {
+    return;
+  }
 
   input.click();
 }
@@ -1627,96 +1947,130 @@ async function uploadBuktiSpp(
   file
 ) {
 
-  if (!file) return;
+  if (!file) {
+    return;
+  }
 
   if (!supabase) {
+
     alert(
       "Supabase belum terhubung."
     );
+
     return;
   }
 
-  // Maksimal 5 MB
-  const maxSize =
-    5 * 1024 * 1024;
 
-  if (file.size > maxSize) {
+  const maxSize =
+    5 *
+    1024 *
+    1024;
+
+
+  if (
+    file.size >
+    maxSize
+  ) {
+
     alert(
       "Ukuran file maksimal 5 MB."
     );
+
     return;
   }
 
+
   const tipeDiizinkan = [
+
     "image/jpeg",
+
     "image/png",
+
     "application/pdf"
+
   ];
+
 
   if (
     !tipeDiizinkan.includes(
       file.type
     )
   ) {
+
     alert(
       "File harus berupa JPG, PNG, atau PDF."
     );
+
     return;
   }
 
+
   try {
 
-    // Ambil data SPP yang dipilih
+
     const {
       data: spp,
       error: sppError
-    } = await supabase
-      .from("spp")
-      .select(
-        `
-        id,
-        siswa_id,
-        bulan,
-        tahun,
-        status
-        `
-      )
-      .eq(
-        "id",
-        sppId
-      )
-      .single();
+    } =
+      await supabase
+        .from("spp")
+        .select(
+          `
+            id,
+            siswa_id,
+            bulan,
+            tahun,
+            status
+          `
+        )
+        .eq(
+          "id",
+          sppId
+        )
+        .single();
+
 
     if (sppError) {
       throw sppError;
     }
+
 
     if (
       !spp ||
       spp.status !==
         "Belum Bayar"
     ) {
+
       alert(
         "Tagihan ini tidak dapat menerima bukti pembayaran."
       );
+
       return;
     }
 
-    // Pastikan SPP memang milik anak akun ini
+
     await pastikanAnakOrangTuaDimuat();
 
-    const anak = anakOrangTuaList.find(
-      (a) =>
-        String(a.id) ===
-        String(spp.siswa_id)
-    );
+
+    const anak =
+      anakOrangTuaList.find(
+        (a) =>
+          String(a.id) ===
+          String(
+            spp.siswa_id
+          )
+      );
+
 
     if (!anak) {
+
       alert(
         "Anda tidak memiliki akses ke tagihan ini."
       );
+
       return;
     }
+
 
     const extension =
       file.name.includes(".")
@@ -1726,54 +2080,70 @@ async function uploadBuktiSpp(
             .toLowerCase()
         : "bin";
 
+
     const safeName =
       `spp-${spp.tahun}-${String(
         spp.bulan
-      ).padStart(2, "0")}-${Date.now()}.${extension}`;
+      ).padStart(
+        2,
+        "0"
+      )}-${Date.now()}.${extension}`;
+
 
     const folder =
       currentUser.id;
 
+
     const filePath =
       `${folder}/${safeName}`;
 
-    // Upload
+
     const {
       error: uploadError
-    } = await supabase
-      .storage
-      .from("bukti-pembayaran")
-      .upload(
-        filePath,
-        file,
-        {
-          cacheControl: "3600",
-          upsert: false
-        }
-      );
+    } =
+      await supabase
+        .storage
+        .from("bukti-pembayaran")
+        .upload(
+          filePath,
+          file,
+          {
+            cacheControl:
+              "3600",
+
+            upsert:
+              false
+          }
+        );
+
 
     if (uploadError) {
       throw uploadError;
     }
 
-    // Simpan PATH file, bukan URL publik.
+
     const {
       error: updateError
-    } = await supabase
-      .from("spp")
-      .update({
-        bukti_bayar_url:
-          filePath,
-        status:
-          "Menunggu Verifikasi"
-      })
-      .eq(
-        "id",
-        sppId
-      );
+    } =
+      await supabase
+        .from("spp")
+        .update({
+
+          bukti_bayar_url:
+            filePath,
+
+          status:
+            "Menunggu Verifikasi"
+
+        })
+        .eq(
+          "id",
+          sppId
+        );
+
 
     if (updateError) {
-      // Bersihkan file bila update DB gagal
+
       await supabase
         .storage
         .from("bukti-pembayaran")
@@ -1784,10 +2154,12 @@ async function uploadBuktiSpp(
       throw updateError;
     }
 
+
     alert(
       "✅ Bukti pembayaran berhasil dikirim.\n\n" +
       "Status SPP sekarang: Menunggu Verifikasi."
     );
+
 
     await loadSppAnak();
 
@@ -1808,69 +2180,151 @@ async function uploadBuktiSpp(
   }
 }
 
-async function debugAksesPembayaran() {
-  try {
-    const {
-      data: { user },
-      error: userError
-    } = await supabase.auth.getUser();
 
-    if (userError) throw userError;
+// ============================================================
+// DEBUG AKSES PEMBAYARAN
+// ============================================================
+
+async function debugAksesPembayaran() {
+
+  try {
+
+    const {
+      data: {
+        user
+      },
+      error: userError
+    } =
+      await supabase
+        .auth
+        .getUser();
+
+
+    if (userError) {
+      throw userError;
+    }
+
 
     if (!user) {
-      alert("Session login tidak ditemukan.");
+
+      alert(
+        "Session login tidak ditemukan."
+      );
+
       return;
     }
+
 
     const {
       data: profile,
       error: profileError
-    } = await supabase
-      .from("pengguna")
-      .select("id,user_id,nama,email,role")
-      .eq("user_id", user.id)
-      .single();
+    } =
+      await supabase
+        .from("pengguna")
+        .select(
+          "id,user_id,nama,email,role"
+        )
+        .eq(
+          "user_id",
+          user.id
+        )
+        .single();
 
-    if (profileError) throw profileError;
+
+    if (profileError) {
+      throw profileError;
+    }
+
 
     const {
       data: anak,
       error: anakError
-    } = await supabase
-      .from("siswa")
-      .select("id,nama,orang_tua_id")
-      .eq(
-        "orang_tua_id",
-        profile.id
-      );
+    } =
+      await supabase
+        .from("siswa")
+        .select(
+          "id,nama,orang_tua_id"
+        )
+        .eq(
+          "orang_tua_id",
+          profile.id
+        );
 
-    if (anakError) throw anakError;
 
-    console.log("AUTH USER:", user);
-    console.log("PROFILE:", profile);
-    console.log("ANAK:", anak);
+    if (anakError) {
+      throw anakError;
+    }
+
+
+    console.log(
+      "AUTH USER:",
+      user
+    );
+
+    console.log(
+      "PROFILE:",
+      profile
+    );
+
+    console.log(
+      "ANAK:",
+      anak
+    );
+
 
     alert(
+
       "HASIL DEBUG\n\n" +
-      "Login: " + user.email + "\n" +
-      "Nama: " + profile.nama + "\n" +
-      "Role: " + profile.role + "\n" +
-      "ID Profil: " + profile.id + "\n" +
-      "Jumlah anak: " + (anak || []).length
+
+      "Login: " +
+      user.email +
+
+      "\n" +
+
+      "Nama: " +
+      profile.nama +
+
+      "\n" +
+
+      "Role: " +
+      profile.role +
+
+      "\n" +
+
+      "ID Profil: " +
+      profile.id +
+
+      "\n" +
+
+      "Jumlah anak: " +
+      (
+        anak ||
+        []
+      ).length
+
     );
 
   } catch (error) {
+
     console.error(
       "DEBUG PEMBAYARAN:",
       error
     );
 
     alert(
+
       "DEBUG GAGAL:\n\n" +
-      (error?.message || error)
+
+      (
+        error?.message ||
+        error
+      )
+
     );
   }
 }
+
+
 // ============================================================
 // GANTARIKU — HUBUNGKAN ANAK DENGAN KODE AKSES
 // ============================================================
@@ -1879,8 +2333,9 @@ async function debugAksesPembayaran() {
 
   "use strict";
 
+
   // ----------------------------------------------------------
-  // Escape
+  // ESCAPE
   // ----------------------------------------------------------
 
   function escOrtu(
@@ -1910,11 +2365,11 @@ async function debugAksesPembayaran() {
         /'/g,
         "&#039;"
       );
-
   }
 
+
   // ----------------------------------------------------------
-  // Render form
+  // RENDER FORM HUBUNGKAN ANAK
   // ----------------------------------------------------------
 
   function renderFormHubungkanAnak() {
@@ -1936,7 +2391,13 @@ async function debugAksesPembayaran() {
               #FFFEFB
             );
           box-shadow:
-            0 8px 25px rgba(90,65,40,.06);
+            0 8px 25px
+            rgba(
+              90,
+              65,
+              40,
+              .06
+            );
         "
       >
 
@@ -1955,6 +2416,7 @@ async function debugAksesPembayaran() {
           🌻
         </div>
 
+
         <h2
           style="
             margin:0 0 8px;
@@ -1963,6 +2425,7 @@ async function debugAksesPembayaran() {
         >
           Hubungkan Anak
         </h2>
+
 
         <p
           style="
@@ -1973,12 +2436,19 @@ async function debugAksesPembayaran() {
             font-size:13px;
           "
         >
+
           Masukkan
-          <strong>Kode Akses Anak</strong>
+          <strong>
+            Kode Akses Anak
+          </strong>
           yang diberikan oleh sekolah.
-          Setelah berhasil, data anak akan
-          langsung terhubung dengan akun Anda.
+
+          Setelah berhasil,
+          data anak akan langsung
+          terhubung dengan akun Anda.
+
         </p>
+
 
         <form
           id="formHubungkanAnak"
@@ -2011,6 +2481,7 @@ async function debugAksesPembayaran() {
             "
           >
 
+
           <div
             id="hubungkanAnakError"
             style="
@@ -2024,6 +2495,7 @@ async function debugAksesPembayaran() {
               text-align:left;
             "
           ></div>
+
 
           <div
             id="hubungkanAnakSuccess"
@@ -2039,6 +2511,7 @@ async function debugAksesPembayaran() {
             "
           ></div>
 
+
           <button
             type="submit"
             id="btnHubungkanAnak"
@@ -2053,6 +2526,7 @@ async function debugAksesPembayaran() {
 
         </form>
 
+
         <div
           style="
             margin-top:18px;
@@ -2061,18 +2535,22 @@ async function debugAksesPembayaran() {
             line-height:1.5;
           "
         >
+
           Kode akses diberikan oleh sekolah
           dan hanya dapat digunakan untuk
           menghubungkan siswa yang belum
           terhubung dengan akun orang tua.
+
         </div>
 
       </div>
+
     `;
   }
 
+
   // ----------------------------------------------------------
-  // Hubungkan ke database
+  // HUBUNGKAN DATABASE
   // ----------------------------------------------------------
 
   async function hubungkanAnakDenganKode(
@@ -2083,14 +2561,17 @@ async function debugAksesPembayaran() {
       !supabase ||
       !currentUser
     ) {
+
       throw new Error(
         "Sesi login tidak ditemukan."
       );
     }
 
+
     const cleaned =
       String(
-        kode || ""
+        kode ||
+        ""
       )
         .trim()
         .toUpperCase()
@@ -2099,23 +2580,29 @@ async function debugAksesPembayaran() {
           ""
         );
 
+
     if (!cleaned) {
+
       throw new Error(
         "Kode akses wajib diisi."
       );
     }
 
+
     const {
       data,
-      error,
+      error
     } =
       await supabase.rpc(
         "hubungkan_anak",
         {
+
           p_kode_akses:
-            cleaned,
+            cleaned
+
         }
       );
+
 
     if (error) {
 
@@ -2130,10 +2617,14 @@ async function debugAksesPembayaran() {
       );
     }
 
+
     const anak =
-      Array.isArray(data)
+      Array.isArray(
+        data
+      )
         ? data[0]
         : data;
+
 
     if (!anak) {
 
@@ -2142,20 +2633,20 @@ async function debugAksesPembayaran() {
       );
     }
 
-    /*
-     * Bersihkan cache anak,
-     * lalu muat ulang dari database.
-     */
 
-    anakOrangTuaList = [];
+    anakOrangTuaList =
+      [];
 
-    anakTerpilihId = null;
+    anakTerpilihId =
+      null;
+
 
     return anak;
   }
 
+
   // ----------------------------------------------------------
-  // Tampilkan form pada ringkasan
+  // TAMPILKAN FORM
   // ----------------------------------------------------------
 
   async function tampilkanFormHubungkanAnak() {
@@ -2165,10 +2656,14 @@ async function debugAksesPembayaran() {
         "ringkasanAnakBody"
       );
 
-    if (!body) return;
+    if (!body) {
+      return;
+    }
+
 
     body.innerHTML =
       renderFormHubungkanAnak();
+
 
     const form =
       document.getElementById(
@@ -2190,15 +2685,19 @@ async function debugAksesPembayaran() {
         "hubungkanAnakSuccess"
       );
 
+
     form?.addEventListener(
       "submit",
+
       async (
         event
       ) => {
 
         event.preventDefault();
 
+
         if (errorEl) {
+
           errorEl.style.display =
             "none";
 
@@ -2206,7 +2705,9 @@ async function debugAksesPembayaran() {
             "";
         }
 
+
         if (successEl) {
+
           successEl.style.display =
             "none";
 
@@ -2214,15 +2715,18 @@ async function debugAksesPembayaran() {
             "";
         }
 
+
         const btn =
           document.getElementById(
             "btnHubungkanAnak"
           );
 
+
         const kode =
           input?.value
             ?.trim()
             .toUpperCase();
+
 
         if (!kode) {
 
@@ -2233,11 +2737,11 @@ async function debugAksesPembayaran() {
 
             errorEl.style.display =
               "block";
-
           }
 
           return;
         }
+
 
         if (btn) {
 
@@ -2248,6 +2752,7 @@ async function debugAksesPembayaran() {
             "Menghubungkan...";
         }
 
+
         try {
 
           const anak =
@@ -2255,18 +2760,18 @@ async function debugAksesPembayaran() {
               kode
             );
 
-          /*
-           * Langsung refresh daftar anak.
-           */
 
           await pastikanAnakOrangTuaDimuat();
+
 
           if (successEl) {
 
             successEl.innerHTML =
               `
-                ✅ Berhasil! Akun Anda
-                terhubung dengan
+                ✅ Berhasil!
+
+                Akun Anda terhubung dengan
+
                 <strong>
                   ${escOrtu(
                     anak.nama
@@ -2278,6 +2783,7 @@ async function debugAksesPembayaran() {
               "block";
           }
 
+
           setTimeout(
             () => {
 
@@ -2285,18 +2791,22 @@ async function debugAksesPembayaran() {
                 typeof renderView ===
                 "function"
               ) {
+
                 renderView();
+
               } else if (
                 window.__app &&
                 typeof window.__app.goTo ===
-                  "function"
+                "function"
               ) {
+
                 window.__app.goTo(
                   currentNav
                 );
               }
 
             },
+
             500
           );
 
@@ -2306,6 +2816,7 @@ async function debugAksesPembayaran() {
             "Hubungkan anak:",
             error
           );
+
 
           if (errorEl) {
 
@@ -2317,6 +2828,7 @@ async function debugAksesPembayaran() {
               "block";
           }
 
+
           if (btn) {
 
             btn.disabled =
@@ -2326,17 +2838,20 @@ async function debugAksesPembayaran() {
               "Hubungkan Anak";
           }
         }
+
       }
     );
   }
 
+
   // ----------------------------------------------------------
-  // Bungkus loadRingkasanAnak
+  // WRAP LOAD RINGKASAN
   // ----------------------------------------------------------
 
   if (
     typeof window.loadRingkasanAnak ===
-      "function" &&
+    "function" &&
+
     !window
       .loadRingkasanAnak
       .__gtrConnectWrapped
@@ -2345,9 +2860,11 @@ async function debugAksesPembayaran() {
     const original =
       window.loadRingkasanAnak;
 
+
     async function wrapped() {
 
       await original();
+
 
       if (
         currentUserRole !==
@@ -2356,25 +2873,23 @@ async function debugAksesPembayaran() {
         return;
       }
 
-      /*
-       * Cari elemen body.
-       */
 
       const body =
         document.getElementById(
           "ringkasanAnakBody"
         );
 
+
       if (
         body &&
         anakOrangTuaList.length ===
-          0
+        0
       ) {
 
         await tampilkanFormHubungkanAnak();
-
       }
     }
+
 
     wrapped.__gtrConnectWrapped =
       true;
@@ -2382,15 +2897,342 @@ async function debugAksesPembayaran() {
     wrapped.__gtrOriginal =
       original;
 
+
     window.loadRingkasanAnak =
       wrapped;
   }
 
+
   // ----------------------------------------------------------
-  // Global
+  // GLOBAL
   // ----------------------------------------------------------
 
   window.hubungkanAnakDenganKode =
     hubungkanAnakDenganKode;
+
+})();
+
+
+// ============================================================
+// MOBILE RESPONSIVE CSS
+// Dibuat otomatis agar orangtua.js bisa langsung dipakai.
+// ============================================================
+
+(function injectOrtuMobileStyles() {
+
+  const styleId =
+    "gantariku-ortu-mobile-style";
+
+  if (
+    document.getElementById(
+      styleId
+    )
+  ) {
+    return;
+  }
+
+
+  const style =
+    document.createElement(
+      "style"
+    );
+
+  style.id =
+    styleId;
+
+
+  style.textContent = `
+
+    .ortu-mobile-list {
+      display:none;
+    }
+
+
+    .ortu-card-top {
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+    }
+
+
+    .ortu-card-label {
+      font-size:10px;
+      text-transform:uppercase;
+      letter-spacing:.05em;
+      color:var(--ink-soft);
+      font-weight:800;
+    }
+
+
+    .ortu-card-title {
+      margin-top:4px;
+      font-size:15px;
+      font-weight:800;
+      color:var(--ink);
+    }
+
+
+    .ortu-card-text {
+      margin-top:5px;
+      font-size:13px;
+      line-height:1.5;
+      color:var(--ink-soft);
+    }
+
+
+    .ortu-card-divider {
+      height:1px;
+      background:var(--line);
+      margin:13px 0;
+    }
+
+
+    .ortu-data-card,
+    .ortu-spp-card {
+
+      padding:16px;
+
+      border:
+        1px solid
+        var(--line);
+
+      border-radius:16px;
+
+      background:
+        rgba(
+          255,
+          255,
+          255,
+          .72
+        );
+
+      margin-bottom:12px;
+
+      box-shadow:
+        0 3px 10px
+        rgba(
+          0,
+          0,
+          0,
+          .025
+        );
+    }
+
+
+    .ortu-spp-nominal {
+
+      margin-top:14px;
+
+      font-size:20px;
+
+      font-weight:900;
+
+      color:
+        var(--ink);
+    }
+
+
+    .ortu-spp-detail {
+
+      margin-top:12px;
+
+      font-size:12px;
+
+      color:
+        var(--ink-soft);
+    }
+
+
+    .ortu-spp-detail div {
+
+      display:flex;
+
+      justify-content:space-between;
+
+      gap:12px;
+    }
+
+
+    .ortu-spp-detail strong {
+
+      color:
+        var(--ink);
+
+      text-align:right;
+    }
+
+
+    .ortu-spp-action {
+
+      margin-top:2px;
+    }
+
+
+    .ortu-date-field {
+
+      display:flex;
+
+      flex-direction:column;
+
+      gap:5px;
+    }
+
+
+    .ortu-date-field label {
+
+      font-size:10px;
+
+      color:
+        var(--ink-soft);
+
+      font-weight:800;
+
+      text-transform:uppercase;
+    }
+
+
+    @media (
+      max-width:768px
+    ) {
+
+
+      .ortu-desktop-table {
+        display:none !important;
+      }
+
+
+      .ortu-mobile-list {
+        display:block;
+      }
+
+
+      .ortu-mobile-controls {
+
+        width:100%;
+
+        display:grid !important;
+
+        grid-template-columns:
+          1fr 1fr;
+
+        gap:10px;
+
+        margin-top:14px;
+      }
+
+
+      .ortu-mobile-controls select,
+      .ortu-mobile-controls input {
+
+        width:100%;
+
+        min-width:0;
+      }
+
+
+      .ortu-mobile-controls button {
+
+        grid-column:
+          1 / -1;
+
+        width:100%;
+      }
+
+
+      .ortu-child-profile > div {
+
+        grid-template-columns:
+          1fr !important;
+
+        gap:14px !important;
+      }
+
+
+      .stat-row {
+
+        grid-template-columns:
+          repeat(
+            2,
+            minmax(
+              0,
+              1fr
+            )
+          ) !important;
+
+        gap:10px !important;
+      }
+
+
+      .stat {
+
+        min-width:0;
+      }
+
+
+      .stat .num {
+
+        font-size:24px;
+      }
+
+
+      .section-head {
+
+        align-items:flex-start;
+
+        flex-direction:column;
+      }
+
+
+      .section-head .controls {
+
+        width:100%;
+      }
+
+    }
+
+
+    @media (
+      max-width:420px
+    ) {
+
+      .ortu-mobile-controls {
+
+        grid-template-columns:
+          1fr;
+      }
+
+
+      .ortu-mobile-controls button {
+
+        grid-column:auto;
+      }
+
+
+      .ortu-card-top {
+
+        gap:8px;
+      }
+
+
+      .ortu-card-title {
+
+        font-size:14px;
+      }
+
+
+      .ortu-spp-nominal {
+
+        font-size:18px;
+      }
+
+    }
+
+  `;
+
+
+  document.head.appendChild(
+    style
+  );
 
 })();
