@@ -2758,3 +2758,203 @@ textarea:focus {
   }
 
 }
+/* ============================================================
+   GANTARIKU — KEHADIRAN ORANG TUA
+   ============================================================ */
+
+.ortu-kehadiran-head {
+  align-items: flex-start;
+}
+
+.ortu-absen-controls {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.ortu-date-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.ortu-date-field label {
+  font-size: 11px;
+  color: var(--ink-soft);
+  font-weight: 700;
+}
+
+.ortu-absen-student {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid rgba(0,0,0,.07);
+}
+
+.ortu-kehadiran-percent {
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.ortu-kehadiran-percent .num {
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--brand);
+  line-height: 1;
+}
+
+.ortu-kehadiran-percent .lbl {
+  margin-top: 4px;
+  font-size: 11px;
+  color: var(--ink-soft);
+}
+
+.ortu-absen-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.ortu-absen-stat {
+  padding: 15px 12px;
+  border-radius: 16px;
+  text-align: center;
+  border: 1px solid rgba(0,0,0,.05);
+  background: var(--surface, #fff);
+}
+
+.ortu-absen-stat .num {
+  font-size: 24px;
+  font-weight: 800;
+}
+
+.ortu-absen-stat .lbl {
+  margin-top: 4px;
+  font-size: 11px;
+  color: var(--ink-soft);
+}
+
+.ortu-absen-stat.hadir .num {
+  color: #15803D;
+}
+
+.ortu-absen-stat.izin .num {
+  color: #D97706;
+}
+
+.ortu-absen-stat.sakit .num {
+  color: #2563EB;
+}
+
+.ortu-absen-stat.alfa .num {
+  color: #E11D48;
+}
+
+.ortu-absen-progress {
+  margin-top: 18px;
+}
+
+.ortu-absen-progress-bar {
+  width: 100%;
+  height: 10px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: rgba(0,0,0,.08);
+}
+
+.ortu-absen-progress-fill {
+  height: 100%;
+  border-radius: inherit;
+  background: var(--brand);
+  transition: width .35s ease;
+}
+
+.ortu-absen-list {
+  display: grid;
+  gap: 10px;
+}
+
+.ortu-absen-card {
+  padding: 15px 16px;
+  border: 1px solid rgba(0,0,0,.07);
+  border-radius: 16px;
+  background: var(--surface, #fff);
+}
+
+.ortu-absen-card-main {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.ortu-absen-date {
+  font-size: 14px;
+  font-weight: 750;
+  color: var(--ink);
+}
+
+.ortu-absen-note {
+  margin-top: 5px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--ink-soft);
+}
+
+
+/* ============================================================
+   MOBILE
+   ============================================================ */
+
+@media (max-width: 700px) {
+
+  .ortu-kehadiran-head {
+    flex-direction: column;
+  }
+
+  .ortu-absen-controls {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .ortu-date-field input {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .ortu-absen-controls .btn {
+    grid-column: 1 / -1;
+    width: 100%;
+  }
+
+  .ortu-absen-stats {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .ortu-absen-stat {
+    padding: 14px 10px;
+  }
+
+  .ortu-absen-card {
+    padding: 14px;
+  }
+
+  .ortu-absen-card-main {
+    gap: 10px;
+  }
+
+  .ortu-absen-date {
+    font-size: 13px;
+  }
+
+  .ortu-absen-note {
+    font-size: 11px;
+  }
+
+}
