@@ -1286,76 +1286,206 @@ async function hapusSiswa(
     };
   }
 
-  // ----------------------------------------------------------
-  // BACA FILE
-  // ----------------------------------------------------------
+// ============================================================
+// BACA FILE IMPORT GANTARIKU
+// FORMAT SESUAI EXCEL ASLI:
+// A = No
+// B = Nama
+// C = NIS
+// D = TTL
+// E = Alamat
+// F = Nama Wali
+// G = No. HP
+// H = Kelas
+// I = Mulai bergabung
+// ============================================================
 
-  async function bacaFileImport(file) {
-    if (!file) {
-      throw new Error(
-        "File belum dipilih."
-      );
-    }
+async function bacaFileImport(file) {
 
-    const extension =
-      file.name
-        .split(".")
-        .pop()
-        .toLowerCase();
+  if (!file) {
+    throw new Error(
+      "File belum dipilih."
+    );
+  }
 
-    const allowed =
-      ["xlsx", "xls", "csv"];
+  const extension =
+    file.name
+      .split(".")
+      .pop()
+      .toLowerCase();
 
-    if (!allowed.includes(extension)) {
-      throw new Error(
-        "Format file tidak didukung. Gunakan Excel (.xlsx/.xls) atau CSV."
-      );
-    }
+  const allowed = [
+    "xlsx",
+    "xls",
+    "csv"
+  ];
 
-    const XLSXLib =
-      await ensureXLSX();
+  if (!allowed.includes(extension)) {
+    throw new Error(
+      "Format file tidak didukung. Gunakan Excel (.xlsx/.xls) atau CSV."
+    );
+  }
 
-    const buffer =
-      await file.arrayBuffer();
+  const XLSXLib =
+    await ensureXLSX();
 
-    const workbook =
-      XLSXLib.read(buffer, {
+  const buffer =
+    await file.arrayBuffer();
+
+  const workbook =
+    XLSXLib.read(
+      buffer,
+      {
         type: "array",
-        cellDates: true,
+        cellDates: true
+      }
+    );
+
+  const sheetName =
+    workbook.SheetNames?.[0];
+
+  if (!sheetName) {
+    throw new Error(
+      "Sheet Excel tidak ditemukan."
+    );
+  }
+
+  const sheet =
+    workbook.Sheets[
+      sheetName
+    ];
+
+  /*
+   * PENTING:
+   * Kita membaca berdasarkan posisi kolom,
+   * bukan nama header.
+   *
+   * Karena file asli kamu punya
+   * kolom B dengan header kosong/spasi.
+   */
+
+  const rows =
+    XLSXLib.utils.sheet_to_json(
+      sheet,
+      {
+        header: 1,
+        raw: true,
+        defval: "",
+        blankrows: false
+      }
+    );
+
+  if (!rows.length) {
+    throw new Error(
+      "File tidak berisi data."
+    );
+  }
+
+  /*
+   * Cari baris header.
+   * Kita cari baris yang memiliki
+   * "NIS", "TTL", "Alamat", dst.
+   */
+
+  let headerIndex = -1;
+
+  for (
+    let i = 0;
+    i < Math.min(rows.length, 20);
+    i++
+  ) {
+
+    const row =
+      rows[i] || [];
+
+    const joined =
+      row
+        .map(
+          value =>
+            String(
+              value ?? ""
+            )
+              .trim()
+              .toLowerCase()
+        )
+        .join("|");
+
+    if (
+      joined.includes("nis") &&
+      joined.includes("ttl") &&
+      joined.includes("alamat") &&
+      joined.includes("kelas")
+    ) {
+      headerIndex = i;
+      break;
+    }
+  }
+
+  if (headerIndex === -1) {
+    throw new Error(
+      "Header Data Siswa tidak ditemukan. Pastikan format Excel sesuai template Gantariku."
+    );
+  }
+
+  /*
+   * Semua baris setelah header
+   * adalah data siswa.
+   */
+
+  const dataRows =
+    rows
+      .slice(headerIndex + 1)
+      .filter(row => {
+
+        if (!row) return false;
+
+        const values =
+          row.map(
+            value =>
+              String(
+                value ?? ""
+              ).trim()
+          );
+
+        return values.some(
+          value => value !== ""
+        );
+
+      })
+      .filter(row => {
+
+        /*
+         * Hilangkan baris judul/keterangan
+         * kalau ada di bawah.
+         *
+         * Baris siswa biasanya memiliki
+         * nama/NIS.
+         */
+
+        const nama =
+          String(
+            row[1] ?? ""
+          ).trim();
+
+        const nis =
+          String(
+            row[2] ?? ""
+          ).trim();
+
+        return (
+          nama !== "" ||
+          nis !== ""
+        );
       });
 
-    const sheetName =
-      workbook.SheetNames?.[0];
-
-    if (!sheetName) {
-      throw new Error(
-        "Sheet Excel tidak ditemukan."
-      );
-    }
-
-    const sheet =
-      workbook.Sheets[
-        sheetName
-      ];
-
-    const raw =
-      XLSXLib.utils.sheet_to_json(
-        sheet,
-        {
-          defval: "",
-          raw: true,
-          blankrows: false,
-        }
-      );
-
-    if (!raw.length) {
-      throw new Error(
-        "File tidak berisi data."
-      );
-    }
-
-    return raw;
+  if (!dataRows.length) {
+    throw new Error(
+      "Tidak ditemukan data siswa setelah header."
+    );
   }
+
+  return dataRows;
+}
 
   // ----------------------------------------------------------
   // CEK DUPLIKAT DI FILE
