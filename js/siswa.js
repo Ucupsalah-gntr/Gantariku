@@ -2697,6 +2697,46 @@ async function bacaFileImport(file) {
 
     })
   );
+        // ============================================================
+// HITUNG TAHUN AJARAN OTOMATIS
+//
+// Juli - Desember 2024  -> 2024/2025
+// Januari - Juni 2025  -> 2024/2025
+// Juli - Desember 2025 -> 2025/2026
+// ============================================================
+
+function hitungTahunAjaran(
+  bulan,
+  tahun
+) {
+  if (
+    !bulan ||
+    !tahun
+  ) {
+    return null;
+  }
+
+  const b =
+    Number(bulan);
+
+  const y =
+    Number(tahun);
+
+  if (
+    !Number.isInteger(b) ||
+    !Number.isInteger(y) ||
+    b < 1 ||
+    b > 12
+  ) {
+    return null;
+  }
+
+  if (b >= 7) {
+    return `${y}/${y + 1}`;
+  }
+
+  return `${y - 1}/${y}`;
+}
         const {
           error,
         } =
