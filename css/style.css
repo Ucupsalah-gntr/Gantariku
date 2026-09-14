@@ -1058,3 +1058,529 @@
   .dash-welcome-pro .dash-welcome-mark{font-size:54px}
   .dash-money{font-size:21px!important}
 }
+/* ============================================================
+   GANTARI BRAND REFRESH
+   Tempel di PALING BAWAH css/style.css
+   Tidak perlu mengubah file JS.
+   ============================================================ */
+
+:root {
+  --bg: #FAF7EF;
+  --surface: #FFFFFF;
+
+  --ink: #363437;
+  --ink-soft: #6F665C;
+
+  --line: #E7DED1;
+
+  --primary: #B07A4F;
+  --primary-dark: #8C5E3B;
+  --primary-soft: #FFF2C7;
+
+  --sun: #FFC629;
+  --sun-soft: #FFF7D9;
+
+  --leaf: #38B44A;
+  --leaf-soft: #EAF7E9;
+
+  --brown: #AD7B4D;
+  --brown-dark: #82552F;
+
+  --good: #2FA84A;
+  --good-soft: #E7F7EA;
+
+  --warn: #B57A3E;
+  --warn-soft: #FFF1D8;
+
+  --bad: #D34D4D;
+  --bad-soft: #FCE9E6;
+
+  --muted: #F3ECE2;
+}
+
+/* ============================================================
+   BODY
+   ============================================================ */
+
+body {
+  background:
+    radial-gradient(
+      circle at top right,
+      rgba(255, 198, 41, .10),
+      transparent 28%
+    ),
+    var(--bg);
+  color: var(--ink);
+}
+
+/* ============================================================
+   SIDEBAR
+   ============================================================ */
+
+.sidebar {
+  background:
+    linear-gradient(
+      180deg,
+      #383538 0%,
+      #4A403A 48%,
+      #9A7048 100%
+    ) !important;
+
+  border-right: 1px solid rgba(255,255,255,.08);
+}
+
+/* ============================================================
+   LOGO GANTARI
+   Menggunakan logo-gantari.png yang sudah ada.
+   Tidak membutuhkan file gambar baru.
+   ============================================================ */
+
+.brand {
+  min-height: 150px !important;
+
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  padding: 18px 16px 12px !important;
+}
+
+.brand-logo {
+  display: block !important;
+
+  width: min(205px, 90%) !important;
+  max-width: 205px !important;
+
+  height: auto !important;
+
+  padding: 10px 12px !important;
+
+  background: rgba(255,255,255,.96) !important;
+
+  border-radius: 18px !important;
+
+  box-shadow:
+    0 10px 30px rgba(0,0,0,.14),
+    0 0 0 1px rgba(255,198,41,.15) !important;
+
+  object-fit: contain !important;
+}
+
+/* ============================================================
+   USER INFO
+   ============================================================ */
+
+.user-info {
+  background: rgba(255,255,255,.10) !important;
+
+  border: 1px solid rgba(255,255,255,.10) !important;
+
+  border-radius: 14px !important;
+
+  padding: 12px 13px !important;
+
+  margin-bottom: 12px !important;
+}
+
+.user-name {
+  color: #FFFFFF !important;
+  font-weight: 700 !important;
+}
+
+.user-role {
+  color: rgba(255,255,255,.78) !important;
+}
+
+/* ============================================================
+   NAVIGASI
+   ============================================================ */
+
+.nav a,
+.nav button,
+.nav-item {
+  color: rgba(255,255,255,.88) !important;
+
+  border-radius: 12px !important;
+
+  transition:
+    background .18s ease,
+    color .18s ease,
+    transform .18s ease !important;
+}
+
+.nav a:hover,
+.nav button:hover,
+.nav-item:hover {
+  background: rgba(255,255,255,.10) !important;
+  color: #FFFFFF !important;
+  transform: translateX(2px);
+}
+
+/* MENU AKTIF */
+
+.nav a.active,
+.nav button.active,
+.nav-item.active {
+  background: #FFF9EA !important;
+  color: #8E603B !important;
+
+  box-shadow:
+    0 4px 14px rgba(0,0,0,.08) !important;
+
+  font-weight: 700 !important;
+}
+
+/* ============================================================
+   FOOTER SIDEBAR
+   ============================================================ */
+
+.sidebar-foot {
+  border-top: 1px solid rgba(255,255,255,.14) !important;
+}
+
+.sidebar-foot > div {
+  color: rgba(255,255,255,.82) !important;
+}
+
+.conn-dot {
+  background: #43D55A !important;
+
+  box-shadow:
+    0 0 0 3px rgba(67,213,90,.12) !important;
+}
+
+.logout-btn {
+  background: rgba(255,255,255,.05) !important;
+
+  border: 1px solid rgba(255,255,255,.35) !important;
+
+  color: #FFFFFF !important;
+
+  border-radius: 10px !important;
+
+  transition:
+    background .18s ease,
+    border-color .18s ease !important;
+}
+
+.logout-btn:hover {
+  background: rgba(255,255,255,.12) !important;
+
+  border-color: rgba(255,255,255,.55) !important;
+}
+
+/* ============================================================
+   TOPBAR
+   ============================================================ */
+
+.topbar {
+  background: rgba(250,247,239,.90) !important;
+
+  backdrop-filter: blur(10px) !important;
+}
+
+#pageTitle {
+  color: #363437 !important;
+}
+
+#pageSub {
+  color: #766B60 !important;
+}
+
+/* ============================================================
+   BUTTON UTAMA
+   ============================================================ */
+
+button,
+.btn,
+.login-btn {
+  font-family: 'Inter', sans-serif;
+}
+
+.btn.primary,
+button.primary,
+.login-btn {
+  background:
+    linear-gradient(
+      135deg,
+      #8D603C,
+      #B07A4F
+    ) !important;
+
+  border-color: transparent !important;
+
+  box-shadow:
+    0 6px 18px rgba(141,96,60,.18) !important;
+}
+
+.btn.primary:hover,
+button.primary:hover,
+.login-btn:hover {
+  box-shadow:
+    0 9px 24px rgba(141,96,60,.24) !important;
+}
+
+/* ============================================================
+   BUTTON SOFT / GHOST
+   ============================================================ */
+
+.btn.ghost,
+button.ghost {
+  background: #FFF9EA !important;
+
+  color: #8B5D37 !important;
+
+  border-color: #F0DFAF !important;
+}
+
+.btn.ghost:hover,
+button.ghost:hover {
+  background: #FFF2C7 !important;
+}
+
+/* ============================================================
+   KARTU
+   ============================================================ */
+
+.section,
+.stat,
+.dash-mini,
+.card {
+  border-color: #E9E0D4 !important;
+}
+
+.section-head h2 {
+  color: #363437 !important;
+}
+
+.section-hint {
+  color: #786F67 !important;
+}
+
+/* ============================================================
+   TEKS SEKUNDER
+   Jangan terlalu pucat lagi.
+   ============================================================ */
+
+small,
+.muted,
+.text-muted,
+.section-hint,
+.dash-mini-sub {
+  color: #776D63 !important;
+}
+
+/* ============================================================
+   ACTIVE / BADGE
+   ============================================================ */
+
+.badge-good {
+  background: #E7F7EA !important;
+  color: #2B9142 !important;
+}
+
+.badge-warn {
+  background: #FFF0D2 !important;
+  color: #9A652E !important;
+}
+
+.badge-muted {
+  background: #F2ECE3 !important;
+  color: #756B61 !important;
+}
+
+/* ============================================================
+   PROGRESS
+   ============================================================ */
+
+.dash-progress {
+  background: #EFE8DE !important;
+}
+
+.dash-progress span {
+  background:
+    linear-gradient(
+      90deg,
+      #FFC629,
+      #B07A4F
+    ) !important;
+}
+
+/* ============================================================
+   STAT CARD
+   ============================================================ */
+
+.stat.c-teal {
+  border-left-color: #38B44A !important;
+}
+
+.stat.c-good {
+  border-left-color: #38B44A !important;
+}
+
+.stat.c-bad {
+  border-left-color: #D34D4D !important;
+}
+
+.stat.c-pink {
+  border-left-color: #B07A4F !important;
+}
+
+/* ============================================================
+   AKTIVITAS
+   ============================================================ */
+
+.dash-activity-item:hover {
+  background: #FFF9ED !important;
+}
+
+/* ============================================================
+   QUICK ACTION
+   ============================================================ */
+
+.dash-quick-card:hover {
+  background: #FFF9ED !important;
+
+  border-color: #E7D5B6 !important;
+}
+
+/* ============================================================
+   INPUT
+   ============================================================ */
+
+input,
+select,
+textarea {
+  border-color: #DED4C7 !important;
+
+  color: #363437 !important;
+
+  background: #FFFFFF !important;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: #B07A4F !important;
+
+  box-shadow:
+    0 0 0 3px rgba(176,122,79,.12) !important;
+
+  outline: none !important;
+}
+
+/* ============================================================
+   TABLE
+   ============================================================ */
+
+table thead th {
+  color: #6B6259 !important;
+}
+
+table tbody tr:hover {
+  background: #FFF9ED !important;
+}
+
+/* ============================================================
+   EMPTY STATE
+   ============================================================ */
+
+.empty {
+  color: #786F67 !important;
+
+  background:
+    linear-gradient(
+      180deg,
+      #FFFDF8,
+      #FAF6EE
+    ) !important;
+
+  border-radius: 14px;
+}
+
+/* ============================================================
+   NOTIFICATION BUTTON
+   ============================================================ */
+
+.notif-button {
+  background: #FFF4D0 !important;
+
+  color: #875B34 !important;
+
+  border-color: #F0DFAF !important;
+}
+
+.notif-button:hover {
+  background: #FFE9A6 !important;
+}
+
+/* ============================================================
+   LOGIN
+   ============================================================ */
+
+.login-container {
+  background:
+    radial-gradient(
+      circle at 80% 15%,
+      rgba(255,198,41,.20),
+      transparent 24%
+    ),
+    linear-gradient(
+      135deg,
+      #383538 0%,
+      #4A403A 48%,
+      #A97A4E 100%
+    ) !important;
+}
+
+.login-box {
+  border:
+    1px solid rgba(255,255,255,.55) !important;
+
+  box-shadow:
+    0 24px 70px rgba(45,38,35,.24) !important;
+}
+
+.login-btn {
+  background:
+    linear-gradient(
+      135deg,
+      #8D603C,
+      #B07A4F
+    ) !important;
+}
+
+/* ============================================================
+   MOBILE
+   ============================================================ */
+
+@media (max-width: 768px) {
+
+  .brand {
+    min-height: 115px !important;
+    padding: 14px 12px 8px !important;
+  }
+
+  .brand-logo {
+    width: 170px !important;
+    max-width: 170px !important;
+    border-radius: 15px !important;
+    padding: 8px 10px !important;
+  }
+
+  .user-info {
+    margin-bottom: 8px !important;
+  }
+
+}
+
+/* ============================================================
+   BRAND ACCENT
+   ============================================================ */
+
+h1::selection,
+h2::selection,
+p::selection {
+  background: #FFE28A;
+  color: #363437;
+}
