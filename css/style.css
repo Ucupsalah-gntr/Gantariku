@@ -2562,3 +2562,199 @@ textarea:focus {
   }
 
 }
+/* ============================================================
+   PERKEMBANGAN ANAK - GURU
+   ============================================================ */
+
+.perk-form-top{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(180px,1fr));
+  gap:15px;
+}
+
+.perk-score-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(220px,1fr));
+  gap:12px;
+  margin-top:16px;
+}
+
+
+/* RIWAYAT GURU */
+
+.perk-guru-history{
+  width:100%;
+}
+
+.perk-guru-card-list{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:16px;
+}
+
+
+.perk-guru-card{
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:18px;
+  background:rgba(255,255,255,.45);
+}
+
+
+.perk-guru-card-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:12px;
+  padding-bottom:14px;
+  border-bottom:1px solid var(--line);
+}
+
+
+.perk-guru-student{
+  font-size:17px;
+  font-weight:800;
+  color:var(--ink);
+}
+
+
+.perk-guru-date{
+  font-size:12px;
+  color:var(--ink-soft);
+  margin-top:5px;
+}
+
+
+.perk-guru-average{
+  min-width:58px;
+  height:58px;
+  border-radius:16px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  background:rgba(183,132,81,.12);
+  color:var(--brand);
+}
+
+
+.perk-guru-average strong{
+  font-size:20px;
+  line-height:1;
+}
+
+
+.perk-guru-average span{
+  font-size:10px;
+  margin-top:3px;
+}
+
+
+.perk-guru-scores{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:8px;
+  margin-top:15px;
+}
+
+
+.perk-guru-score-item{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:8px;
+  padding:10px 11px;
+  border-radius:12px;
+  background:rgba(255,255,255,.6);
+  border:1px solid var(--line);
+}
+
+
+.perk-guru-score-name{
+  font-size:11px;
+  color:var(--ink-soft);
+  line-height:1.3;
+}
+
+
+.perk-guru-score-item strong{
+  font-size:14px;
+  white-space:nowrap;
+}
+
+
+.perk-guru-note{
+  margin-top:14px;
+  padding-top:14px;
+  border-top:1px solid var(--line);
+}
+
+
+.perk-guru-note-title{
+  font-size:11px;
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:.04em;
+  color:var(--ink-soft);
+}
+
+
+.perk-guru-note-text{
+  margin-top:6px;
+  font-size:13px;
+  line-height:1.55;
+  color:var(--ink);
+}
+
+
+/* ============================================================
+   MOBILE
+   ============================================================ */
+
+@media (max-width:768px){
+
+  .perk-form-top{
+    grid-template-columns:1fr;
+    gap:12px;
+  }
+
+
+  .perk-score-grid{
+    grid-template-columns:1fr;
+    gap:10px;
+  }
+
+
+  .perk-guru-card-list{
+    grid-template-columns:1fr;
+    gap:12px;
+  }
+
+
+  .perk-guru-card{
+    padding:15px;
+    border-radius:16px;
+  }
+
+
+  .perk-guru-student{
+    font-size:16px;
+  }
+
+
+  .perk-guru-scores{
+    grid-template-columns:1fr;
+    gap:7px;
+  }
+
+
+  .perk-guru-score-item{
+    padding:11px 12px;
+  }
+
+
+  .perk-guru-score-name{
+    font-size:12px;
+  }
+
+}
