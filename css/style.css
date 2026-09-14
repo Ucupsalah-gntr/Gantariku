@@ -1584,3 +1584,558 @@ p::selection {
   background: #FFE28A;
   color: #363437;
 }
+/* ============================================================
+   GANTARI — FINAL VISUAL POLISH
+   Tempelkan PALING BAWAH css/style.css
+   Fokus: logo, spacing, hierarchy, contrast, empty state
+   ============================================================ */
+
+/* ------------------------------------------------------------
+   1. SIDEBAR — lebih ringan, hangat, dan rapi
+   ------------------------------------------------------------ */
+
+.sidebar {
+  padding: 18px 18px 20px !important;
+
+  background:
+    linear-gradient(
+      180deg,
+      #383538 0%,
+      #463D38 48%,
+      #946A45 100%
+    ) !important;
+}
+
+/* Logo tidak terlalu mendominasi sidebar */
+
+.brand {
+  margin-bottom: 12px !important;
+  padding: 0 4px !important;
+
+  min-height: 0 !important;
+}
+
+.brand-logo {
+  width: 168px !important;
+  max-width: 92% !important;
+
+  border-radius: 15px !important;
+
+  box-shadow:
+    0 8px 22px rgba(20,16,14,.16) !important;
+
+  transform: translateY(0);
+  transition:
+    transform .18s ease,
+    box-shadow .18s ease;
+}
+
+.brand-logo:hover {
+  transform: translateY(-1px);
+
+  box-shadow:
+    0 10px 26px rgba(20,16,14,.20) !important;
+}
+
+/* ------------------------------------------------------------
+   2. IDENTITAS USER — sedikit lebih elegan
+   ------------------------------------------------------------ */
+
+.user-info {
+  margin-top: 4px !important;
+  margin-bottom: 17px !important;
+
+  background:
+    rgba(255,250,238,.095) !important;
+
+  border:
+    1px solid rgba(255,250,238,.13) !important;
+
+  border-radius: 13px !important;
+
+  padding: 11px 12px !important;
+}
+
+.user-name {
+  font-weight: 700 !important;
+  color: #FFFDF8 !important;
+}
+
+.user-role {
+  color: rgba(255,255,255,.68) !important;
+}
+
+/* ------------------------------------------------------------
+   3. NAVIGASI
+   ------------------------------------------------------------ */
+
+.nav {
+  gap: 4px !important;
+}
+
+.nav-item {
+  padding: 9px 11px !important;
+  border-radius: 10px !important;
+
+  color: rgba(255,255,255,.84) !important;
+
+  transition:
+    background .16s ease,
+    color .16s ease,
+    transform .16s ease !important;
+}
+
+.nav-item:hover {
+  background:
+    rgba(255,255,255,.09) !important;
+
+  color: #FFFFFF !important;
+
+  transform: translateX(2px);
+}
+
+.nav-item.active {
+  background: #FFF9EA !important;
+
+  color: #875C38 !important;
+
+  box-shadow:
+    0 4px 13px rgba(30,24,20,.10) !important;
+}
+
+/* ------------------------------------------------------------
+   4. FOOTER SIDEBAR
+   ------------------------------------------------------------ */
+
+.sidebar-foot {
+  padding-top: 12px !important;
+  gap: 8px !important;
+}
+
+.logout-btn {
+  border-radius: 9px !important;
+
+  background:
+    rgba(255,255,255,.035) !important;
+
+  color:
+    rgba(255,255,255,.84) !important;
+}
+
+.logout-btn:hover {
+  background:
+    rgba(255,255,255,.10) !important;
+}
+
+/* ------------------------------------------------------------
+   5. HEADER HALAMAN
+   Lebih ringan supaya welcome card menjadi fokus.
+   ------------------------------------------------------------ */
+
+.topbar {
+  padding-top: 22px !important;
+  padding-bottom: 13px !important;
+}
+
+.topbar h1 {
+  font-size: 22px !important;
+  line-height: 1.2 !important;
+  margin-bottom: 3px !important;
+
+  color: #363437 !important;
+}
+
+.topbar p {
+  font-size: 13px !important;
+
+  color: #796F65 !important;
+}
+
+/* ------------------------------------------------------------
+   6. DASHBOARD WELCOME
+   */
+
+.dash-welcome {
+  padding:
+    18px 20px !important;
+
+  margin-bottom:
+    16px !important;
+
+  border-radius:
+    17px !important;
+
+  box-shadow:
+    0 5px 18px rgba(130,94,57,.07) !important;
+}
+
+.dash-welcome-pro {
+  background:
+    linear-gradient(
+      135deg,
+      #FFF4CF 0%,
+      #FFF9E9 44%,
+      #FFFFFF 100%
+    ) !important;
+
+  border-color:
+    #E9DDC7 !important;
+}
+
+.dash-eyebrow {
+  color: #86664A !important;
+  opacity: 1 !important;
+
+  font-size: 11px !important;
+  letter-spacing: .085em !important;
+
+  margin-bottom: 7px !important;
+}
+
+.dash-welcome-pro h2 {
+  color: #302F31 !important;
+
+  font-size: 20px !important;
+}
+
+.dash-welcome-pro p {
+  color: #72675D !important;
+
+  max-width: 700px !important;
+}
+
+.dash-welcome-pro .dash-welcome-mark {
+  font-size: 64px !important;
+}
+
+/* ------------------------------------------------------------
+   7. SUMMARY CARD
+   Kurangi kesan "terlalu tinggi"
+   ------------------------------------------------------------ */
+
+.dash-summary {
+  gap: 13px !important;
+
+  margin-bottom: 15px !important;
+}
+
+.dash-summary-pro .dash-mini {
+  min-height: 145px !important;
+
+  padding: 15px 16px !important;
+
+  border-radius: 14px !important;
+
+  box-shadow:
+    0 3px 12px rgba(61,48,37,.035) !important;
+}
+
+.dash-mini-label {
+  color: #74695F !important;
+}
+
+.dash-mini-num {
+  color: #2F2E31 !important;
+}
+
+.dash-mini-sub {
+  color: #756B62 !important;
+}
+
+.dash-link {
+  color: #9A683D !important;
+}
+
+.dash-link:hover {
+  color: #7F522F !important;
+}
+
+/* ------------------------------------------------------------
+   8. STATISTICS — lebih kompak
+   ------------------------------------------------------------ */
+
+.stat-row-pro {
+  margin-top: 0 !important;
+  margin-bottom: 16px !important;
+
+  gap: 12px !important;
+}
+
+.stat {
+  border-radius: 13px !important;
+
+  box-shadow:
+    0 3px 12px rgba(61,48,37,.035) !important;
+}
+
+.stat .num {
+  color: #302F31 !important;
+}
+
+.stat .lbl {
+  color: #74695F !important;
+}
+
+/* ------------------------------------------------------------
+   9. JUDUL SECTION
+   Jangan sampai subtitle terlalu pucat.
+   ------------------------------------------------------------ */
+
+.section-head {
+  padding-bottom: 11px !important;
+}
+
+.section-head h2 {
+  color: #383437 !important;
+}
+
+.section-hint {
+  color: #766C62 !important;
+
+  font-size: 11.5px !important;
+
+  line-height: 1.4 !important;
+}
+
+/* ------------------------------------------------------------
+   10. SECTION — lebih bersih
+   ------------------------------------------------------------ */
+
+.section {
+  border-color: #E7DED1 !important;
+
+  box-shadow:
+    0 3px 14px rgba(70,55,40,.035) !important;
+
+  border-radius: 16px !important;
+}
+
+.section-body {
+  color: #4E4842 !important;
+}
+
+/* ------------------------------------------------------------
+   11. EMPTY STATE
+   Lebih terasa seperti Gantari,
+   bukan pesan database.
+   ------------------------------------------------------------ */
+
+.empty-state-gantari {
+  padding:
+    32px 18px !important;
+
+  color:
+    #766C62 !important;
+}
+
+.empty-state-gantari .empty-state-icon {
+  width: 46px;
+  height: 46px;
+
+  display: grid;
+  place-items: center;
+
+  margin-bottom: 5px;
+
+  border-radius: 14px;
+
+  background:
+    #FFF4CF;
+
+  border:
+    1px solid #F0DFB1;
+
+  font-size: 24px;
+}
+
+.empty-state-gantari strong {
+  color: #3A3736 !important;
+
+  font-size: 14px !important;
+}
+
+.empty-state-gantari small {
+  color: #786E64 !important;
+
+  line-height: 1.55 !important;
+}
+
+/* Generic empty state */
+
+.empty {
+  color: #766C62 !important;
+}
+
+/* ------------------------------------------------------------
+   12. QUICK ACTION
+   ------------------------------------------------------------ */
+
+.dash-quick-card {
+  border-color: #E6DED3 !important;
+
+  background: #FFFEFB !important;
+}
+
+.dash-quick-card:hover {
+  background: #FFF9EC !important;
+
+  border-color: #E8D5AE !important;
+
+  box-shadow:
+    0 6px 18px rgba(100,75,45,.07) !important;
+}
+
+.dash-quick-icon {
+  background: #FFF4CF !important;
+}
+
+/* ------------------------------------------------------------
+   13. AKTIVITAS
+   ------------------------------------------------------------ */
+
+.dash-activity-item {
+  padding-top: 9px !important;
+  padding-bottom: 9px !important;
+}
+
+.dash-activity-main strong {
+  color: #3A3736 !important;
+}
+
+.dash-activity-main small,
+.dash-activity-side small {
+  color: #786E64 !important;
+}
+
+.dash-activity-icon {
+  background: #FFF4CF !important;
+}
+
+/* ------------------------------------------------------------
+   14. TABLE
+   ------------------------------------------------------------ */
+
+table thead th {
+  color: #6C6258 !important;
+
+  font-size: 11px !important;
+  letter-spacing: .03em;
+}
+
+table tbody td {
+  color: #49433E;
+}
+
+table tbody tr:hover {
+  background: #FFFBF3 !important;
+}
+
+/* ------------------------------------------------------------
+   15. INPUT / SELECT
+   ------------------------------------------------------------ */
+
+input,
+select,
+textarea {
+  border-color: #DDD4C8 !important;
+
+  color: #403C39 !important;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #9A9188 !important;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: #B07A4F !important;
+
+  box-shadow:
+    0 0 0 3px rgba(176,122,79,.11) !important;
+}
+
+/* ------------------------------------------------------------
+   16. NOTIFICATION
+   ------------------------------------------------------------ */
+
+.notif-button {
+  background: #FFF4D0 !important;
+
+  color: #805832 !important;
+
+  border-color: #EFDBA8 !important;
+}
+
+.notif-button:hover {
+  background: #FFEBAF !important;
+}
+
+/* ------------------------------------------------------------
+   17. RESPONSIVE
+   ------------------------------------------------------------ */
+
+@media (max-width: 900px) {
+
+  .sidebar {
+    padding-top: 14px !important;
+  }
+
+  .brand-logo {
+    width: 155px !important;
+  }
+
+  .topbar {
+    padding-top: 18px !important;
+  }
+
+}
+
+@media (max-width: 700px) {
+
+  .brand-logo {
+    width: 150px !important;
+  }
+
+  .dash-welcome {
+    padding: 16px !important;
+  }
+
+  .dash-welcome-pro .dash-welcome-mark {
+    font-size: 50px !important;
+  }
+
+  .dash-summary-pro .dash-mini {
+    min-height: auto !important;
+  }
+
+  .stat-row-pro {
+    gap: 9px !important;
+  }
+
+}
+
+@media (max-width: 480px) {
+
+  .brand-logo {
+    width: 145px !important;
+  }
+
+  .topbar h1 {
+    font-size: 20px !important;
+  }
+
+  .dash-welcome-pro h2 {
+    font-size: 18px !important;
+  }
+
+  .dash-welcome-pro p {
+    font-size: 12px !important;
+  }
+
+  .dash-welcome-pro .dash-welcome-mark {
+    font-size: 42px !important;
+  }
+
+}
