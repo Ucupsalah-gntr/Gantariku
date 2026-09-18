@@ -779,6 +779,38 @@
   padding: 0 20px 20px;
 }
 
+/* ============================================================
+   GANTARIKU — DATA SISWA TABLE SCROLLBAR
+   Selaras dengan area tabel Monitoring SPP
+   ============================================================ */
+
+.siswa-table-wrap {
+  overflow-x: auto;
+  padding: 0 20px 20px;
+  scrollbar-width: thin;
+  scrollbar-color: #B79A7A #F5EEE6;
+}
+
+.siswa-table-wrap::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.siswa-table-wrap::-webkit-scrollbar-track {
+  background: #F5EEE6;
+  border-radius: 999px;
+}
+
+.siswa-table-wrap::-webkit-scrollbar-thumb {
+  background: #B79A7A;
+  border-radius: 999px;
+  border: 2px solid #F5EEE6;
+}
+
+.siswa-table-wrap::-webkit-scrollbar-thumb:hover {
+  background: #9E7F5F;
+}
+
 .spp-annual-table {
   min-width: 1050px;
   border-collapse: separate;
