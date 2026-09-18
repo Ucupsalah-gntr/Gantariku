@@ -297,7 +297,7 @@ function renderSiswa() {
 
       <div class="section-body">
 
-        <div style="overflow-x:auto;">
+        <div class="siswa-table-wrap">
 
           <table>
 
