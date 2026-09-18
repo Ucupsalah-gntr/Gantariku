@@ -788,7 +788,7 @@
   overflow-x: auto;
   padding: 0 20px 20px;
   scrollbar-width: thin;
-  scrollbar-color: #B79A7A #F5EEE6;
+  scrollbar-color: #8B5E3C #F5EEE6;
 }
 
 .siswa-table-wrap::-webkit-scrollbar {
@@ -802,13 +802,13 @@
 }
 
 .siswa-table-wrap::-webkit-scrollbar-thumb {
-  background: #B79A7A;
+  background: #8B5E3C;
   border-radius: 999px;
   border: 2px solid #F5EEE6;
 }
 
 .siswa-table-wrap::-webkit-scrollbar-thumb:hover {
-  background: #9E7F5F;
+  background: #6F472C;
 }
 
 .spp-annual-table {
