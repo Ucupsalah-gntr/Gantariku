@@ -1765,6 +1765,105 @@ table tbody tr:hover {
     font-size: 42px;
   }
 }
+
+/* ============================================================
+   MOBILE — HASIL PENILAIAN GURU
+   Konsolidasi dari inline index.html.
+   ============================================================ */
+
+@media (max-width: 760px) {
+  #daftarPerkembanganGuru {
+    display: block;
+    width: 100%;
+    min-width: 100%;
+    table-layout: auto;
+  }
+
+  #daftarPerkembanganGuru tr {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 100%;
+    min-width: 100%;
+    box-sizing: border-box;
+    gap: 8px 14px;
+    margin: 0 0 12px;
+    padding: 14px;
+    border: 1px solid rgba(0,0,0,.09);
+    border-radius: 16px;
+    background: #FFFFFF;
+    box-shadow: 0 4px 16px rgba(0,0,0,.05);
+  }
+
+  #daftarPerkembanganGuru td {
+    display: block;
+    width: auto;
+    min-width: 0;
+    padding: 0;
+    border: 0;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    font-size: 13px;
+    line-height: 1.45;
+    box-sizing: border-box;
+  }
+
+  #daftarPerkembanganGuru td::before {
+    display: block;
+    margin-bottom: 3px;
+    font-size: 9px;
+    font-weight: 800;
+    color: #8A8178;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+  }
+
+  #daftarPerkembanganGuru td:nth-child(1)::before { content: "Tanggal"; }
+  #daftarPerkembanganGuru td:nth-child(2)::before { content: "Siswa"; }
+  #daftarPerkembanganGuru td:nth-child(3)::before { content: "Ringkasan Nilai"; }
+  #daftarPerkembanganGuru td:nth-child(4)::before { content: "Catatan"; }
+
+  #daftarPerkembanganGuru td:nth-child(1),
+  #daftarPerkembanganGuru td:nth-child(2) {
+    padding-bottom: 4px;
+  }
+
+  #daftarPerkembanganGuru td:nth-child(3),
+  #daftarPerkembanganGuru td:nth-child(4) {
+    grid-column: 1 / -1;
+    width: 100%;
+    border-top: 1px solid rgba(0,0,0,.07);
+  }
+
+  #daftarPerkembanganGuru td:nth-child(3) {
+    padding-top: 9px;
+    font-size: 12px;
+    line-height: 1.55;
+    color: #4B4742;
+  }
+
+  #daftarPerkembanganGuru td:nth-child(4) {
+    padding-top: 8px;
+    line-height: 1.55;
+  }
+
+  #daftarPerkembanganGuru td[colspan] {
+    grid-column: 1 / -1;
+    width: 100%;
+    text-align: center;
+    padding: 10px;
+  }
+
+  #daftarPerkembanganGuru td[colspan]::before {
+    display: none;
+  }
+
+  .table-wrap {
+    width: 100%;
+    overflow-x: hidden;
+  }
+}
+
+
 /* ============================================================
    GANTARIKU — IMPORT SISWA UI
    ============================================================ */
