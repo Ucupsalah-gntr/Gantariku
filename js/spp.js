@@ -979,7 +979,7 @@ async function loadSppForMonth(bulan, tahun) {
   while (true) {
     const { data, error } = await supabase
       .from("spp")
-      .select("id,siswa_id,bulan,tahun,status")
+      .select("id,siswa_id,bulan,tahun,nominal,status")
       .eq("bulan", bulan)
       .eq("tahun", tahun)
       .range(from, from + size - 1);
