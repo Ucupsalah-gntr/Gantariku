@@ -3697,15 +3697,15 @@ table tbody tr:hover {
 
     .section-head .controls {
       width: 100%;
-      display: grid !important;
-      grid-template-columns: 1fr !important;
-      gap: 9px !important;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 9px;
     }
 
     .section-head .controls input,
     .section-head .controls select,
     .section-head .controls button {
-      width: 100% !important;
+      width: 100%;
       min-height: 44px;
       box-sizing: border-box;
     }
@@ -3736,20 +3736,20 @@ table tbody tr:hover {
     */
 
     #formPerkembangan > div:nth-child(1) {
-      display: grid !important;
-      grid-template-columns: 1fr !important;
-      gap: 11px !important;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 11px;
     }
 
     #formPerkembangan > div:nth-child(2) {
-      display: grid !important;
-      grid-template-columns: 1fr !important;
-      gap: 11px !important;
-      margin-top: 12px !important;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 11px;
+      margin-top: 12px;
     }
 
     #formPerkembangan > div:nth-child(3) {
-      margin-top: 12px !important;
+      margin-top: 12px;
     }
 
     #formPerkembangan .form-group,
@@ -3789,12 +3789,12 @@ table tbody tr:hover {
        ========================================================== */
 
     #daftarPerkembanganGuru {
-      display: block !important;
+      display: block;
       width: 100%;
     }
 
     #daftarPerkembanganGuru tr {
-      display: block !important;
+      display: block;
       width: 100%;
       box-sizing: border-box;
 
@@ -3810,18 +3810,18 @@ table tbody tr:hover {
     }
 
     #daftarPerkembanganGuru td {
-      display: flex !important;
+      display: flex;
       align-items: flex-start;
 
       gap: 8px;
 
-      padding: 7px 0 !important;
+      padding: 7px 0;
 
-      border: 0 !important;
+      border: 0;
 
-      text-align: left !important;
+      text-align: left;
 
-      white-space: normal !important;
+      white-space: normal;
       word-break: break-word;
     }
 
@@ -3855,8 +3855,8 @@ table tbody tr:hover {
     }
 
     #daftarPerkembanganGuru td[colspan] {
-      display: block !important;
-      text-align: center !important;
+      display: block;
+      text-align: center;
     }
 
     #daftarPerkembanganGuru td[colspan]::before {
@@ -3874,7 +3874,7 @@ table tbody tr:hover {
 
     #pilihAnakWrap select,
     #pilihAnakWrap button {
-      width: 100% !important;
+      width: 100%;
       min-height: 46px;
       box-sizing: border-box;
     }
@@ -3885,13 +3885,13 @@ table tbody tr:hover {
        ========================================================== */
 
     #daftarAbsenAnak {
-      display: block !important;
+      display: block;
       width: 100%;
     }
 
     #daftarAbsenAnak tr {
 
-      display: block !important;
+      display: block;
 
       width: 100%;
       box-sizing: border-box;
@@ -3909,19 +3909,19 @@ table tbody tr:hover {
 
     #daftarAbsenAnak td {
 
-      display: flex !important;
+      display: flex;
 
       align-items: flex-start;
 
       gap: 8px;
 
-      padding: 6px 0 !important;
+      padding: 6px 0;
 
-      border: 0 !important;
+      border: 0;
 
-      text-align: left !important;
+      text-align: left;
 
-      white-space: normal !important;
+      white-space: normal;
       word-break: break-word;
     }
 
@@ -3951,9 +3951,9 @@ table tbody tr:hover {
 
     #daftarAbsenAnak td[colspan] {
 
-      display: block !important;
+      display: block;
 
-      text-align: center !important;
+      text-align: center;
     }
 
     #daftarAbsenAnak td[colspan]::before {
@@ -3966,13 +3966,13 @@ table tbody tr:hover {
        ========================================================== */
 
     #daftarSppAnak {
-      display: block !important;
+      display: block;
       width: 100%;
     }
 
     #daftarSppAnak tr {
 
-      display: block !important;
+      display: block;
 
       width: 100%;
       box-sizing: border-box;
@@ -3990,19 +3990,19 @@ table tbody tr:hover {
 
     #daftarSppAnak td {
 
-      display: flex !important;
+      display: flex;
 
       align-items: flex-start;
 
       gap: 8px;
 
-      padding: 6px 0 !important;
+      padding: 6px 0;
 
-      border: 0 !important;
+      border: 0;
 
-      text-align: left !important;
+      text-align: left;
 
-      white-space: normal !important;
+      white-space: normal;
 
       word-break: break-word;
     }
@@ -4049,13 +4049,13 @@ table tbody tr:hover {
 
     #daftarSppAnak td:nth-child(6) {
 
-      display: block !important;
+      display: block;
 
-      padding-top: 10px !important;
+      padding-top: 10px;
 
       margin-top: 5px;
 
-      border-top: 1px solid rgba(0,0,0,.06) !important;
+      border-top: 1px solid rgba(0,0,0,.06);
     }
 
     #daftarSppAnak td:nth-child(6)::before {
@@ -4074,9 +4074,9 @@ table tbody tr:hover {
 
     #daftarSppAnak td[colspan] {
 
-      display: block !important;
+      display: block;
 
-      text-align: center !important;
+      text-align: center;
     }
 
     #daftarSppAnak td[colspan]::before {
@@ -4099,9 +4099,9 @@ table tbody tr:hover {
 
     .perk-history-grid {
 
-      grid-template-columns: 1fr !important;
+      grid-template-columns: 1fr;
 
-      gap: 8px !important;
+      gap: 8px;
     }
 
     .perk-history-cell {
