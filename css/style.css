@@ -1864,6 +1864,1139 @@ table tbody tr:hover {
 }
 
 
+
+/* ============================================================
+   COMPONENT UI — TERKONSOLIDASI
+   CSS yang sebelumnya disuntik oleh JavaScript kini dimuat
+   bersama stylesheet utama agar cascade mudah diaudit.
+   ============================================================ */
+
+.gtr-auth-page {
+      min-height: 100vh;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-sizing: border-box;
+      padding: 24px;
+
+      background:
+        radial-gradient(
+          circle at 10% 10%,
+          rgba(238, 184, 77, .18),
+          transparent 30%
+        ),
+
+        radial-gradient(
+          circle at 90% 90%,
+          rgba(101, 133, 81, .18),
+          transparent 30%
+        ),
+
+        linear-gradient(
+          135deg,
+          #413a37 0%,
+          #594941 50%,
+          #89684f 100%
+        );
+    }
+
+
+    .gtr-auth-card {
+
+      width: 100%;
+      max-width: 470px;
+
+      box-sizing: border-box;
+
+      background: #fffaf1;
+
+      border-radius: 30px;
+
+      padding: 34px;
+
+      box-shadow:
+        0 25px 70px
+        rgba(0,0,0,.22);
+    }
+
+
+    /* ========================================================
+       LOGO
+       ======================================================== */
+
+    .gtr-brand {
+
+      display: flex;
+
+      flex-direction: column;
+
+      align-items: center;
+
+      justify-content: center;
+
+      margin-bottom: 25px;
+    }
+
+
+    .gtr-logo-box {
+
+      display: flex;
+
+      align-items: center;
+
+      justify-content: center;
+
+      background: #fff;
+
+      border-radius: 18px;
+
+      padding: 12px 22px;
+
+      box-shadow:
+        0 8px 22px
+        rgba(0,0,0,.08);
+
+      margin-bottom: 16px;
+    }
+
+
+    .gtr-logo-icon {
+
+      width: 54px;
+
+      height: 54px;
+
+      border-radius: 15px;
+
+      display: flex;
+
+      align-items: center;
+
+      justify-content: center;
+
+      background:
+        linear-gradient(
+          135deg,
+          #f0c24f,
+          #d49a42
+        );
+
+      font-size: 28px;
+
+      margin-right: 12px;
+
+      box-shadow:
+        0 5px 12px
+        rgba(182,133,50,.20);
+    }
+
+
+    .gtr-logo-text {
+
+      display: flex;
+
+      flex-direction: column;
+
+      line-height: 1;
+    }
+
+
+    .gtr-logo-name {
+
+      font-family:
+        "Space Grotesk",
+        Inter,
+        sans-serif;
+
+      font-size: 28px;
+
+      font-weight: 800;
+
+      color: #403935;
+
+      letter-spacing: -.7px;
+    }
+
+
+    .gtr-logo-sub {
+
+      margin-top: 5px;
+
+      font-size: 10px;
+
+      font-weight: 600;
+
+      color: #887466;
+
+      letter-spacing: .1px;
+    }
+
+
+    /* ========================================================
+       TITLE
+       ======================================================== */
+
+    .gtr-auth-title {
+
+      margin: 0;
+
+      text-align: center;
+
+      font-size: 24px;
+
+      line-height: 1.25;
+
+      font-weight: 800;
+
+      color: #463a35;
+    }
+
+
+    .gtr-auth-subtitle {
+
+      margin: 7px 0 24px;
+
+      text-align: center;
+
+      font-size: 14px;
+
+      line-height: 1.5;
+
+      color: #826f64;
+    }
+
+
+    /* ========================================================
+       FORM
+       ======================================================== */
+
+    .gtr-auth-form {
+
+      display: flex;
+
+      flex-direction: column;
+
+      gap: 14px;
+    }
+
+
+    .gtr-auth-field {
+
+      display: flex;
+
+      flex-direction: column;
+
+      gap: 7px;
+    }
+
+
+    .gtr-auth-field label {
+
+      font-size: 13px;
+
+      font-weight: 700;
+
+      color: #5b4b42;
+    }
+
+
+    .gtr-auth-input-wrap {
+
+      position: relative;
+
+      width: 100%;
+    }
+
+
+    .gtr-auth-input {
+
+      width: 100%;
+
+      height: 46px;
+
+      box-sizing: border-box;
+
+      border: 1px solid #dfd0bf;
+
+      border-radius: 13px;
+
+      background: #fff;
+
+      color: #403833;
+
+      padding: 0 14px;
+
+      font-size: 14px;
+
+      outline: none;
+
+      transition: .2s ease;
+    }
+
+
+    .gtr-auth-input.password-input {
+
+      padding-right: 48px;
+    }
+
+
+    .gtr-auth-input:focus {
+
+      border-color: #bd8249;
+
+      box-shadow:
+        0 0 0 3px
+        rgba(189,130,73,.12);
+    }
+
+
+    /* ========================================================
+       PASSWORD BUTTON
+       ======================================================== */
+
+    .gtr-auth-eye {
+
+      position: absolute;
+
+      right: 7px;
+
+      top: 50%;
+
+      transform:
+        translateY(-50%);
+
+      width: 34px;
+
+      height: 34px;
+
+      display: flex;
+
+      align-items: center;
+
+      justify-content: center;
+
+      border: none;
+
+      border-radius: 9px;
+
+      background: transparent;
+
+      color: #756258;
+
+      font-size: 17px;
+
+      cursor: pointer;
+    }
+
+
+    .gtr-auth-eye:hover {
+
+      background: #f8eee1;
+    }
+
+
+    /* ========================================================
+       BUTTON
+       ======================================================== */
+
+    .gtr-auth-button {
+
+      width: 100%;
+
+      height: 46px;
+
+      box-sizing: border-box;
+
+      border-radius: 13px;
+
+      font-size: 14px;
+
+      font-weight: 800;
+
+      cursor: pointer;
+
+      transition: .2s ease;
+    }
+
+
+    .gtr-auth-primary {
+
+      border: none;
+
+      background: #bd8249;
+
+      color: #fff;
+
+      margin-top: 4px;
+    }
+
+
+    .gtr-auth-primary:hover {
+
+      transform:
+        translateY(-1px);
+
+      filter:
+        brightness(.97);
+    }
+
+
+    .gtr-auth-secondary {
+
+      border: 1px solid #d9b58f;
+
+      background: transparent;
+
+      color: #9d6838;
+    }
+
+
+    .gtr-auth-secondary:hover {
+
+      background: #fff1df;
+    }
+
+
+    /* ========================================================
+       MESSAGE
+       ======================================================== */
+
+    .gtr-auth-message {
+
+      display: none;
+
+      padding: 11px 13px;
+
+      border-radius: 12px;
+
+      font-size: 13px;
+
+      line-height: 1.45;
+
+      margin-bottom: 2px;
+    }
+
+
+    .gtr-auth-message.show {
+
+      display: block;
+    }
+
+
+    .gtr-auth-error {
+
+      background: #fff0ed;
+
+      border:
+        1px solid #efc5bd;
+
+      color: #9d473b;
+    }
+
+
+    .gtr-auth-success {
+
+      background: #edf8e9;
+
+      border:
+        1px solid #c5ddbb;
+
+      color: #4e753f;
+    }
+
+
+    /* ========================================================
+       DIVIDER
+       ======================================================== */
+
+    .gtr-auth-divider {
+
+      display: flex;
+
+      align-items: center;
+
+      gap: 10px;
+
+      margin: 20px 0;
+
+      color: #a08e80;
+
+      font-size: 12px;
+    }
+
+
+    .gtr-auth-divider::before,
+    .gtr-auth-divider::after {
+
+      content: "";
+
+      flex: 1;
+
+      height: 1px;
+
+      background: #e2d7cc;
+    }
+
+
+    /* ========================================================
+       BOTTOM NOTE
+       ======================================================== */
+
+    .gtr-auth-note {
+
+      margin-top: 10px;
+
+      text-align: center;
+
+      color: #9c8d80;
+
+      font-size: 11px;
+
+      line-height: 1.5;
+    }
+
+
+    .gtr-auth-back {
+
+      margin-top: 15px;
+
+      text-align: center;
+
+      color: #827267;
+
+      font-size: 13px;
+    }
+
+
+    .gtr-auth-link {
+
+      border: none;
+
+      background: none;
+
+      color: #a76c38;
+
+      font-size: inherit;
+
+      font-weight: 800;
+
+      cursor: pointer;
+
+      padding: 0;
+    }
+
+
+    .gtr-auth-link:hover {
+
+      text-decoration:
+        underline;
+    }
+
+
+    .gtr-auth-loading {
+
+      opacity: .65;
+
+      pointer-events: none;
+    }
+
+
+    /* ========================================================
+       MOBILE
+       ======================================================== */
+
+    @media (max-width: 520px) {
+
+      .gtr-auth-page {
+
+        padding: 14px;
+      }
+
+
+      .gtr-auth-card {
+
+        padding: 24px 18px;
+
+        border-radius: 24px;
+      }
+
+
+      .gtr-logo-name {
+
+        font-size: 24px;
+      }
+
+
+      .gtr-logo-icon {
+
+        width: 48px;
+
+        height: 48px;
+
+        font-size: 24px;
+      }
+
+    }
+
+.guru-list-mobile {
+        display:none;
+      }
+
+
+      .guru-card-grid {
+        display:grid;
+        grid-template-columns:
+          repeat(
+            2,
+            minmax(0, 1fr)
+          );
+        gap:14px;
+      }
+
+
+      .guru-card {
+        border:1px solid var(--line);
+        border-radius:16px;
+        padding:15px;
+        background:#fff;
+      }
+
+
+      .guru-card-top {
+        display:flex;
+        justify-content:space-between;
+        align-items:flex-start;
+        gap:12px;
+      }
+
+
+      .guru-card-name {
+        font-size:15px;
+        font-weight:700;
+        line-height:1.35;
+      }
+
+
+      .guru-card-email {
+        margin-top:5px;
+        font-size:12px;
+        color:var(--ink-soft);
+        word-break:break-word;
+      }
+
+
+      .guru-card-meta {
+        display:flex;
+        flex-wrap:wrap;
+        gap:8px;
+        margin-top:14px;
+      }
+
+
+      @media (
+        max-width:760px
+      ) {
+
+        .guru-table-desktop {
+          display:none;
+        }
+
+
+        .guru-list-mobile {
+          display:block;
+        }
+
+
+        .guru-card-grid {
+          grid-template-columns:
+            1fr;
+        }
+
+      }
+
+
+      @media (
+        min-width:761px
+      ) {
+
+        .guru-list-mobile {
+          display:none;
+        }
+
+      }
+
+.perk-input-grid-top {
+        display:grid;
+        grid-template-columns:
+          repeat(
+            3,
+            minmax(0, 1fr)
+          );
+        gap:15px;
+      }
+
+
+      .perk-input-grid-score {
+        display:grid;
+        grid-template-columns:
+          repeat(
+            2,
+            minmax(0, 1fr)
+          );
+        gap:12px;
+        margin-top:16px;
+      }
+
+
+      .perk-guru-history-grid {
+        display:grid;
+        grid-template-columns:
+          repeat(
+            2,
+            minmax(0, 1fr)
+          );
+        gap:14px;
+      }
+
+
+      .perk-guru-history-card {
+        border:1px solid var(--line);
+        border-radius:16px;
+        padding:15px;
+        background:#fff;
+      }
+
+
+      .perk-guru-history-top {
+        display:flex;
+        justify-content:space-between;
+        align-items:flex-start;
+        gap:12px;
+        margin-bottom:14px;
+      }
+
+
+      .perk-guru-student {
+        font-size:15px;
+        font-weight:700;
+        line-height:1.35;
+      }
+
+
+      .perk-guru-date {
+        font-size:11px;
+        color:var(--ink-soft);
+        margin-top:4px;
+      }
+
+
+      .perk-guru-average {
+        flex:0 0 auto;
+        padding:7px 10px;
+        border-radius:10px;
+        background:var(--primary-soft);
+        color:var(--primary-dark);
+        font-weight:700;
+        font-size:13px;
+        white-space:nowrap;
+      }
+
+
+      .perk-guru-score-grid {
+        display:grid;
+        grid-template-columns:
+          repeat(
+            2,
+            minmax(0, 1fr)
+          );
+        gap:8px;
+      }
+
+
+      .perk-guru-score-item {
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        gap:8px;
+        padding:9px 10px;
+        background:var(--bg);
+        border-radius:10px;
+        min-width:0;
+      }
+
+
+      .perk-guru-score-name {
+        font-size:11px;
+        color:var(--ink-soft);
+        line-height:1.25;
+        min-width:0;
+      }
+
+
+      .perk-guru-score-value {
+        font-weight:700;
+        font-size:12px;
+        white-space:nowrap;
+      }
+
+
+      .perk-guru-note {
+        margin-top:12px;
+        padding:10px 11px;
+        border-radius:10px;
+        background:var(--primary-soft);
+        font-size:12px;
+        line-height:1.5;
+        word-break:break-word;
+      }
+
+
+      @media (
+        max-width:760px
+      ) {
+
+        .perk-input-grid-top {
+          grid-template-columns:
+            1fr;
+        }
+
+
+        .perk-input-grid-score {
+          grid-template-columns:
+            1fr;
+        }
+
+
+        .perk-guru-history-grid {
+          grid-template-columns:
+            1fr;
+        }
+
+
+        .perk-guru-history-card {
+          padding:13px;
+        }
+
+
+        .perk-guru-score-grid {
+          grid-template-columns:
+            repeat(
+              2,
+              minmax(0, 1fr)
+            );
+        }
+
+      }
+
+
+      @media (
+        max-width:390px
+      ) {
+
+        .perk-guru-history-top {
+          flex-direction:column;
+          align-items:stretch;
+        }
+
+
+        .perk-guru-average {
+          align-self:flex-start;
+        }
+
+
+        .perk-guru-score-item {
+          padding:8px;
+        }
+
+      }
+
+.ortu-mobile-list {
+      display:none;
+    }
+
+
+    .ortu-card-top {
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+    }
+
+
+    .ortu-card-label {
+      font-size:10px;
+      text-transform:uppercase;
+      letter-spacing:.05em;
+      color:var(--ink-soft);
+      font-weight:800;
+    }
+
+
+    .ortu-card-title {
+      margin-top:4px;
+      font-size:15px;
+      font-weight:800;
+      color:var(--ink);
+    }
+
+
+    .ortu-card-text {
+      margin-top:5px;
+      font-size:13px;
+      line-height:1.5;
+      color:var(--ink-soft);
+    }
+
+
+    .ortu-card-divider {
+      height:1px;
+      background:var(--line);
+      margin:13px 0;
+    }
+
+
+    .ortu-data-card,
+    .ortu-spp-card {
+
+      padding:16px;
+
+      border:
+        1px solid
+        var(--line);
+
+      border-radius:16px;
+
+      background:
+        rgba(
+          255,
+          255,
+          255,
+          .72
+        );
+
+      margin-bottom:12px;
+
+      box-shadow:
+        0 3px 10px
+        rgba(
+          0,
+          0,
+          0,
+          .025
+        );
+    }
+
+
+    .ortu-spp-nominal {
+
+      margin-top:14px;
+
+      font-size:20px;
+
+      font-weight:900;
+
+      color:
+        var(--ink);
+    }
+
+
+    .ortu-spp-detail {
+
+      margin-top:12px;
+
+      font-size:12px;
+
+      color:
+        var(--ink-soft);
+    }
+
+
+    .ortu-spp-detail div {
+
+      display:flex;
+
+      justify-content:space-between;
+
+      gap:12px;
+    }
+
+
+    .ortu-spp-detail strong {
+
+      color:
+        var(--ink);
+
+      text-align:right;
+    }
+
+
+    .ortu-spp-action {
+
+      margin-top:2px;
+    }
+
+
+    .ortu-date-field {
+
+      display:flex;
+
+      flex-direction:column;
+
+      gap:5px;
+    }
+
+
+    .ortu-date-field label {
+
+      font-size:10px;
+
+      color:
+        var(--ink-soft);
+
+      font-weight:800;
+
+      text-transform:uppercase;
+    }
+
+
+    @media (
+      max-width:768px
+    ) {
+
+
+      .ortu-desktop-table {
+        display:none !important;
+      }
+
+
+      .ortu-mobile-list {
+        display:block;
+      }
+
+
+      .ortu-mobile-controls {
+
+        width:100%;
+
+        display:grid !important;
+
+        grid-template-columns:
+          1fr 1fr;
+
+        gap:10px;
+
+        margin-top:14px;
+      }
+
+
+      .ortu-mobile-controls select,
+      .ortu-mobile-controls input {
+
+        width:100%;
+
+        min-width:0;
+      }
+
+
+      .ortu-mobile-controls button {
+
+        grid-column:
+          1 / -1;
+
+        width:100%;
+      }
+
+
+      .ortu-child-profile > div {
+
+        grid-template-columns:
+          1fr !important;
+
+        gap:14px !important;
+      }
+
+
+      .stat-row {
+
+        grid-template-columns:
+          repeat(
+            2,
+            minmax(
+              0,
+              1fr
+            )
+          ) !important;
+
+        gap:10px !important;
+      }
+
+
+      .stat {
+
+        min-width:0;
+      }
+
+
+      .stat .num {
+
+        font-size:24px;
+      }
+
+
+      .section-head {
+
+        align-items:flex-start;
+
+        flex-direction:column;
+      }
+
+
+      .section-head .controls {
+
+        width:100%;
+      }
+
+    }
+
+
+    @media (
+      max-width:420px
+    ) {
+
+      .ortu-mobile-controls {
+
+        grid-template-columns:
+          1fr;
+      }
+
+
+      .ortu-mobile-controls button {
+
+        grid-column:auto;
+      }
+
+
+      .ortu-card-top {
+
+        gap:8px;
+      }
+
+
+      .ortu-card-title {
+
+        font-size:14px;
+      }
+
+
+      .ortu-spp-nominal {
+
+        font-size:18px;
+      }
+
+    }
+
+
 /* ============================================================
    GANTARIKU — IMPORT SISWA UI
    ============================================================ */
