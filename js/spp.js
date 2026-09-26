@@ -20,8 +20,7 @@ const SPP_TARIF_SEBELUM_2026 = 50000;
 const SPP_BATAS_TAHUN_BARU = 2026;
 
 function getTahunMasukDariNis(siswa) {
-  const nis = String(siswa?.nis || "");
-    .trim();
+  const nis = String(siswa?.nis || "").trim();
 
   const digits = nis.replace(/[^0-9]/g, "");
 
