@@ -966,9 +966,7 @@ async function buatTagihanBulanan() {
   } catch (error) {
     console.error("Error sinkronisasi tagihan bulanan:", error);
     alert(
-      "Gagal membuat/menyesuaikan tagihan:
-
-" +
+      "Gagal membuat/menyesuaikan tagihan:\n\n" +
         (error?.message || "Terjadi kesalahan.")
     );
   }
