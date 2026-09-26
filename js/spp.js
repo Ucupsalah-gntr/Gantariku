@@ -19,7 +19,30 @@ const SPP_TARIF_MULAI_2026 = 60000;
 const SPP_TARIF_SEBELUM_2026 = 50000;
 const SPP_BATAS_TAHUN_BARU = 2026;
 
+function getTahunMasukDariNis(siswa) {
+  const nis = String(siswa?.nis || "");
+    .trim();
+
+  const digits = nis.replace(/[^0-9]/g, "");
+
+  if (digits.length < 2) return null;
+
+  const suffix = Number(digits.slice(-2));
+
+  if (!Number.isInteger(suffix) || suffix < 0 || suffix > 99) {
+    return null;
+  }
+
+  return 2000 + suffix;
+}
+
 function getTahunMulaiSiswa(siswa) {
+  const tahunDariNis = getTahunMasukDariNis(siswa);
+
+  if (tahunDariNis !== null) {
+    return tahunDariNis;
+  }
+
   const mulaiTahun = Number(siswa?.mulai_tahun);
 
   if (Number.isInteger(mulaiTahun) && mulaiTahun >= 2000) {
@@ -40,13 +63,17 @@ function getSppNominalSiswa(siswa) {
 }
 
 function getSppTarifLabel(siswa) {
+  const tahunMasuk = getTahunMasukDariNis(siswa);
   const tahunMulai = getTahunMulaiSiswa(siswa);
 
-  if (tahunMulai !== null && tahunMulai >= SPP_BATAS_TAHUN_BARU) {
-    return `Mulai ${SPP_BATAS_TAHUN_BARU}: ${formatRupiah(SPP_TARIF_MULAI_2026)}`;
+  const tahunReferensi =
+    tahunMasuk !== null ? tahunMasuk : tahunMulai;
+
+  if (tahunReferensi !== null && tahunReferensi >= SPP_BATAS_TAHUN_BARU) {
+    return `NIS angkatan ${String(tahunReferensi).slice(-2)}: ${formatRupiah(SPP_TARIF_MULAI_2026)}`;
   }
 
-  return `Sebelum ${SPP_BATAS_TAHUN_BARU}: ${formatRupiah(SPP_TARIF_SEBELUM_2026)}`;
+  return `NIS angkatan ${tahunReferensi !== null ? String(tahunReferensi).slice(-2) : "-"}: ${formatRupiah(SPP_TARIF_SEBELUM_2026)}`;
 }
 
 function updateNominalSppForm() {
@@ -847,8 +874,8 @@ async function buatTagihanBulanan() {
   if (
     !confirm(
       `Buat tagihan ${namaBulan(bulanPilihan)} ${tahun} berdasarkan aturan tarif siswa?\\n\\n` +
-        `• Mulai ${SPP_BATAS_TAHUN_BARU}: ${formatRupiah(SPP_TARIF_MULAI_2026)}\\n` +
-        `• Sebelum ${SPP_BATAS_TAHUN_BARU}: ${formatRupiah(SPP_TARIF_SEBELUM_2026)}\\n\\n` +
+        `• NIS berakhiran 26 atau lebih: ${formatRupiah(SPP_TARIF_MULAI_2026)}\\n` +
+        `• NIS berakhiran 25 atau sebelumnya: ${formatRupiah(SPP_TARIF_SEBELUM_2026)}\\n\\n` +
         `Hanya siswa yang belum memiliki tagihan periode tersebut yang akan dibuat.`
     )
   ) {
