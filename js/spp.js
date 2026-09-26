@@ -367,8 +367,13 @@ function renderSpp() {
 // LOAD SISWA UNTUK FORM & FILTER
 // ============================================================
 
-async function loadSiswaSppTahunan() {
+async function loadSiswaSppTahunan(forceReload = false) {
   if (!supabase) return;
+
+  if (!forceReload && sppTahunanSiswa.length > 0) {
+    updateSppStudentSelectors();
+    return;
+  }
 
   const { data, error } = await supabase
     .from("siswa")
@@ -378,9 +383,14 @@ async function loadSiswaSppTahunan() {
   if (error) throw error;
 
   sppTahunanSiswa = data || [];
+  updateSppStudentSelectors();
+}
 
+function updateSppStudentSelectors() {
   const selectForm = document.getElementById("sppSiswaId");
   if (selectForm) {
+    const currentValue = selectForm.value;
+
     selectForm.innerHTML =
       `<option value="">Pilih siswa...</option>` +
       sppTahunanSiswa
@@ -389,10 +399,18 @@ async function loadSiswaSppTahunan() {
             `<option value="${s.id}">${s.nama} — ${s.kelas || "-"}</option>`
         )
         .join("");
+
+    if (currentValue && sppTahunanSiswa.some(
+      (s) => String(s.id) === String(currentValue)
+    )) {
+      selectForm.value = currentValue;
+    }
   }
 
   const selectKelas = document.getElementById("filterKelasSpp");
   if (selectKelas) {
+    const currentValue = selectKelas.value;
+
     const kelas = [
       ...new Set(
         sppTahunanSiswa
@@ -406,43 +424,23 @@ async function loadSiswaSppTahunan() {
       kelas
         .map((k) => `<option value="${k}">${k}</option>`)
         .join("");
+
+    if (currentValue && kelas.includes(currentValue)) {
+      selectKelas.value = currentValue;
+    }
   }
 }
 
 async function loadAllSppForYear(tahun) {
-  const hasil = [];
-  let from = 0;
-  const size = 1000;
+  const { data, error } = await supabase
+    .from("spp")
+    .select("id,siswa_id,bulan,tahun,nominal,status")
+    .eq("tahun", tahun)
+    .order("bulan", { ascending: true });
 
-  while (true) {
-    const { data, error } = await supabase
-      .from("spp")
-      .select(`
-        id,
-        siswa_id,
-        bulan,
-        tahun,
-        nominal,
-        status,
-        tanggal_bayar,
-        bukti_bayar_url,
-        catatan,
-        updated_at
-      `)
-      .eq("tahun", tahun)
-      .order("bulan", { ascending: true })
-      .order("updated_at", { ascending: false })
-      .range(from, from + size - 1);
+  if (error) throw error;
 
-    if (error) throw error;
-
-    hasil.push(...(data || []));
-
-    if (!data || data.length < size) break;
-    from += size;
-  }
-
-  return hasil;
+  return data || [];
 }
 
 // ============================================================
@@ -709,8 +707,13 @@ async function loadSpp() {
   `;
 
   try {
-    await loadSiswaSppTahunan();
-    sppTahunanData = await loadAllSppForYear(tahun);
+    await Promise.all([
+      loadSiswaSppTahunan(),
+      loadAllSppForYear(tahun).then((data) => {
+        sppTahunanData = data;
+      })
+    ]);
+
     renderSppTahunanTable();
   } catch (error) {
     console.error("Error load SPP tahunan:", error);
