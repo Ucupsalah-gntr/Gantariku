@@ -26,7 +26,7 @@ function getTahunMulaiSiswa(siswa) {
     return mulaiTahun;
   }
 
-  const match = String(siswa?.tahun_ajaran || "").match(/^(20\\d{2})/);
+  const match = String(siswa?.tahun_ajaran || "").match(/^(20\d{2})/);
 
   return match ? Number(match[1]) : null;
 }
