@@ -11,6 +11,71 @@ const SPP_BULAN = [
   "Juli", "Agustus", "September", "Oktober", "November", "Desember"
 ];
 
+// ============================================================
+// ATURAN TARIF SPP BERDASARKAN TAHUN MULAI SISWA
+// ============================================================
+
+const SPP_TARIF_MULAI_2026 = 60000;
+const SPP_TARIF_SEBELUM_2026 = 50000;
+const SPP_BATAS_TAHUN_BARU = 2026;
+
+function getTahunMulaiSiswa(siswa) {
+  const mulaiTahun = Number(siswa?.mulai_tahun);
+
+  if (Number.isInteger(mulaiTahun) && mulaiTahun >= 2000) {
+    return mulaiTahun;
+  }
+
+  const match = String(siswa?.tahun_ajaran || "").match(/^(20\\d{2})/);
+
+  return match ? Number(match[1]) : null;
+}
+
+function getSppNominalSiswa(siswa) {
+  const tahunMulai = getTahunMulaiSiswa(siswa);
+
+  return tahunMulai !== null && tahunMulai >= SPP_BATAS_TAHUN_BARU
+    ? SPP_TARIF_MULAI_2026
+    : SPP_TARIF_SEBELUM_2026;
+}
+
+function getSppTarifLabel(siswa) {
+  const tahunMulai = getTahunMulaiSiswa(siswa);
+
+  if (tahunMulai !== null && tahunMulai >= SPP_BATAS_TAHUN_BARU) {
+    return `Mulai ${SPP_BATAS_TAHUN_BARU}: ${formatRupiah(SPP_TARIF_MULAI_2026)}`;
+  }
+
+  return `Sebelum ${SPP_BATAS_TAHUN_BARU}: ${formatRupiah(SPP_TARIF_SEBELUM_2026)}`;
+}
+
+function updateNominalSppForm() {
+  const select = document.getElementById("sppSiswaId");
+  const input = document.getElementById("sppNominal");
+  const hint = document.getElementById("sppNominalHint");
+
+  if (!select || !input) return;
+
+  const siswa = sppTahunanSiswa.find(
+    (item) => String(item.id) === String(select.value)
+  );
+
+  if (!siswa) {
+    input.value = "";
+    if (hint) hint.textContent = "Nominal akan mengikuti aturan berdasarkan tahun mulai siswa.";
+    return;
+  }
+
+  const nominal = getSppNominalSiswa(siswa);
+
+  input.value = nominal;
+
+  if (hint) {
+    hint.textContent =
+      `${getSppTarifLabel(siswa)} · Nominal ditetapkan otomatis`;
+  }
+}
+
 function sppStatusClass(status) {
   if (status === "Lunas") return "spp-lunas";
   if (status === "Menunggu Verifikasi") return "spp-pending";
@@ -156,14 +221,20 @@ function renderSpp() {
             </div>
 
             <div class="form-group">
-              <label>Nominal (Rp)</label>
+              <label>Nominal SPP (Rp)</label>
               <input
                 type="number"
                 id="sppNominal"
-                placeholder="Contoh: 150000"
                 min="0"
+                readonly
                 required
               >
+              <div
+                id="sppNominalHint"
+                style="font-size:12px;color:var(--ink-soft);margin-top:5px;"
+              >
+                Nominal akan mengikuti aturan berdasarkan tahun mulai siswa.
+              </div>
             </div>
 
             <div class="form-group">
@@ -640,13 +711,24 @@ function applySppTahunanFilter() {
 // FORM TAMBAH SPP
 // ============================================================
 
-function bukaFormSpp() {
+async function bukaFormSpp() {
   const el = document.getElementById("formSppContainer");
   if (el) el.style.display = "block";
 
-  loadSiswaSppTahunan().catch((error) => {
+  try {
+    await loadSiswaSppTahunan();
+
+    const select = document.getElementById("sppSiswaId");
+
+    if (select && !select.dataset.tarifBound) {
+      select.addEventListener("change", updateNominalSppForm);
+      select.dataset.tarifBound = "1";
+    }
+
+    updateNominalSppForm();
+  } catch (error) {
     console.error(error);
-  });
+  }
 }
 
 function tutupFormSpp() {
@@ -670,11 +752,16 @@ async function simpanSpp(event) {
   const siswaId = document.getElementById("sppSiswaId")?.value;
   const bulan = Number(document.getElementById("sppBulan")?.value);
   const tahun = Number(document.getElementById("sppTahun")?.value);
-  const nominal = Number(document.getElementById("sppNominal")?.value);
   const status = document.getElementById("sppStatus")?.value;
 
-  if (!siswaId || !nominal || nominal <= 0) {
-    alert("Siswa dan nominal wajib diisi dengan benar.");
+  const siswa = sppTahunanSiswa.find(
+    (item) => String(item.id) === String(siswaId)
+  );
+
+  const nominal = getSppNominalSiswa(siswa);
+
+  if (!siswaId || !siswa || !nominal || nominal <= 0) {
+    alert("Siswa wajib dipilih dan nominal akan ditentukan otomatis berdasarkan tahun mulai siswa.");
     return;
   }
 
@@ -757,27 +844,12 @@ async function buatTagihanBulanan() {
     return;
   }
 
-  const inputNominal = prompt(
-    `Nominal SPP ${namaBulan(bulanPilihan)} ${tahun}:`,
-    "150000"
-  );
-
-  if (inputNominal === null) return;
-
-  const nominal = Number(
-    String(inputNominal).replace(/[^0-9]/g, "")
-  );
-
-  if (!nominal || nominal <= 0) {
-    alert("Nominal tidak valid.");
-    return;
-  }
-
   if (
     !confirm(
-      `Buat tagihan ${namaBulan(bulanPilihan)} ${tahun} ` +
-        `sebesar ${formatRupiah(nominal)} untuk semua siswa ` +
-        `yang belum memiliki tagihan pada periode tersebut?`
+      `Buat tagihan ${namaBulan(bulanPilihan)} ${tahun} berdasarkan aturan tarif siswa?\\n\\n` +
+        `• Mulai ${SPP_BATAS_TAHUN_BARU}: ${formatRupiah(SPP_TARIF_MULAI_2026)}\\n` +
+        `• Sebelum ${SPP_BATAS_TAHUN_BARU}: ${formatRupiah(SPP_TARIF_SEBELUM_2026)}\\n\\n` +
+        `Hanya siswa yang belum memiliki tagihan periode tersebut yang akan dibuat.`
     )
   ) {
     return;
@@ -812,7 +884,7 @@ async function buatTagihanBulanan() {
       siswa_id: s.id,
       bulan: bulanPilihan,
       tahun,
-      nominal,
+      nominal: getSppNominalSiswa(s),
       status: "Belum Bayar",
       tanggal_bayar: null,
       dicatat_oleh: currentUser?.id || null
@@ -824,10 +896,20 @@ async function buatTagihanBulanan() {
 
     if (error) throw error;
 
+    const jumlahTarifLama = payload.filter(
+      (item) => item.nominal === SPP_TARIF_SEBELUM_2026
+    ).length;
+
+    const jumlahTarifBaru = payload.filter(
+      (item) => item.nominal === SPP_TARIF_MULAI_2026
+    ).length;
+
     alert(
       `Berhasil membuat ${payload.length} tagihan SPP ${namaBulan(
         bulanPilihan
-      )} ${tahun}.`
+      )} ${tahun}.\\n\\n` +
+      `${jumlahTarifLama} siswa tarif ${formatRupiah(SPP_TARIF_SEBELUM_2026)}\\n` +
+      `${jumlahTarifBaru} siswa tarif ${formatRupiah(SPP_TARIF_MULAI_2026)}`
     );
 
     await loadSpp();
