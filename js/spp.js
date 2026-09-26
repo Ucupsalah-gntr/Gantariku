@@ -870,17 +870,6 @@ async function buatTagihanBulanan() {
     return;
   }
 
-  if (
-    !confirm(
-      `Buat tagihan ${namaBulan(bulanPilihan)} ${tahun} berdasarkan aturan tarif siswa?\\n\\n` +
-        `• NIS berakhiran 26 atau lebih: ${formatRupiah(SPP_TARIF_MULAI_2026)}\\n` +
-        `• NIS berakhiran 25 atau sebelumnya: ${formatRupiah(SPP_TARIF_SEBELUM_2026)}\\n\\n` +
-        `Hanya siswa yang belum memiliki tagihan periode tersebut yang akan dibuat.`
-    )
-  ) {
-    return;
-  }
-
   try {
     await loadSiswaSppTahunan();
 
@@ -889,60 +878,94 @@ async function buatTagihanBulanan() {
       tahun
     );
 
-    const sudahAda = new Set(
-      existing.map((x) => String(x.siswa_id))
+    const existingMap = new Map(
+      existing.map((item) => [String(item.siswa_id), item])
     );
 
-    const belumAda = sppTahunanSiswa.filter(
-      (s) => !sudahAda.has(String(s.id))
+    const tarifLamaCount = sppTahunanSiswa.filter(
+      (s) => getSppNominalSiswa(s) === SPP_TARIF_SEBELUM_2026
+    ).length;
+
+    const tarifBaruCount = sppTahunanSiswa.filter(
+      (s) => getSppNominalSiswa(s) === SPP_TARIF_MULAI_2026
+    ).length;
+
+    const perluDibuat = sppTahunanSiswa.filter(
+      (s) => !existingMap.has(String(s.id))
     );
 
-    if (belumAda.length === 0) {
-      alert(
-        `Semua siswa sudah memiliki tagihan ${namaBulan(
-          bulanPilihan
-        )} ${tahun}.`
-      );
+    const perluDisesuaikan = sppTahunanSiswa.filter((s) => {
+      const existingItem = existingMap.get(String(s.id));
+      if (!existingItem) return false;
+
+      return Number(existingItem.nominal) !== Number(getSppNominalSiswa(s));
+    });
+
+    if (!confirm(
+      `Sinkronkan tagihan ${namaBulan(bulanPilihan)} ${tahun} berdasarkan NIS?\\n\\n` +
+      `• NIS berakhiran 26 atau lebih → ${formatRupiah(SPP_TARIF_MULAI_2026)} (${tarifBaruCount} siswa)\\n` +
+      `• NIS berakhiran 25 atau sebelumnya → ${formatRupiah(SPP_TARIF_SEBELUM_2026)} (${tarifLamaCount} siswa)\\n\\n` +
+      `Akan membuat ${perluDibuat.length} tagihan baru dan menyesuaikan ${perluDisesuaikan.length} tagihan yang nominalnya tidak sesuai.\\n\\n` +
+      `Status pembayaran tetap dipertahankan.`
+    )) {
       return;
     }
 
-    const payload = belumAda.map((s) => ({
-      siswa_id: s.id,
-      bulan: bulanPilihan,
-      tahun,
-      nominal: getSppNominalSiswa(s),
-      status: "Belum Bayar",
-      tanggal_bayar: null,
-      dicatat_oleh: currentUser?.id || null
-    }));
+    let dibuat = 0;
+    let disesuaikan = 0;
 
-    const { error } = await supabase
-      .from("spp")
-      .insert(payload);
+    if (perluDibuat.length > 0) {
+      const payload = perluDibuat.map((s) => ({
+        siswa_id: s.id,
+        bulan: bulanPilihan,
+        tahun,
+        nominal: getSppNominalSiswa(s),
+        status: "Belum Bayar",
+        tanggal_bayar: null,
+        dicatat_oleh: currentUser?.id || null
+      }));
 
-    if (error) throw error;
+      const { error } = await supabase
+        .from("spp")
+        .insert(payload);
 
-    const jumlahTarifLama = payload.filter(
-      (item) => item.nominal === SPP_TARIF_SEBELUM_2026
-    ).length;
+      if (error) throw error;
 
-    const jumlahTarifBaru = payload.filter(
-      (item) => item.nominal === SPP_TARIF_MULAI_2026
-    ).length;
+      dibuat = payload.length;
+    }
+
+    for (const siswa of perluDisesuaikan) {
+      const existingItem = existingMap.get(String(siswa.id));
+      const nominalBenar = getSppNominalSiswa(siswa);
+
+      const { error } = await supabase
+        .from("spp")
+        .update({
+          nominal: nominalBenar,
+          updated_at: new Date().toISOString()
+        })
+        .eq("id", existingItem.id);
+
+      if (error) throw error;
+
+      disesuaikan++;
+    }
 
     alert(
-      `Berhasil membuat ${payload.length} tagihan SPP ${namaBulan(
-        bulanPilihan
-      )} ${tahun}.\\n\\n` +
-      `${jumlahTarifLama} siswa tarif ${formatRupiah(SPP_TARIF_SEBELUM_2026)}\\n` +
-      `${jumlahTarifBaru} siswa tarif ${formatRupiah(SPP_TARIF_MULAI_2026)}`
+      `Sinkronisasi SPP ${namaBulan(bulanPilihan)} ${tahun} berhasil.\\n\\n` +
+      `• Tagihan baru: ${dibuat}\\n` +
+      `• Nominal disesuaikan: ${disesuaikan}\\n` +
+      `• Tarif Rp50.000: ${tarifLamaCount} siswa\\n` +
+      `• Tarif Rp60.000: ${tarifBaruCount} siswa`
     );
 
     await loadSpp();
   } catch (error) {
-    console.error("Error buat tagihan bulanan:", error);
+    console.error("Error sinkronisasi tagihan bulanan:", error);
     alert(
-      "Gagal membuat tagihan bulanan:\n\n" +
+      "Gagal membuat/menyesuaikan tagihan:
+
+" +
         (error?.message || "Terjadi kesalahan.")
     );
   }
