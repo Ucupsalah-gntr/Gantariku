@@ -2,6 +2,16 @@
       // APP SHELL
       // ============================================================
       function renderApp() {
+        // Tetapkan kelas perangkat/role agar shell mobile konsisten di browser nyata.
+        const isTouchMobile =
+          /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) ||
+          (navigator.maxTouchPoints > 0 && window.innerWidth <= 760);
+
+        document.documentElement.classList.toggle("gantariku-mobile-device", isTouchMobile);
+        document.body.classList.toggle("gantariku-mobile-device", isTouchMobile);
+        document.body.classList.toggle("gantariku-role-admin", currentUserRole === "admin");
+        document.body.classList.toggle("gantariku-role-guru", currentUserRole === "guru");
+        document.body.classList.toggle("gantariku-role-ortu", currentUserRole === "ortu");
         const html = `
           <div class="app">
             <aside class="sidebar" id="sidebar">
@@ -38,14 +48,7 @@
     <p id="pageSub">Ringkasan hari ini</p>
   </div>
 
-  <div
-    style="
-      display:flex;
-      align-items:center;
-      gap:10px;
-      position:relative;
-    "
-  >
+  <div class="topbar-actions">
 
     <button
       class="notif-button"
@@ -95,6 +98,7 @@
           .map(
             (item) =>
               `<button class="nav-item ${currentNav === item.id ? "active" : ""}"
+                       data-nav-id="${item.id}"
                        onclick="window.__app.goTo('${item.id}')">
                 <span>${item.icon}</span>
                 <span>${item.label}</span>
